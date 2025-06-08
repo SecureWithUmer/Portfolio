@@ -1,10 +1,12 @@
 
+
 import { Button } from '@/components/ui/button';
 import { PageTitle } from '@/components/ui/page-title';
 import { SectionTitle } from '@/components/ui/section-title';
 import { AiTipGenerator } from '@/components/ai/ai-tip-generator';
 import Link from 'next/link';
 import Image from 'next/image';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { 
   ArrowRight, 
   Briefcase, 
@@ -47,6 +49,24 @@ const services = [
   },
 ];
 
+const expertiseItems = [
+  {
+    icon: ShieldCheck,
+    title: 'Threat Intelligence',
+    description: 'Proactive identification and analysis of cyber threats to preempt attacks.',
+  },
+  {
+    icon: Network,
+    title: 'Network Security',
+    description: 'Designing and implementing secure network architectures and protocols.',
+  },
+  {
+    icon: Lock,
+    title: 'Ethical Hacking',
+    description: 'Simulating attacks to identify vulnerabilities and strengthen defenses.',
+  },
+];
+
 export default function HomePage() {
   return (
     <div className="space-y-16">
@@ -85,21 +105,17 @@ export default function HomePage() {
       <section id="expertise" className="py-12">
         <SectionTitle className="text-center">My Expertise</SectionTitle>
         <div className="grid md:grid-cols-3 gap-8 text-center">
-          <div className="p-6 bg-card rounded-lg shadow-md hover:shadow-primary/20 transition-shadow">
-            <ShieldCheck className="h-12 w-12 text-primary mx-auto mb-4" />
-            <h3 className="text-xl font-semibold mb-2">Threat Intelligence</h3>
-            <p className="text-muted-foreground">Proactive identification and analysis of cyber threats to preempt attacks.</p>
-          </div>
-          <div className="p-6 bg-card rounded-lg shadow-md hover:shadow-primary/20 transition-shadow">
-            <Network className="h-12 w-12 text-primary mx-auto mb-4" />
-            <h3 className="text-xl font-semibold mb-2">Network Security</h3>
-            <p className="text-muted-foreground">Designing and implementing secure network architectures and protocols.</p>
-          </div>
-          <div className="p-6 bg-card rounded-lg shadow-md hover:shadow-primary/20 transition-shadow">
-            <Lock className="h-12 w-12 text-primary mx-auto mb-4" />
-            <h3 className="text-xl font-semibold mb-2">Ethical Hacking</h3>
-            <p className="text-muted-foreground">Simulating attacks to identify vulnerabilities and strengthen defenses.</p>
-          </div>
+          {expertiseItems.map((item) => (
+            <Card key={item.title} className="flex flex-col items-center text-center hover:shadow-primary/20 transition-shadow duration-300">
+              <CardHeader className="pb-4">
+                <item.icon className="h-12 w-12 text-primary mx-auto mb-3" />
+                <CardTitle className="text-xl">{item.title}</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-muted-foreground">{item.description}</p>
+              </CardContent>
+            </Card>
+          ))}
         </div>
       </section>
 
@@ -107,11 +123,15 @@ export default function HomePage() {
         <SectionTitle className="text-center">Our Services</SectionTitle>
         <div className="grid sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-8 text-center">
           {services.map((service) => (
-            <div key={service.title} className="p-6 bg-card rounded-lg shadow-md hover:shadow-primary/20 transition-shadow">
-              <service.icon className="h-12 w-12 text-primary mx-auto mb-4" />
-              <h3 className="text-xl font-semibold mb-2">{service.title}</h3>
-              <p className="text-muted-foreground text-sm">{service.description}</p>
-            </div>
+            <Card key={service.title} className="flex flex-col items-center text-center hover:shadow-primary/20 transition-shadow duration-300">
+                <CardHeader className="pb-4">
+                    <service.icon className="h-12 w-12 text-primary mx-auto mb-3" />
+                    <CardTitle className="text-xl">{service.title}</CardTitle>
+                </CardHeader>
+                <CardContent>
+                    <p className="text-muted-foreground text-sm">{service.description}</p>
+                </CardContent>
+            </Card>
           ))}
         </div>
       </section>
