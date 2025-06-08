@@ -20,10 +20,10 @@ import {
   ServerCog,
   ExternalLink
 } from 'lucide-react';
-import { projects as allProjects } from './portfolio/page'; // Import projects
-import { ProjectCard, type Project } from '@/components/portfolio/project-card'; // Import ProjectCard and Project type
+import { projects as allProjects } from './portfolio/page'; 
+import { ProjectCard } from '@/components/portfolio/project-card'; 
 
-const featuredProjects = allProjects.slice(0, 3); // Get first 3 projects
+const featuredProjects = allProjects.slice(0, 3); 
 
 const expertiseItems = [
   {
@@ -72,15 +72,15 @@ export default function HomePage() {
           alt="Umer Farooq" 
           width={150} 
           height={150} 
-          className="rounded-full mx-auto mb-6 border-4 border-primary shadow-lg animate-slide-in-down opacity-0"
+          className="rounded-full mx-auto mb-6 border-4 border-primary animate-slide-in-down opacity-0"
           data-ai-hint="professional portrait" 
           style={{ animationDelay: '0s' }}
         />
         <h1 
-          className="text-5xl md:text-6xl font-bold font-cyberName mb-4 animate-slide-in-down opacity-0"
+          className="text-5xl md:text-6xl font-bold font-cyberName mb-4 text-primary animate-slide-in-down opacity-0"
           style={{ animationDelay: '0.1s' }}
         >
-          <span className="text-primary cyber-glow">UMER FAROOQ</span>
+          UMER FAROOQ
         </h1>
         <p 
           className="text-2xl text-foreground/80 mb-6 font-headline animate-slide-in-down opacity-0"
@@ -113,11 +113,11 @@ export default function HomePage() {
 
       <section id="expertise" className="py-12">
         <SectionTitle className="text-center">My Expertise</SectionTitle>
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 text-center">
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 text-center">
           {expertiseItems.map((item, index) => (
             <Card 
               key={item.title} 
-              className="flex flex-col items-center text-center hover:shadow-primary/20 transition-shadow duration-300 animate-slide-in-down opacity-0"
+              className="flex flex-col items-center text-center transition-shadow duration-300 animate-slide-in-down opacity-0"
               style={{ animationDelay: `${0.5 + index * 0.1}s` }}
             >
               <CardHeader className="pb-4">
@@ -139,7 +139,7 @@ export default function HomePage() {
             <div 
               key={project.id} 
               className="animate-slide-in-down opacity-0" 
-              style={{ animationDelay: `${0.8 + expertiseItems.length * 0.1 + index * 0.1}s` }} // Adjusted delay
+              style={{ animationDelay: `${0.5 + expertiseItems.length * 0.1 + index * 0.1}s` }}
             >
               <ProjectCard project={project} />
             </div>
@@ -147,7 +147,7 @@ export default function HomePage() {
         </div>
         <div 
           className="text-center mt-12 animate-slide-in-down opacity-0"
-          style={{ animationDelay: `${0.8 + expertiseItems.length * 0.1 + featuredProjects.length * 0.1}s` }} // Adjusted delay
+          style={{ animationDelay: `${0.5 + expertiseItems.length * 0.1 + featuredProjects.length * 0.1}s` }}
         >
           <Button asChild size="lg" variant="outline" className="border-primary text-primary hover:bg-primary/10 hover:text-primary">
             <Link href="/portfolio">
@@ -160,15 +160,15 @@ export default function HomePage() {
       <section 
         id="ai-tip" 
         className="py-12 animate-slide-in-down opacity-0"
-        style={{ animationDelay: `${0.9 + expertiseItems.length * 0.1 + featuredProjects.length * 0.1}s` }} // Adjusted delay
+        style={{ animationDelay: `${0.6 + expertiseItems.length * 0.1 + featuredProjects.length * 0.1}s` }}
       >
         <AiTipGenerator />
       </section>
 
       <section 
         id="cta-blog" 
-        className="py-12 text-center bg-card rounded-lg shadow-lg p-8 animate-slide-in-down opacity-0"
-        style={{ animationDelay: `${1.0 + expertiseItems.length * 0.1 + featuredProjects.length * 0.1}s` }} // Adjusted delay
+        className="py-12 text-center bg-card rounded-lg p-8 animate-slide-in-down opacity-0"
+        style={{ animationDelay: `${0.7 + expertiseItems.length * 0.1 + featuredProjects.length * 0.1}s` }}
       >
         <SectionTitle>Stay Informed</SectionTitle>
         <p className="max-w-xl mx-auto text-muted-foreground mb-6">

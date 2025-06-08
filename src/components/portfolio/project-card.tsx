@@ -21,7 +21,7 @@ interface ProjectCardProps {
 
 export function ProjectCard({ project }: ProjectCardProps) {
   return (
-    <Card className="flex flex-col h-full overflow-hidden shadow-lg hover:shadow-primary/30 transition-shadow duration-300">
+    <Card className="flex flex-col h-full overflow-hidden transition-shadow duration-300">
       <CardHeader>
         <div className="aspect-video relative w-full overflow-hidden rounded-t-lg">
           <Image

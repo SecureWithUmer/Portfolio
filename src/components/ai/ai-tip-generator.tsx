@@ -62,10 +62,10 @@ export function AiTipGenerator() {
   };
 
   return (
-    <Card className="w-full max-w-2xl mx-auto shadow-lg">
+    <Card className="w-full max-w-2xl mx-auto">
       <CardHeader>
         <CardTitle className="flex items-center gap-2 text-accent">
-          <Lightbulb className="h-6 w-6 accent-glow" />
+          <Lightbulb className="h-6 w-6" />
           AI Cybersecurity Tip of the Week
         </CardTitle>
         <CardDescription>

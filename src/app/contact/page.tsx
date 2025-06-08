@@ -65,7 +65,7 @@ export default function ContactPage() {
         Get In Touch
       </PageTitle>
       
-      <Card className="max-w-2xl mx-auto shadow-lg">
+      <Card className="max-w-2xl mx-auto">
         <CardHeader>
           <CardTitle>Contact Form</CardTitle>
           <CardDescription>Fill out the form below and I'll get back to you as soon as possible.</CardDescription>

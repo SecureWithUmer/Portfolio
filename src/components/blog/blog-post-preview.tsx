@@ -19,7 +19,7 @@ interface BlogPostPreviewProps {
 
 export function BlogPostPreview({ post }: BlogPostPreviewProps) {
   return (
-    <Card className="overflow-hidden shadow-lg hover:shadow-primary/30 transition-shadow duration-300">
+    <Card className="overflow-hidden transition-shadow duration-300">
       <CardHeader>
         <CardTitle className="text-xl text-primary hover:underline">
           <Link href={`/blog/${post.slug}`}>{post.title}</Link>

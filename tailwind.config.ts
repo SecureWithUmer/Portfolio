@@ -17,8 +17,8 @@ export default {
     },
     extend: {
       fontFamily: {
-        body: ['Inter', 'sans-serif'],
-        headline: ['Space Grotesk', 'sans-serif'],
+        body: ['Source Code Pro', 'monospace'],
+        headline: ['Source Code Pro', 'monospace'],
         code: ['Source Code Pro', 'monospace'],
         cyberName: ['Orbitron', 'sans-serif'],
       },
@@ -96,11 +96,6 @@ export default {
             height: '0',
           },
         },
-        'gradient-wave': {
-          '0%': { 'background-position': '0% 50%' },
-          '50%': { 'background-position': '100% 50%' },
-          '100%': { 'background-position': '0% 50%' },
-        },
         'subtle-pulse': {
           '0%, 100%': { opacity: '1' },
           '50%': { opacity: '0.7' },
@@ -113,7 +108,6 @@ export default {
       animation: {
         'accordion-down': 'accordion-down 0.2s ease-out',
         'accordion-up': 'accordion-up 0.2s ease-out',
-        'gradient-wave': 'gradient-wave 15s ease infinite',
         'subtle-pulse': 'subtle-pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
         'slide-in-down': 'slideInDown 0.7s ease-out forwards',
       },
