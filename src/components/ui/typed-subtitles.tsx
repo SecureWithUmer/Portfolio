@@ -1,3 +1,4 @@
+
 "use client";
 
 import type { FC } from 'react';
@@ -14,7 +15,7 @@ interface TypedSubtitlesProps {
 const TypedSubtitles: FC<TypedSubtitlesProps> = ({
   titles,
   typingSpeed = 120,
-  deletingSpeed = 70,
+  deletingSpeed = 70, // Adjusted for faster backspacing
   pauseDuration = 1500,
   className,
 }) => {

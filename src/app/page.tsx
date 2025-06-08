@@ -92,12 +92,13 @@ export default function HomePage() {
           UMER FAROOQ
         </h1>
         <div 
-          className="mb-6 animate-slide-in-down opacity-0 h-[calc(1.5rem*2.5)] sm:h-[calc(1.5rem*1.25)] flex items-center justify-center text-center"
+          className="mb-6 animate-slide-in-down opacity-0 h-[calc(1.5rem*2.5)] sm:h-[calc(1.5rem*1.25)] flex items-center justify-center text-center text-2xl text-foreground/80 font-headline"
           style={{ animationDelay: '0.2s' }}
         >
+          <span className="mr-2">I am a</span>
           <TypedSubtitles 
             titles={professionalTitles} 
-            className="text-2xl text-foreground/80 font-headline"
+            // className="text-2xl text-foreground/80 font-headline" // Class already applied to parent
           />
         </div>
         <p 
