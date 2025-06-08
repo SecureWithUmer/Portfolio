@@ -1,5 +1,4 @@
 
-
 import { Button } from '@/components/ui/button';
 import { PageTitle } from '@/components/ui/page-title';
 import { SectionTitle } from '@/components/ui/section-title';
@@ -26,7 +25,22 @@ import { ProjectCard, type Project } from '@/components/portfolio/project-card';
 
 const featuredProjects = allProjects.slice(0, 3); // Get first 3 projects
 
-const services = [
+const expertiseItems = [
+  {
+    icon: ShieldCheck,
+    title: 'Threat Intelligence',
+    description: 'Proactive identification and analysis of cyber threats to preempt attacks.',
+  },
+  {
+    icon: Network,
+    title: 'Network Security',
+    description: 'Designing and implementing secure network architectures and protocols.',
+  },
+  {
+    icon: Lock,
+    title: 'Ethical Hacking',
+    description: 'Simulating attacks to identify vulnerabilities and strengthen defenses.',
+  },
   {
     icon: ClipboardCheck,
     title: 'Comprehensive Security Audits',
@@ -46,24 +60,6 @@ const services = [
     icon: ServerCog,
     title: 'Managed Detection & Response (MDR)',
     description: 'Continuous monitoring, threat detection, and incident response to protect your assets around the clock.',
-  },
-];
-
-const expertiseItems = [
-  {
-    icon: ShieldCheck,
-    title: 'Threat Intelligence',
-    description: 'Proactive identification and analysis of cyber threats to preempt attacks.',
-  },
-  {
-    icon: Network,
-    title: 'Network Security',
-    description: 'Designing and implementing secure network architectures and protocols.',
-  },
-  {
-    icon: Lock,
-    title: 'Ethical Hacking',
-    description: 'Simulating attacks to identify vulnerabilities and strengthen defenses.',
   },
 ];
 
@@ -117,7 +113,7 @@ export default function HomePage() {
 
       <section id="expertise" className="py-12">
         <SectionTitle className="text-center">My Expertise</SectionTitle>
-        <div className="grid md:grid-cols-3 gap-8 text-center">
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 text-center">
           {expertiseItems.map((item, index) => (
             <Card 
               key={item.title} 
@@ -136,27 +132,6 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section id="services" className="py-12">
-        <SectionTitle className="text-center">Our Services</SectionTitle>
-        <div className="grid sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-8 text-center">
-          {services.map((service, index) => (
-            <Card 
-              key={service.title} 
-              className="flex flex-col items-center text-center hover:shadow-primary/20 transition-shadow duration-300 animate-slide-in-down opacity-0"
-              style={{ animationDelay: `${0.8 + index * 0.1}s` }}
-            >
-                <CardHeader className="pb-4">
-                    <service.icon className="h-12 w-12 text-primary mx-auto mb-3" />
-                    <CardTitle className="text-xl">{service.title}</CardTitle>
-                </CardHeader>
-                <CardContent>
-                    <p className="text-muted-foreground text-sm">{service.description}</p>
-                </CardContent>
-            </Card>
-          ))}
-        </div>
-      </section>
-
       <section id="featured-projects" className="py-12">
         <SectionTitle className="text-center">Featured Projects</SectionTitle>
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -164,7 +139,7 @@ export default function HomePage() {
             <div 
               key={project.id} 
               className="animate-slide-in-down opacity-0" 
-              style={{ animationDelay: `${1.2 + index * 0.1}s` }}
+              style={{ animationDelay: `${0.8 + expertiseItems.length * 0.1 + index * 0.1}s` }} // Adjusted delay
             >
               <ProjectCard project={project} />
             </div>
@@ -172,7 +147,7 @@ export default function HomePage() {
         </div>
         <div 
           className="text-center mt-12 animate-slide-in-down opacity-0"
-          style={{ animationDelay: `${1.2 + featuredProjects.length * 0.1}s` }}
+          style={{ animationDelay: `${0.8 + expertiseItems.length * 0.1 + featuredProjects.length * 0.1}s` }} // Adjusted delay
         >
           <Button asChild size="lg" variant="outline" className="border-primary text-primary hover:bg-primary/10 hover:text-primary">
             <Link href="/portfolio">
@@ -185,7 +160,7 @@ export default function HomePage() {
       <section 
         id="ai-tip" 
         className="py-12 animate-slide-in-down opacity-0"
-        style={{ animationDelay: `${1.3 + featuredProjects.length * 0.1}s` }}
+        style={{ animationDelay: `${0.9 + expertiseItems.length * 0.1 + featuredProjects.length * 0.1}s` }} // Adjusted delay
       >
         <AiTipGenerator />
       </section>
@@ -193,7 +168,7 @@ export default function HomePage() {
       <section 
         id="cta-blog" 
         className="py-12 text-center bg-card rounded-lg shadow-lg p-8 animate-slide-in-down opacity-0"
-        style={{ animationDelay: `${1.4 + featuredProjects.length * 0.1}s` }}
+        style={{ animationDelay: `${1.0 + expertiseItems.length * 0.1 + featuredProjects.length * 0.1}s` }} // Adjusted delay
       >
         <SectionTitle>Stay Informed</SectionTitle>
         <p className="max-w-xl mx-auto text-muted-foreground mb-6">
