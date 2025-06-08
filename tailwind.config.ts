@@ -104,13 +104,18 @@ export default {
         'subtle-pulse': {
           '0%, 100%': { opacity: '1' },
           '50%': { opacity: '0.7' },
-        }
+        },
+        'slide-in-down': {
+          'from': { opacity: '0', transform: 'translateY(-30px)' },
+          'to': { opacity: '1', transform: 'translateY(0)' },
+        },
       },
       animation: {
         'accordion-down': 'accordion-down 0.2s ease-out',
         'accordion-up': 'accordion-up 0.2s ease-out',
         'gradient-wave': 'gradient-wave 15s ease infinite',
         'subtle-pulse': 'subtle-pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+        'slide-in-down': 'slideInDown 0.7s ease-out forwards',
       },
     },
   },

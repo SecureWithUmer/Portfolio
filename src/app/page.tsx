@@ -76,19 +76,32 @@ export default function HomePage() {
           alt="Umer Farooq" 
           width={150} 
           height={150} 
-          className="rounded-full mx-auto mb-6 border-4 border-primary shadow-lg"
+          className="rounded-full mx-auto mb-6 border-4 border-primary shadow-lg animate-slide-in-down opacity-0"
           data-ai-hint="professional portrait" 
+          style={{ animationDelay: '0s' }}
         />
-        <h1 className="text-5xl md:text-6xl font-bold font-cyberName mb-4">
+        <h1 
+          className="text-5xl md:text-6xl font-bold font-cyberName mb-4 animate-slide-in-down opacity-0"
+          style={{ animationDelay: '0.1s' }}
+        >
           <span className="text-primary cyber-glow">UMER FAROOQ</span>
         </h1>
-        <p className="text-2xl text-foreground/80 mb-6 font-headline">
+        <p 
+          className="text-2xl text-foreground/80 mb-6 font-headline animate-slide-in-down opacity-0"
+          style={{ animationDelay: '0.2s' }}
+        >
           Cybersecurity Professional &amp; Strategist
         </p>
-        <p className="max-w-2xl mx-auto text-lg text-muted-foreground mb-8">
+        <p 
+          className="max-w-2xl mx-auto text-lg text-muted-foreground mb-8 animate-slide-in-down opacity-0"
+          style={{ animationDelay: '0.3s' }}
+        >
           Dedicated to safeguarding digital landscapes with innovative security solutions and expert insights. Based in Faisalabad, Pakistan, I specialize in threat analysis, risk management, and robust defense strategies.
         </p>
-        <div className="space-x-4">
+        <div 
+          className="space-x-4 animate-slide-in-down opacity-0"
+          style={{ animationDelay: '0.4s' }}
+        >
           <Button asChild size="lg" className="bg-primary hover:bg-primary/90 text-primary-foreground">
             <Link href="/portfolio">
               View My Work <Briefcase className="ml-2 h-5 w-5" />
@@ -105,8 +118,12 @@ export default function HomePage() {
       <section id="expertise" className="py-12">
         <SectionTitle className="text-center">My Expertise</SectionTitle>
         <div className="grid md:grid-cols-3 gap-8 text-center">
-          {expertiseItems.map((item) => (
-            <Card key={item.title} className="flex flex-col items-center text-center hover:shadow-primary/20 transition-shadow duration-300">
+          {expertiseItems.map((item, index) => (
+            <Card 
+              key={item.title} 
+              className="flex flex-col items-center text-center hover:shadow-primary/20 transition-shadow duration-300 animate-slide-in-down opacity-0"
+              style={{ animationDelay: `${0.5 + index * 0.1}s` }}
+            >
               <CardHeader className="pb-4">
                 <item.icon className="h-12 w-12 text-primary mx-auto mb-3" />
                 <CardTitle className="text-xl">{item.title}</CardTitle>
@@ -122,8 +139,12 @@ export default function HomePage() {
       <section id="services" className="py-12">
         <SectionTitle className="text-center">Our Services</SectionTitle>
         <div className="grid sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-8 text-center">
-          {services.map((service) => (
-            <Card key={service.title} className="flex flex-col items-center text-center hover:shadow-primary/20 transition-shadow duration-300">
+          {services.map((service, index) => (
+            <Card 
+              key={service.title} 
+              className="flex flex-col items-center text-center hover:shadow-primary/20 transition-shadow duration-300 animate-slide-in-down opacity-0"
+              style={{ animationDelay: `${0.8 + index * 0.1}s` }}
+            >
                 <CardHeader className="pb-4">
                     <service.icon className="h-12 w-12 text-primary mx-auto mb-3" />
                     <CardTitle className="text-xl">{service.title}</CardTitle>
@@ -139,11 +160,20 @@ export default function HomePage() {
       <section id="featured-projects" className="py-12">
         <SectionTitle className="text-center">Featured Projects</SectionTitle>
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {featuredProjects.map((project) => (
-            <ProjectCard key={project.id} project={project} />
+          {featuredProjects.map((project, index) => (
+            <div 
+              key={project.id} 
+              className="animate-slide-in-down opacity-0" 
+              style={{ animationDelay: `${1.2 + index * 0.1}s` }}
+            >
+              <ProjectCard project={project} />
+            </div>
           ))}
         </div>
-        <div className="text-center mt-12">
+        <div 
+          className="text-center mt-12 animate-slide-in-down opacity-0"
+          style={{ animationDelay: `${1.2 + featuredProjects.length * 0.1}s` }}
+        >
           <Button asChild size="lg" variant="outline" className="border-primary text-primary hover:bg-primary/10 hover:text-primary">
             <Link href="/portfolio">
               View All Projects <ExternalLink className="ml-2 h-5 w-5" />
@@ -152,11 +182,19 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section id="ai-tip" className="py-12">
+      <section 
+        id="ai-tip" 
+        className="py-12 animate-slide-in-down opacity-0"
+        style={{ animationDelay: `${1.3 + featuredProjects.length * 0.1}s` }}
+      >
         <AiTipGenerator />
       </section>
 
-      <section id="cta-blog" className="py-12 text-center bg-card rounded-lg shadow-lg p-8">
+      <section 
+        id="cta-blog" 
+        className="py-12 text-center bg-card rounded-lg shadow-lg p-8 animate-slide-in-down opacity-0"
+        style={{ animationDelay: `${1.4 + featuredProjects.length * 0.1}s` }}
+      >
         <SectionTitle>Stay Informed</SectionTitle>
         <p className="max-w-xl mx-auto text-muted-foreground mb-6">
           Explore my latest articles and insights on cybersecurity trends, best practices, and threat landscapes.
