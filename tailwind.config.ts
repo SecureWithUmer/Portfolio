@@ -20,6 +20,7 @@ export default {
         body: ['Inter', 'sans-serif'],
         headline: ['Space Grotesk', 'sans-serif'],
         code: ['Source Code Pro', 'monospace'],
+        cyberName: ['Orbitron', 'sans-serif'],
       },
       colors: {
         background: 'hsl(var(--background))',

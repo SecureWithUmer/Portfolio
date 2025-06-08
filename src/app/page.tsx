@@ -79,7 +79,7 @@ export default function HomePage() {
           className="rounded-full mx-auto mb-6 border-4 border-primary shadow-lg"
           data-ai-hint="professional portrait" 
         />
-        <h1 className="text-5xl md:text-6xl font-bold font-headline mb-4">
+        <h1 className="text-5xl md:text-6xl font-bold font-cyberName mb-4">
           <span className="text-primary cyber-glow">UMER FAROOQ</span>
         </h1>
         <p className="text-2xl text-foreground/80 mb-6 font-headline">
