@@ -3,6 +3,7 @@ import { Button } from '@/components/ui/button';
 import { PageTitle } from '@/components/ui/page-title';
 import { SectionTitle } from '@/components/ui/section-title';
 import { AiTipGenerator } from '@/components/ai/ai-tip-generator';
+import TypedSubtitles from '@/components/ui/typed-subtitles';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -63,6 +64,14 @@ const expertiseItems = [
   },
 ];
 
+const professionalTitles = [
+  "Cybersecurity Professional",
+  "Cybersecurity Researcher",
+  "Cloud Security Engineer",
+  "Ethical Hacker",
+  "Threat Analyst"
+];
+
 export default function HomePage() {
   return (
     <div className="space-y-16">
@@ -82,12 +91,15 @@ export default function HomePage() {
         >
           UMER FAROOQ
         </h1>
-        <p 
-          className="text-2xl text-foreground/80 mb-6 font-headline animate-slide-in-down opacity-0"
+        <div 
+          className="mb-6 animate-slide-in-down opacity-0 h-[calc(1.5rem*2.5)] sm:h-[calc(1.5rem*1.25)] flex items-center justify-center text-center"
           style={{ animationDelay: '0.2s' }}
         >
-          Cybersecurity Professional &amp; Strategist
-        </p>
+          <TypedSubtitles 
+            titles={professionalTitles} 
+            className="text-2xl text-foreground/80 font-headline"
+          />
+        </div>
         <p 
           className="max-w-2xl mx-auto text-lg text-muted-foreground mb-8 animate-slide-in-down opacity-0"
           style={{ animationDelay: '0.3s' }}
