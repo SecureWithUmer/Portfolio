@@ -1,3 +1,4 @@
+
 import type { Metadata } from 'next';
 import { PageTitle } from '@/components/ui/page-title';
 import { ProjectCard, type Project } from '@/components/portfolio/project-card';
@@ -7,7 +8,8 @@ export const metadata: Metadata = {
   description: 'Showcasing cybersecurity projects by Umer Farooq.',
 };
 
-const projects: Project[] = [
+// Export the projects array
+export const projects: Project[] = [
   {
     id: '1',
     title: 'Secure Network Infrastructure Design',

@@ -1,10 +1,51 @@
+
 import { Button } from '@/components/ui/button';
 import { PageTitle } from '@/components/ui/page-title';
 import { SectionTitle } from '@/components/ui/section-title';
 import { AiTipGenerator } from '@/components/ai/ai-tip-generator';
 import Link from 'next/link';
-import { ArrowRight, Briefcase, BookOpen, Send } from 'lucide-react';
 import Image from 'next/image';
+import { 
+  ArrowRight, 
+  Briefcase, 
+  BookOpen, 
+  Send, 
+  ShieldCheck, 
+  Network, 
+  Lock,
+  ClipboardCheck,
+  Target,
+  MessagesSquare,
+  ServerCog,
+  ExternalLink
+} from 'lucide-react';
+import { projects as allProjects } from './portfolio/page'; // Import projects
+import { ProjectCard, type Project } from '@/components/portfolio/project-card'; // Import ProjectCard and Project type
+
+const featuredProjects = allProjects.slice(0, 3); // Get first 3 projects
+
+const services = [
+  {
+    icon: ClipboardCheck,
+    title: 'Comprehensive Security Audits',
+    description: 'In-depth analysis of your infrastructure to identify vulnerabilities and ensure compliance.',
+  },
+  {
+    icon: Target,
+    title: 'Advanced Penetration Testing',
+    description: 'Simulate real-world attacks to test your defenses and uncover exploitable weaknesses.',
+  },
+  {
+    icon: MessagesSquare,
+    title: 'Strategic Security Consulting',
+    description: 'Expert guidance to develop and implement robust cybersecurity strategies tailored to your business needs.',
+  },
+  {
+    icon: ServerCog,
+    title: 'Managed Detection & Response (MDR)',
+    description: 'Continuous monitoring, threat detection, and incident response to protect your assets around the clock.',
+  },
+];
 
 export default function HomePage() {
   return (
@@ -45,20 +86,49 @@ export default function HomePage() {
         <SectionTitle className="text-center">My Expertise</SectionTitle>
         <div className="grid md:grid-cols-3 gap-8 text-center">
           <div className="p-6 bg-card rounded-lg shadow-md hover:shadow-primary/20 transition-shadow">
-            <ShieldCheckIcon className="h-12 w-12 text-primary mx-auto mb-4" />
+            <ShieldCheck className="h-12 w-12 text-primary mx-auto mb-4" />
             <h3 className="text-xl font-semibold mb-2">Threat Intelligence</h3>
             <p className="text-muted-foreground">Proactive identification and analysis of cyber threats to preempt attacks.</p>
           </div>
           <div className="p-6 bg-card rounded-lg shadow-md hover:shadow-primary/20 transition-shadow">
-            <NetworkIcon className="h-12 w-12 text-primary mx-auto mb-4" />
+            <Network className="h-12 w-12 text-primary mx-auto mb-4" />
             <h3 className="text-xl font-semibold mb-2">Network Security</h3>
             <p className="text-muted-foreground">Designing and implementing secure network architectures and protocols.</p>
           </div>
           <div className="p-6 bg-card rounded-lg shadow-md hover:shadow-primary/20 transition-shadow">
-            <LockIcon className="h-12 w-12 text-primary mx-auto mb-4" />
+            <Lock className="h-12 w-12 text-primary mx-auto mb-4" />
             <h3 className="text-xl font-semibold mb-2">Ethical Hacking</h3>
             <p className="text-muted-foreground">Simulating attacks to identify vulnerabilities and strengthen defenses.</p>
           </div>
+        </div>
+      </section>
+
+      <section id="services" className="py-12">
+        <SectionTitle className="text-center">Our Services</SectionTitle>
+        <div className="grid sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-8 text-center">
+          {services.map((service) => (
+            <div key={service.title} className="p-6 bg-card rounded-lg shadow-md hover:shadow-primary/20 transition-shadow">
+              <service.icon className="h-12 w-12 text-primary mx-auto mb-4" />
+              <h3 className="text-xl font-semibold mb-2">{service.title}</h3>
+              <p className="text-muted-foreground text-sm">{service.description}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <section id="featured-projects" className="py-12">
+        <SectionTitle className="text-center">Featured Projects</SectionTitle>
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {featuredProjects.map((project) => (
+            <ProjectCard key={project.id} project={project} />
+          ))}
+        </div>
+        <div className="text-center mt-12">
+          <Button asChild size="lg" variant="outline" className="border-primary text-primary hover:bg-primary/10 hover:text-primary">
+            <Link href="/portfolio">
+              View All Projects <ExternalLink className="ml-2 h-5 w-5" />
+            </Link>
+          </Button>
         </div>
       </section>
 
@@ -79,35 +149,4 @@ export default function HomePage() {
       </section>
     </div>
   );
-}
-
-// Placeholder icons, replace with lucide-react or custom SVGs if available
-function ShieldCheckIcon(props: React.SVGProps<SVGSVGElement>) {
-  return (
-    <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
-      <path d="m9 12 2 2 4-4" />
-    </svg>
-  )
-}
-
-function NetworkIcon(props: React.SVGProps<SVGSVGElement>) {
-  return (
-    <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <rect x="16" y="16" width="6" height="6" rx="1" />
-      <rect x="2" y="16" width="6" height="6" rx="1" />
-      <rect x="9" y="2" width="6" height="6" rx="1" />
-      <path d="M5 16v-3a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v3" />
-      <path d="M12 12V8" />
-    </svg>
-  )
-}
-
-function LockIcon(props: React.SVGProps<SVGSVGElement>) {
-  return (
-    <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
-      <path d="M7 11V7a5 5 0 0 1 10 0v4" />
-    </svg>
-  )
 }
