@@ -17,7 +17,7 @@ export const projects: Project[] = [
     technologies: ['Firewalls', 'VPN', 'IDS/IPS', 'SIEM', 'Python'],
     imageUrl: 'https://placehold.co/600x400.png',
     imageHint: 'network diagram cybersecurity',
-    liveLink: '#', // Replace with actual link or remove
+    liveLink: '#', 
   },
   {
     id: '2',
@@ -26,7 +26,7 @@ export const projects: Project[] = [
     technologies: ['Nessus', 'Metasploit', 'Burp Suite', 'OWASP ZAP'],
     imageUrl: 'https://placehold.co/600x400.png',
     imageHint: 'code vulnerability',
-    repoLink: '#', // Replace with actual link or remove
+    repoLink: '#', 
   },
   {
     id: '3',
