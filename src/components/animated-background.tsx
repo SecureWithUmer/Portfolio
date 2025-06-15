@@ -1,8 +1,8 @@
 
 "use client";
 
-import { useEffect, useState } from 'react';
 import dynamic from 'next/dynamic';
+import { useEffect, useState } from 'react';
 
 // Dynamically import ParticlesBg with SSR turned off
 const DynamicParticlesBg = dynamic(() => import('particles-bg'), {
@@ -29,20 +29,16 @@ export function AnimatedBackground() {
     return <div className={wrapperDivClass} aria-hidden="true" />;
   }
 
-  // Configuration for particles-bg
-  // Using white for particles for better contrast against the dark background
-  const particleColor = "hsl(0 0% 100%)"; // White
-  const config = {
-    type: "cobweb", // You can experiment with "lines", "polygon", "circle", etc.
-    color: particleColor,
-    num: 50, // Adjust for desired density and performance
-    bg: false, // Set to false to use the background from .animated-bg in globals.css
-  };
-
   return (
     <div className={wrapperDivClass} aria-hidden="true">
       {/* Render DynamicParticlesBg only when mounted on the client */}
-      <DynamicParticlesBg {...config} />
+      {/* Pass props directly to ensure they are applied */}
+      <DynamicParticlesBg 
+        type="cobweb" 
+        color="#FFFFFF" // Explicit white hex color
+        num={70}        // Increased number for better visibility
+        bg={false}      // Explicitly set canvas background to transparent
+      />
     </div>
   );
 }
