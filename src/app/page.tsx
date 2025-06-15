@@ -171,7 +171,7 @@ export default function HomePage() {
               }}
               className="cursor-pointer"
             >
-              <Card className="flex flex-col items-center h-full">
+              <Card className="flex flex-col items-center"> {/* Removed h-full here */}
                 <CardHeader className="pb-4 w-full">
                   <motion.div
                     className="inline-block p-2"
