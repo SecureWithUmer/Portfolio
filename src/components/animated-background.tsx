@@ -1,119 +1,44 @@
 
-// src/components/animated-background.tsx
 "use client";
 
-import type { Container } from "@tsparticles/engine";
-import { useEffect, useMemo, useState, useCallback } from "react";
-import Particles, { initParticlesEngine } from "@tsparticles/react";
-// Corrected import from tsparticles-slim
-import { loadSlim } from "@tsparticles/slim"; 
+import ParticlesBg from 'particles-bg';
+import { useEffect, useState } from 'react';
 
 export function AnimatedBackground() {
-  const [init, setInit] = useState(false);
-
+  // particles-bg can sometimes cause hydration mismatches if rendered immediately.
+  // Deferring its rendering until client-side mount can help.
+  const [mounted, setMounted] = useState(false);
   useEffect(() => {
-    initParticlesEngine(async (engine) => {
-      await loadSlim(engine);
-    }).then(() => {
-      setInit(true);
-    });
+    setMounted(true);
   }, []);
 
-  const particlesLoaded = useCallback(async (container?: Container) => {
-    console.log('Particles container loaded:', container);
-  }, []);
-
-  const options = useMemo(
-    () => ({
-      background: {
-        color: {
-          value: "transparent", 
-        },
-      },
-      fpsLimit: 60,
-      interactivity: {
-        events: {
-          onHover: {
-            enable: true,
-            mode: "grab",
-          },
-          onClick: {
-            enable: true,
-            mode: "push",
-          },
-        },
-        modes: {
-          grab: {
-            distance: 140,
-            links: {
-              opacity: 0.3,
-            }
-          },
-          push: {
-            quantity: 2,
-          },
-        },
-      },
-      particles: {
-        color: {
-          value: "hsl(170 100% 48%)", // Hardcoded primary color
-        },
-        links: {
-          color: "hsl(170 100% 48%)", // Hardcoded primary color
-          distance: 150,
-          enable: true,
-          opacity: 0.3, // Increased link opacity
-          width: 1,
-        },
-        move: {
-          direction: "none",
-          enable: true,
-          outModes: {
-            default: "out", 
-          },
-          random: true,
-          speed: 1, // Increased particle speed
-          straight: false,
-        },
-        number: {
-          density: {
-            enable: true,
-            area: 800, 
-          },
-          value: 60, // Increased particle count
-        },
-        opacity: {
-          value: 0.5, // Increased particle opacity
-        },
-        shape: {
-          type: "circle",
-        },
-        size: {
-          value: { min: 0.5, max: 1.5 }, 
-        },
-      },
-      detectRetina: true,
-      fullScreen: {
-        enable: false, 
-      }
-    }),
-    []
-  );
-
-  if (!init) {
-    // Fallback while particles are initializing
+  if (!mounted) {
+    // Return the basic div structure for z-index and positioning
+    // This ensures the background color is applied while waiting for particles.
     return <div className="fixed inset-0 -z-10 overflow-hidden animated-bg" aria-hidden="true" />;
   }
 
+  // Using HSL value directly as particles-bg might not resolve CSS vars easily
+  const primaryColorHsl = "hsl(170 100% 48%)"; // Your cyber green
+
+  // Configuration for particles-bg
+  // You can experiment with different types: "cobweb", "lines", "polygon", "circle", "square", "tadpole", etc.
+  // "cobweb" or "lines" are good for a network/cyber feel.
+  // `num` controls density.
+  // `bg={false}` is crucial to let the theme's background show through.
+  const config = {
+    type: "cobweb",
+    color: primaryColorHsl,
+    num: 50, // Adjust for desired density and performance
+    bg: false, // Set to false to use the background from .animated-bg in globals.css
+    // Other type-specific props might be available, e.g., for "cobweb":
+    // lineWidth: 1,
+    // distance: 150,
+  };
+
   return (
     <div className="fixed inset-0 -z-10 overflow-hidden animated-bg" aria-hidden="true">
-      <Particles
-        id="tsparticles"
-        particlesLoaded={particlesLoaded}
-        options={options as any} 
-        className="h-full w-full" 
-      />
+      <ParticlesBg {...config} />
     </div>
   );
 }
-
