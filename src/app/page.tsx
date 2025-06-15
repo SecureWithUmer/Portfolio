@@ -11,15 +11,11 @@ import Image from 'next/image';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import {
-  ArrowRight, Briefcase, BookOpen, Send, ShieldCheck,
+  Briefcase, BookOpen, Send, ShieldCheck,
   Network, ClipboardCheck, Target, MessagesSquare,
-  ServerCog, ExternalLink
+  ServerCog
 } from 'lucide-react';
-import { projects } from '@/data/projects';
-import { ProjectCard } from '@/components/portfolio/project-card';
 import { motion } from 'framer-motion';
-
-const featuredProjects = projects.slice(0, 3);
 
 const expertiseItems = [
   { id: 'threat-intel', icon: ShieldCheck, title: 'Threat Intelligence', description: 'Proactive identification and analysis of cyber threats to preempt attacks.', skillsAndTools: ['MITRE ATT&CK', 'OSINT Tools', 'Maltego', 'VirusTotal API', 'Threat Feeds Integration', 'YARA Rules'] },
@@ -133,8 +129,8 @@ export default function HomePage() {
           transition={{ duration: 0.7, delay: 0.8, ease: "easeOut" }}
         >
           <Button asChild size="lg">
-            <Link href="/portfolio">
-              View My Work <Briefcase className="ml-2 h-5 w-5" />
+            <Link href="/about">
+              About Me <Briefcase className="ml-2 h-5 w-5" />
             </Link>
           </Button>
           <Button asChild size="lg" variant="outline">
@@ -205,42 +201,6 @@ export default function HomePage() {
               </Card>
             </motion.div>
           ))}
-        </motion.div>
-      </motion.section>
-
-      <motion.section 
-        id="featured-projects" 
-        className="py-12"
-        variants={fadeInVariants}
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true, amount: 0.2 }}
-      >
-        <SectionTitle className="text-center animate-glitch">Featured Projects</SectionTitle>
-        <motion.div 
-          className="grid md:grid-cols-2 lg:grid-cols-3 gap-8"
-          variants={cardContainerVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, amount: 0.2 }}
-        >
-          {featuredProjects.map((project) => (
-            <motion.div key={project.id} variants={cardVariants} className="[perspective:1000px]">
-              <ProjectCard project={project} />
-            </motion.div>
-          ))}
-        </motion.div>
-        <motion.div 
-          className="text-center mt-12"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.5, delay: 0.5 + featuredProjects.length * 0.1 }}
-        >
-          <Button asChild size="lg" variant="outline">
-            <Link href="/portfolio">
-              View All Projects <ExternalLink className="ml-2 h-5 w-5" />
-            </Link>
-          </Button>
         </motion.div>
       </motion.section>
 
