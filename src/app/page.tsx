@@ -69,6 +69,16 @@ export default function HomePage() {
     setExpandedExpertise(currentId => (currentId === id ? null : id));
   };
 
+  const professions = [
+    "Ethical Hacker",
+    "Penetration Tester",
+    "API Security Expert",
+    "Cloud Security Engineer",
+    "Cybersecurity Analyst",
+    "Security Consultant",
+    "Threat Hunter"
+  ];
+
   return (
     <div className="space-y-16">
       <section className="text-center py-16 min-h-[70vh] flex flex-col justify-center items-center overflow-hidden">
@@ -82,27 +92,36 @@ export default function HomePage() {
             alt="Umer Farooq"
             width={200}
             height={200}
-            className="rounded-full mx-auto mb-8 border-4 border-primary"
+            className="rounded-full mx-auto mb-6 border-4 border-primary"
             data-ai-hint="cybersecurity shield abstract"
             priority
           />
         </motion.div>
         <motion.h1 
-          className="text-4xl md:text-5xl lg:text-6xl font-cyberName mb-6 text-primary animate-neon-glow-primary"
+          className="text-4xl md:text-5xl lg:text-6xl font-cyberName mb-2 text-primary animate-neon-glow-primary"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, delay: 0.4, ease: "easeOut" }}
         >
+          Umer Farooq
+        </motion.h1>
+        <motion.p
+          className="text-xl md:text-2xl lg:text-3xl text-foreground/80 mb-6 font-code"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.7, delay: 0.5, ease: "easeOut" }}
+        >
+          I am a{' '}
           <Typewriter
-            words={["Hi, I'm Umer Farooq | Cybersecurity Specialist 🔒"]}
-            loop={1}
+            words={professions}
+            loop={0} // 0 for infinite loop
             cursor
             cursorStyle='_'
             typeSpeed={70}
             deleteSpeed={50}
-            delaySpeed={1000}
+            delaySpeed={1500}
           />
-        </motion.h1>
+        </motion.p>
         <motion.p 
           className="max-w-2xl mx-auto text-lg text-muted-foreground mb-8"
           initial={{ opacity: 0, y: 20 }}
@@ -144,14 +163,14 @@ export default function HomePage() {
           variants={cardContainerVariants}
           initial="hidden"
           whileInView="visible"
-          viewport={{ once: true, amount: 0.1 }} // Adjust amount if needed
+          viewport={{ once: true, amount: 0.1 }}
         >
           {expertiseItems.map((item) => (
             <motion.div 
               key={item.id} 
               variants={cardVariants}
               onClick={() => handleExpertiseClick(item.id)}
-              layout // Enables layout animation when content changes
+              layout 
               className="cursor-pointer"
             >
               <Card className="flex flex-col items-center h-full">
@@ -260,3 +279,5 @@ export default function HomePage() {
     </div>
   );
 }
+
+    
