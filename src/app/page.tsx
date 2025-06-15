@@ -41,19 +41,19 @@ const cardContainerVariants = {
   visible: {
     opacity: 1,
     transition: {
-      staggerChildren: 0.1, // Reduced stagger for faster appearance
-      delayChildren: 0.1, // Reduced delay
+      staggerChildren: 0.1,
+      delayChildren: 0.1,
     },
   },
 };
 
 const cardVariants = {
-  hidden: { opacity: 0, y: 20, scale: 0.98 }, // Slightly less dramatic scale/y
+  hidden: { opacity: 0, y: 20, scale: 0.98 },
   visible: {
     opacity: 1,
     y: 0,
     scale: 1,
-    transition: { duration: 0.4, ease: "easeOut" }, // Faster transition
+    transition: { duration: 0.4, ease: "easeOut" },
   },
 };
 
@@ -160,17 +160,20 @@ export default function HomePage() {
           {expertiseItems.map((item) => (
             <motion.div 
               key={item.id} 
-              variants={cardVariants}
+              variants={cardVariants} // For initial stagger animation
               onMouseEnter={() => setHoveredExpertiseId(item.id)}
               onMouseLeave={() => setHoveredExpertiseId(null)}
-              // layout prop removed here to prevent other cards from animating positionally
+              whileHover={{ scale: 1.03, y: -5, zIndex: 10 }} // Pop-up effect
+              transition={{ duration: 0.2, ease: "easeInOut" }} // Transition for pop-up
               className="cursor-pointer"
             >
               <Card className="flex flex-col items-center h-full">
                 <CardHeader className="pb-4 w-full">
                   <motion.div
                     className="inline-block p-2"
-                    whileHover={{ scale: 1.15, y: -5 }}
+                    // Icon's individual pop can be kept or removed if too busy
+                    // For now, keeping it as it's subtle and on a different element
+                    whileHover={{ scale: 1.15, y: -5 }} 
                     transition={{ type: "spring", stiffness: 400, damping: 10 }}
                   >
                     <item.icon className="h-12 w-12 text-primary mx-auto" />
