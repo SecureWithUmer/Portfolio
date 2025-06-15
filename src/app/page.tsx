@@ -29,8 +29,8 @@ const expertiseItems = [
 
 const fadeInVariants = {
   hidden: { opacity: 0, y: 20 },
-  visible: { 
-    opacity: 1, 
+  visible: {
+    opacity: 1,
     y: 0,
     transition: { duration: 0.6, ease: "easeOut" }
   },
@@ -89,7 +89,7 @@ export default function HomePage() {
             priority
           />
         </motion.div>
-        <motion.h1 
+        <motion.h1
           className="text-4xl md:text-5xl lg:text-6xl font-cyberName mb-2 text-primary animate-neon-glow-primary"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -106,7 +106,7 @@ export default function HomePage() {
           I am a{' '}
           <Typewriter
             words={professions}
-            loop={0} 
+            loop={0}
             cursor
             cursorStyle='_'
             typeSpeed={70}
@@ -114,7 +114,7 @@ export default function HomePage() {
             delaySpeed={1500}
           />
         </motion.p>
-        <motion.p 
+        <motion.p
           className="max-w-2xl mx-auto text-lg text-muted-foreground mb-8"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -122,7 +122,7 @@ export default function HomePage() {
         >
           Safeguarding digital landscapes with advanced threat analysis and expert insights from Faisalabad, Pakistan.
         </motion.p>
-        <motion.div 
+        <motion.div
           className="space-x-4"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -130,7 +130,7 @@ export default function HomePage() {
         >
           <Button asChild size="lg">
             <Link href="/about">
-              About Me 
+              About Me
             </Link>
           </Button>
           <Button asChild size="lg" variant="outline">
@@ -141,8 +141,8 @@ export default function HomePage() {
         </motion.div>
       </section>
 
-      <motion.section 
-        id="expertise" 
+      <motion.section
+        id="expertise"
         className="py-12"
         variants={fadeInVariants}
         initial="hidden"
@@ -150,7 +150,7 @@ export default function HomePage() {
         viewport={{ once: true, amount: 0.2 }}
       >
         <SectionTitle className="text-center animate-glitch">My Expertise</SectionTitle>
-        <motion.div 
+        <motion.div
           className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 text-center"
           variants={cardContainerVariants}
           initial="hidden"
@@ -158,22 +158,24 @@ export default function HomePage() {
           viewport={{ once: true, amount: 0.1 }}
         >
           {expertiseItems.map((item) => (
-            <motion.div 
-              key={item.id} 
-              variants={cardVariants} // For initial stagger animation
+            <motion.div
+              key={item.id}
+              variants={cardVariants}
               onMouseEnter={() => setHoveredExpertiseId(item.id)}
               onMouseLeave={() => setHoveredExpertiseId(null)}
-              whileHover={{ scale: 1.03, y: -5, zIndex: 10 }} // Pop-up effect
-              transition={{ duration: 0.2, ease: "easeInOut" }} // Transition for pop-up
+              whileHover={{
+                scale: 1.03,
+                y: -5,
+                zIndex: 10,
+                transition: { duration: 0.2, ease: "easeInOut" }
+              }}
               className="cursor-pointer"
             >
               <Card className="flex flex-col items-center h-full">
                 <CardHeader className="pb-4 w-full">
                   <motion.div
                     className="inline-block p-2"
-                    // Icon's individual pop can be kept or removed if too busy
-                    // For now, keeping it as it's subtle and on a different element
-                    whileHover={{ scale: 1.15, y: -5 }} 
+                    whileHover={{ scale: 1.15, y: -5 }}
                     transition={{ type: "spring", stiffness: 400, damping: 10 }}
                   >
                     <item.icon className="h-12 w-12 text-primary mx-auto" />
@@ -207,8 +209,8 @@ export default function HomePage() {
         </motion.div>
       </motion.section>
 
-      <motion.section 
-        id="ai-tip" 
+      <motion.section
+        id="ai-tip"
         className="py-12"
         variants={fadeInVariants}
         initial="hidden"
@@ -218,8 +220,8 @@ export default function HomePage() {
         <AiTipGenerator />
       </motion.section>
 
-      <motion.section 
-        id="cta-blog" 
+      <motion.section
+        id="cta-blog"
         className="py-12 text-center bg-card rounded-lg p-8"
         variants={fadeInVariants}
         initial="hidden"
@@ -239,4 +241,3 @@ export default function HomePage() {
     </div>
   );
 }
-    
