@@ -11,7 +11,7 @@ import Image from 'next/image';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import {
-  Briefcase, BookOpen, Send, ShieldCheck,
+  BookOpen, Send, ShieldCheck,
   Network, ClipboardCheck, Target, MessagesSquare,
   ServerCog
 } from 'lucide-react';
@@ -41,19 +41,19 @@ const cardContainerVariants = {
   visible: {
     opacity: 1,
     transition: {
-      staggerChildren: 0.15,
-      delayChildren: 0.2,
+      staggerChildren: 0.1, // Reduced stagger for faster appearance
+      delayChildren: 0.1, // Reduced delay
     },
   },
 };
 
 const cardVariants = {
-  hidden: { opacity: 0, y: 30, scale: 0.95 },
+  hidden: { opacity: 0, y: 20, scale: 0.98 }, // Slightly less dramatic scale/y
   visible: {
     opacity: 1,
     y: 0,
     scale: 1,
-    transition: { duration: 0.5, ease: "easeOut" },
+    transition: { duration: 0.4, ease: "easeOut" }, // Faster transition
   },
 };
 
@@ -130,7 +130,7 @@ export default function HomePage() {
         >
           <Button asChild size="lg">
             <Link href="/about">
-              About Me <Briefcase className="ml-2 h-5 w-5" />
+              About Me 
             </Link>
           </Button>
           <Button asChild size="lg" variant="outline">
@@ -163,7 +163,7 @@ export default function HomePage() {
               variants={cardVariants}
               onMouseEnter={() => setHoveredExpertiseId(item.id)}
               onMouseLeave={() => setHoveredExpertiseId(null)}
-              layout 
+              // layout prop removed here to prevent other cards from animating positionally
               className="cursor-pointer"
             >
               <Card className="flex flex-col items-center h-full">
