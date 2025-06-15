@@ -158,16 +158,16 @@ export default function HomePage() {
           viewport={{ once: true, amount: 0.1 }}
         >
           {expertiseItems.map((item) => (
-            <motion.div
+             <motion.div
               key={item.id}
               variants={cardVariants}
               onMouseEnter={() => setHoveredExpertiseId(item.id)}
               onMouseLeave={() => setHoveredExpertiseId(null)}
-              whileHover={{
-                scale: 1.03,
+              whileHover={{ 
+                scale: 1.03, 
                 y: -5,
-                zIndex: 10,
-                transition: { duration: 0.2, ease: "easeInOut" }
+                zIndex: 10, 
+                transition: { duration: 0.2, ease: "easeInOut" } 
               }}
               className="cursor-pointer"
             >
