@@ -107,20 +107,6 @@ body {
   z-index: -10; /* Ensure it's behind all content */
   overflow: hidden; /* Prevent scrollbars if content exceeds viewport */
   background-color: hsl(var(--background)); /* Base background color */
-  background-image:
-    linear-gradient(to right, hsl(var(--primary) / 0.03) 1px, transparent 1px),
-    linear-gradient(to bottom, hsl(var(--primary) / 0.03) 1px, transparent 1px);
-  background-size: 50px 50px; /* Adjust size of grid */
-  animation: animated-bg-scroll 30s linear infinite;
-}
-
-@keyframes animated-bg-scroll {
-  from {
-    background-position: 0 0;
-  }
-  to {
-    background-position: -50px -50px; /* Match background-size for seamless loop */
-  }
 }
 
 
