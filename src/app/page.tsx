@@ -73,7 +73,7 @@ export default function HomePage() {
 
   return (
     <div className="space-y-16">
-      <section className="text-center py-16 min-h-[70vh] flex flex-col justify-start items-center overflow-hidden">
+      <section className="text-center pt-2 pb-16 sm:pt-4 md:pt-6 min-h-[70vh] flex flex-col justify-start items-center overflow-hidden">
         <motion.div
           initial={{ opacity: 0, scale: 0.8 }}
           animate={{ opacity: 1, scale: 1 }}
@@ -171,7 +171,7 @@ export default function HomePage() {
               }}
               className="cursor-pointer"
             >
-              <Card className="flex flex-col items-center">
+              <Card className="flex flex-col items-center"> {/* Removed h-full here */}
                 <CardHeader className="pb-4 w-full">
                   <motion.div
                     className="inline-block p-2"
@@ -241,4 +241,3 @@ export default function HomePage() {
     </div>
   );
 }
-
