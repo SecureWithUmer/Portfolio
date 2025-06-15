@@ -104,12 +104,44 @@ export default {
           'from': { opacity: '0', transform: 'translateY(-30px)' },
           'to': { opacity: '1', transform: 'translateY(0)' },
         },
+        'glitch': {
+          '0%': {
+            transform: 'translate(0)',
+            textShadow: '1px 1px 0px hsl(var(--primary) / 0.5), -1px -1px 0px hsl(var(--accent) / 0.5)',
+          },
+          '25%': {
+            transform: 'translate(2px, -2px)',
+            textShadow: '-1px 1px 0px hsl(var(--primary) / 0.5), 1px -1px 0px hsl(var(--accent) / 0.5)',
+          },
+          '50%': {
+            transform: 'translate(-2px, 2px)',
+            textShadow: '1px -1px 0px hsl(var(--primary) / 0.5), -1px 1px 0px hsl(var(--accent) / 0.5)',
+          },
+          '75%': {
+            transform: 'translate(2px, 2px)',
+            textShadow: '-1px -1px 0px hsl(var(--primary) / 0.5), 1px 1px 0px hsl(var(--accent) / 0.5)',
+          },
+          '100%': {
+            transform: 'translate(0)',
+            textShadow: '1px 1px 0px hsl(var(--primary) / 0.5), -1px -1px 0px hsl(var(--accent) / 0.5)',
+          },
+        },
+        'neon-glow-primary': {
+          '0%, 100%': {
+            textShadow: '0 0 5px hsl(var(--primary)), 0 0 10px hsl(var(--primary)), 0 0 15px hsl(var(--primary)), 0 0 20px hsl(var(--primary) / 0.8), 0 0 25px hsl(var(--primary) / 0.6), 0 0 30px hsl(var(--primary) / 0.4), 0 0 35px hsl(var(--primary) / 0.2)',
+          },
+          '50%': {
+            textShadow: '0 0 7px hsl(var(--primary)), 0 0 12px hsl(var(--primary)), 0 0 20px hsl(var(--primary)), 0 0 28px hsl(var(--primary) / 0.8), 0 0 35px hsl(var(--primary) / 0.6), 0 0 40px hsl(var(--primary) / 0.4), 0 0 50px hsl(var(--primary) / 0.2)',
+          },
+        },
       },
       animation: {
         'accordion-down': 'accordion-down 0.2s ease-out',
         'accordion-up': 'accordion-up 0.2s ease-out',
         'subtle-pulse': 'subtle-pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
         'slide-in-down': 'slideInDown 0.7s ease-out forwards',
+        'glitch': 'glitch 0.3s infinite',
+        'neon-glow-primary': 'neon-glow-primary 2.5s ease-in-out infinite alternate',
       },
     },
   },

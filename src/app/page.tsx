@@ -1,9 +1,8 @@
-
+"use client";
+import { Typewriter } from 'react-simple-typewriter'
 import { Button } from '@/components/ui/button';
-import { PageTitle } from '@/components/ui/page-title';
 import { SectionTitle } from '@/components/ui/section-title';
 import { AiTipGenerator } from '@/components/ai/ai-tip-generator';
-import TypedSubtitles from '@/components/ui/typed-subtitles';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -64,43 +63,35 @@ const expertiseItems = [
   },
 ];
 
-const professionalTitles = [
-  "Cybersecurity Professional",
-  "Cybersecurity Researcher",
-  "Cloud Security Engineer",
-  "Ethical Hacker",
-  "Threat Analyst"
-];
 
 export default function HomePage() {
   return (
     <div className="space-y-16">
-      <section className="text-center py-16">
+      <section className="text-center py-16 min-h-[70vh] flex flex-col justify-center items-center">
         <Image 
           src="https://placehold.co/150x150.png" 
           alt="Umer Farooq" 
           width={150} 
           height={150} 
-          className="rounded-full mx-auto mb-6 border-4 border-primary animate-slide-in-down opacity-0"
+          className="rounded-full mx-auto mb-8 border-4 border-primary animate-slide-in-down opacity-0"
           data-ai-hint="professional portrait" 
           style={{ animationDelay: '0s' }}
         />
+        
         <h1 
-          className="text-5xl md:text-6xl font-bold font-cyberName mb-4 text-primary animate-slide-in-down opacity-0"
-          style={{ animationDelay: '0.1s' }}
+          className="text-4xl md:text-5xl lg:text-6xl font-cyberName mb-6 text-primary animate-neon-glow-primary"
         >
-          UMER FAROOQ
-        </h1>
-        <div 
-          className="mb-6 animate-slide-in-down opacity-0 h-[calc(1.5rem*2.5)] sm:h-[calc(1.5rem*1.25)] flex items-center justify-center text-center text-2xl text-foreground/80 font-headline"
-          style={{ animationDelay: '0.2s' }}
-        >
-          <span className="mr-2">I am a</span>
-          <TypedSubtitles 
-            titles={professionalTitles} 
-            // className="text-2xl text-foreground/80 font-headline" // Class already applied to parent
+          <Typewriter
+            words={["Hi, I'm Umer Farooq | Cybersecurity Specialist 🛡️"]}
+            loop={1}
+            cursor
+            cursorStyle='_'
+            typeSpeed={70}
+            deleteSpeed={50}
+            delaySpeed={1000}
           />
-        </div>
+        </h1>
+        
         <p 
           className="max-w-2xl mx-auto text-lg text-muted-foreground mb-8 animate-slide-in-down opacity-0"
           style={{ animationDelay: '0.3s' }}
@@ -125,7 +116,7 @@ export default function HomePage() {
       </section>
 
       <section id="expertise" className="py-12">
-        <SectionTitle className="text-center">My Expertise</SectionTitle>
+        <SectionTitle className="text-center animate-glitch">My Expertise</SectionTitle>
         <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 text-center">
           {expertiseItems.map((item, index) => (
             <Card 
@@ -146,7 +137,7 @@ export default function HomePage() {
       </section>
 
       <section id="featured-projects" className="py-12">
-        <SectionTitle className="text-center">Featured Projects</SectionTitle>
+        <SectionTitle className="text-center animate-glitch">Featured Projects</SectionTitle>
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
           {featuredProjects.map((project, index) => (
             <div 
@@ -183,7 +174,7 @@ export default function HomePage() {
         className="py-12 text-center bg-card rounded-lg p-8 animate-slide-in-down opacity-0"
         style={{ animationDelay: `${0.7 + expertiseItems.length * 0.1 + featuredProjects.length * 0.1}s` }}
       >
-        <SectionTitle>Stay Informed</SectionTitle>
+        <SectionTitle className="animate-glitch">Stay Informed</SectionTitle>
         <p className="max-w-xl mx-auto text-muted-foreground mb-6">
           Explore my latest articles and insights on cybersecurity trends, best practices, and threat landscapes.
         </p>
