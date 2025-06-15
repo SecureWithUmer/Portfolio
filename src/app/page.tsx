@@ -1,6 +1,7 @@
 
 "use client";
 
+import { useState } from 'react';
 import { Typewriter } from 'react-simple-typewriter';
 import { Button } from '@/components/ui/button';
 import { SectionTitle } from '@/components/ui/section-title';
@@ -8,6 +9,7 @@ import { AiTipGenerator } from '@/components/ai/ai-tip-generator';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
 import {
   ArrowRight, Briefcase, BookOpen, Send, ShieldCheck,
   Network, Lock, ClipboardCheck, Target, MessagesSquare,
@@ -20,13 +22,13 @@ import { motion } from 'framer-motion';
 const featuredProjects = projects.slice(0, 3);
 
 const expertiseItems = [
-  { icon: ShieldCheck, title: 'Threat Intelligence', description: 'Proactive identification and analysis of cyber threats to preempt attacks.' },
-  { icon: Network, title: 'Network Security', description: 'Designing and implementing secure network architectures and protocols.' },
-  { icon: Lock, title: 'Ethical Hacking', description: 'Simulating attacks to identify vulnerabilities and strengthen defenses.' },
-  { icon: ClipboardCheck, title: 'Security Audits', description: 'Identify vulnerabilities and ensure compliance.' },
-  { icon: Target, title: 'Penetration Testing', description: 'Simulate real-world attacks to test defenses.' },
-  { icon: MessagesSquare, title: 'Security Consulting', description: 'Guidance for robust cybersecurity strategies.' },
-  { icon: ServerCog, title: 'MDR', description: '24/7 threat detection and response.' },
+  { id: 'threat-intel', icon: ShieldCheck, title: 'Threat Intelligence', description: 'Proactive identification and analysis of cyber threats to preempt attacks.', skillsAndTools: ['MITRE ATT&CK', 'OSINT Tools', 'Maltego', 'VirusTotal API', 'Threat Feeds Integration', 'YARA Rules'] },
+  { id: 'network-sec', icon: Network, title: 'Network Security', description: 'Designing and implementing secure network architectures and protocols.', skillsAndTools: ['Firewalls (NGFW)', 'IDS/IPS', 'VPN Setup', 'Microsegmentation', 'Zscaler', 'Palo Alto Networks'] },
+  { id: 'ethical-hack', icon: Lock, title: 'Ethical Hacking', description: 'Simulating attacks to identify vulnerabilities and strengthen defenses.', skillsAndTools: ['Metasploit', 'Burp Suite', 'Nmap', 'Kali Linux', 'Penetration Testing methodologies'] },
+  { id: 'sec-audits', icon: ClipboardCheck, title: 'Security Audits', description: 'Identify vulnerabilities and ensure compliance.', skillsAndTools: ['ISO 27001', 'NIST CSF', 'Compliance Scanning', 'Vulnerability Assessment Tools', 'CIS Benchmarks'] },
+  { id: 'pen-testing', icon: Target, title: 'Penetration Testing', description: 'Simulate real-world attacks to test defenses.', skillsAndTools: ['OWASP ZAP', 'SQLMap', 'Nessus', 'Manual Exploit Development', 'Report Writing'] },
+  { id: 'sec-consult', icon: MessagesSquare, title: 'Security Consulting', description: 'Guidance for robust cybersecurity strategies.', skillsAndTools: ['Risk Assessment', 'Security Policy Development', 'Incident Response Planning', 'Tabletop Exercises'] },
+  { id: 'mdr', icon: ServerCog, title: 'MDR', description: '24/7 threat detection and response.', skillsAndTools: ['SIEM (Splunk, ELK)', 'EDR Solutions (CrowdStrike, SentinelOne)', 'SOAR Playbooks', 'Threat Hunting'] },
 ];
 
 const fadeInVariants = {
@@ -61,6 +63,12 @@ const cardVariants = {
 
 
 export default function HomePage() {
+  const [expandedExpertise, setExpandedExpertise] = useState<string | null>(null);
+
+  const handleExpertiseClick = (id: string) => {
+    setExpandedExpertise(currentId => (currentId === id ? null : id));
+  };
+
   return (
     <div className="space-y-16">
       <section className="text-center py-16 min-h-[70vh] flex flex-col justify-center items-center overflow-hidden">
@@ -136,17 +144,47 @@ export default function HomePage() {
           variants={cardContainerVariants}
           initial="hidden"
           whileInView="visible"
-          viewport={{ once: true, amount: 0.2 }}
+          viewport={{ once: true, amount: 0.1 }} // Adjust amount if needed
         >
           {expertiseItems.map((item) => (
-            <motion.div key={item.title} variants={cardVariants}>
+            <motion.div 
+              key={item.id} 
+              variants={cardVariants}
+              onClick={() => handleExpertiseClick(item.id)}
+              layout // Enables layout animation when content changes
+              className="cursor-pointer"
+            >
               <Card className="flex flex-col items-center h-full">
-                <CardHeader className="pb-4">
-                  <item.icon className="h-12 w-12 text-primary mx-auto mb-3" />
+                <CardHeader className="pb-4 w-full">
+                  <motion.div
+                    className="inline-block p-2"
+                    whileHover={{ scale: 1.15, y: -5 }}
+                    transition={{ type: "spring", stiffness: 400, damping: 10 }}
+                  >
+                    <item.icon className="h-12 w-12 text-primary mx-auto" />
+                  </motion.div>
                   <CardTitle>{item.title}</CardTitle>
                 </CardHeader>
-                <CardContent className="flex-grow">
-                  <p className="text-muted-foreground">{item.description}</p>
+                <CardContent className="flex-grow w-full">
+                  <p className="text-muted-foreground text-sm">{item.description}</p>
+                  {expandedExpertise === item.id && (
+                    <motion.div
+                      initial={{ opacity: 0, height: 0, marginTop: 0 }}
+                      animate={{ opacity: 1, height: 'auto', marginTop: '1rem' }}
+                      exit={{ opacity: 0, height: 0, marginTop: 0 }}
+                      transition={{ duration: 0.3, ease: "easeInOut" }}
+                      className="pt-4 border-t border-border/50"
+                    >
+                      <h4 className="text-xs font-semibold text-accent mb-2 uppercase tracking-wider">Key Skills & Tools:</h4>
+                      <div className="flex flex-wrap gap-1 justify-center">
+                        {item.skillsAndTools.map(skill => (
+                          <Badge key={skill} variant="secondary" className="text-xs font-code">
+                            {skill}
+                          </Badge>
+                        ))}
+                      </div>
+                    </motion.div>
+                  )}
                 </CardContent>
               </Card>
             </motion.div>
