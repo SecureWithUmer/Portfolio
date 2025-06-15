@@ -1,9 +1,11 @@
+
 // src/components/animated-background.tsx
 "use client";
 
+import type { Container } from "@tsparticles/engine";
 import { useEffect, useMemo, useState, useCallback } from "react";
 import Particles, { initParticlesEngine } from "@tsparticles/react";
-import type { Container } from "tsparticles-engine";
+// Corrected import from tsparticles-slim
 import { loadSlim } from "@tsparticles/slim"; 
 
 export function AnimatedBackground() {
@@ -18,7 +20,7 @@ export function AnimatedBackground() {
   }, []);
 
   const particlesLoaded = useCallback(async (container?: Container) => {
-    // You can do something here once particles are loaded
+    console.log('Particles container loaded:', container);
   }, []);
 
   const options = useMemo(
@@ -54,13 +56,13 @@ export function AnimatedBackground() {
       },
       particles: {
         color: {
-          value: "hsl(var(--primary))", 
+          value: "hsl(170 100% 48%)", // Hardcoded primary color
         },
         links: {
-          color: "hsl(var(--primary))",
+          color: "hsl(170 100% 48%)", // Hardcoded primary color
           distance: 150,
           enable: true,
-          opacity: 0.1, 
+          opacity: 0.3, // Increased link opacity
           width: 1,
         },
         move: {
@@ -70,18 +72,18 @@ export function AnimatedBackground() {
             default: "out", 
           },
           random: true,
-          speed: 0.3, 
+          speed: 1, // Increased particle speed
           straight: false,
         },
         number: {
           density: {
             enable: true,
-            area: 900, 
+            area: 800, 
           },
-          value: 40, 
+          value: 60, // Increased particle count
         },
         opacity: {
-          value: 0.2, 
+          value: 0.5, // Increased particle opacity
         },
         shape: {
           type: "circle",
@@ -99,6 +101,7 @@ export function AnimatedBackground() {
   );
 
   if (!init) {
+    // Fallback while particles are initializing
     return <div className="fixed inset-0 -z-10 overflow-hidden animated-bg" aria-hidden="true" />;
   }
 
@@ -113,3 +116,4 @@ export function AnimatedBackground() {
     </div>
   );
 }
+
