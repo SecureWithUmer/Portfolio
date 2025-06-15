@@ -9,8 +9,6 @@ export const projects: Project[] = [
     technologies: ['Zero Trust', 'Microsegmentation', 'SASE', 'IAM'],
     tags: ['Network Security', 'Architecture', 'Zero Trust'],
     toolsUsed: ['Okta', 'Zscaler', 'Palo Alto NGFW'],
-    imageUrl: 'https://placehold.co/600x400.png',
-    imageHint: 'network security',
     liveLink: '#',
     repoLink: '#',
   },
@@ -21,8 +19,6 @@ export const projects: Project[] = [
     technologies: ['AWS Security Hub', 'Azure Security Center', 'Terraform', 'Python'],
     tags: ['Cloud Security', 'Automation', 'Compliance'],
     toolsUsed: ['AWS Config', 'Azure Policy', 'Checkov'],
-    imageUrl: 'https://placehold.co/600x400.png',
-    imageHint: 'cloud security',
   },
   {
     id: '3',
@@ -31,8 +27,6 @@ export const projects: Project[] = [
     technologies: ['Red Teaming', 'Metasploit', 'Cobalt Strike (Simulated)', 'MITRE ATT&CK'],
     tags: ['Pentesting', 'Red Teaming', 'APT Simulation'],
     toolsUsed: ['Metasploit Framework', 'Nmap', 'BloodHound'],
-    imageUrl: 'https://placehold.co/600x400.png',
-    imageHint: 'cyber attack',
     repoLink: '#',
   },
   {
@@ -42,8 +36,6 @@ export const projects: Project[] = [
     technologies: ['DevSecOps', 'SAST', 'DAST', 'CI/CD Security'],
     tags: ['DevSecOps', 'Application Security', 'SDLC'],
     toolsUsed: ['SonarQube', 'OWASP ZAP', 'GitLab CI'],
-    imageUrl: 'https://placehold.co/600x400.png',
-    imageHint: 'software development',
   },
    {
     id: '5',
@@ -52,8 +44,6 @@ export const projects: Project[] = [
     technologies: ['SIEM', 'SOAR', 'Endpoint Detection (EDR)', 'Threat Hunting'],
     tags: ['Security Operations', 'MDR', 'Incident Response'],
     toolsUsed: ['Splunk', 'Elastic SIEM', 'CrowdStrike Falcon'],
-    imageUrl: 'https://placehold.co/600x400.png',
-    imageHint: 'security operations',
     liveLink: '#',
   },
   {
@@ -63,8 +53,6 @@ export const projects: Project[] = [
     technologies: ['PHP', 'Python', 'Docker', 'GDB'],
     tags: ['CTF', 'Reverse Engineering', 'Web Security', 'Cryptography'],
     toolsUsed: ['IDA Pro', 'Ghidra', 'Burp Suite', 'CyberChef'],
-    imageUrl: 'https://placehold.co/600x400.png',
-    imageHint: 'capture flag ctf',
     repoLink: '#',
   },
   {
@@ -74,7 +62,5 @@ export const projects: Project[] = [
     technologies: ['Android Internals', 'Mobile Security', 'Static Analysis', 'Dynamic Analysis'],
     tags: ['Malware Analysis', 'Mobile Security', 'Android'],
     toolsUsed: ['JADX', 'Frida', 'Drozer', 'Wireshark'],
-    imageUrl: 'https://placehold.co/600x400.png',
-    imageHint: 'mobile malware',
   }
 ];

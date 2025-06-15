@@ -12,7 +12,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import {
   ArrowRight, Briefcase, BookOpen, Send, ShieldCheck,
-  Network, Lock, ClipboardCheck, Target, MessagesSquare,
+  Network, ClipboardCheck, Target, MessagesSquare,
   ServerCog, ExternalLink
 } from 'lucide-react';
 import { projects } from '@/data/projects';
@@ -24,7 +24,7 @@ const featuredProjects = projects.slice(0, 3);
 const expertiseItems = [
   { id: 'threat-intel', icon: ShieldCheck, title: 'Threat Intelligence', description: 'Proactive identification and analysis of cyber threats to preempt attacks.', skillsAndTools: ['MITRE ATT&CK', 'OSINT Tools', 'Maltego', 'VirusTotal API', 'Threat Feeds Integration', 'YARA Rules'] },
   { id: 'network-sec', icon: Network, title: 'Network Security', description: 'Designing and implementing secure network architectures and protocols.', skillsAndTools: ['Firewalls (NGFW)', 'IDS/IPS', 'VPN Setup', 'Microsegmentation', 'Zscaler', 'Palo Alto Networks'] },
-  { id: 'ethical-hack', icon: Lock, title: 'Ethical Hacking', description: 'Simulating attacks to identify vulnerabilities and strengthen defenses.', skillsAndTools: ['Metasploit', 'Burp Suite', 'Nmap', 'Kali Linux', 'Penetration Testing methodologies'] },
+  { id: 'ethical-hack', icon: ShieldCheck, title: 'Ethical Hacking', description: 'Simulating attacks to identify vulnerabilities and strengthen defenses.', skillsAndTools: ['Metasploit', 'Burp Suite', 'Nmap', 'Kali Linux', 'Penetration Testing methodologies'] },
   { id: 'sec-audits', icon: ClipboardCheck, title: 'Security Audits', description: 'Identify vulnerabilities and ensure compliance.', skillsAndTools: ['ISO 27001', 'NIST CSF', 'Compliance Scanning', 'Vulnerability Assessment Tools', 'CIS Benchmarks'] },
   { id: 'pen-testing', icon: Target, title: 'Penetration Testing', description: 'Simulate real-world attacks to test defenses.', skillsAndTools: ['OWASP ZAP', 'SQLMap', 'Nessus', 'Manual Exploit Development', 'Report Writing'] },
   { id: 'sec-consult', icon: MessagesSquare, title: 'Security Consulting', description: 'Guidance for robust cybersecurity strategies.', skillsAndTools: ['Risk Assessment', 'Security Policy Development', 'Incident Response Planning', 'Tabletop Exercises'] },
@@ -63,11 +63,7 @@ const cardVariants = {
 
 
 export default function HomePage() {
-  const [expandedExpertise, setExpandedExpertise] = useState<string | null>(null);
-
-  const handleExpertiseClick = (id: string) => {
-    setExpandedExpertise(currentId => (currentId === id ? null : id));
-  };
+  const [hoveredExpertiseId, setHoveredExpertiseId] = useState<string | null>(null);
 
   const professions = [
     "Ethical Hacker",
@@ -106,7 +102,7 @@ export default function HomePage() {
           Umer Farooq
         </motion.h1>
         <motion.p
-          className="text-xl md:text-2xl lg:text-3xl text-foreground/80 mb-6 font-code"
+          className="text-xl md:text-2xl text-foreground/80 mb-6 font-code"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, delay: 0.5, ease: "easeOut" }}
@@ -114,7 +110,7 @@ export default function HomePage() {
           I am a{' '}
           <Typewriter
             words={professions}
-            loop={0} // 0 for infinite loop
+            loop={0} 
             cursor
             cursorStyle='_'
             typeSpeed={70}
@@ -169,7 +165,8 @@ export default function HomePage() {
             <motion.div 
               key={item.id} 
               variants={cardVariants}
-              onClick={() => handleExpertiseClick(item.id)}
+              onMouseEnter={() => setHoveredExpertiseId(item.id)}
+              onMouseLeave={() => setHoveredExpertiseId(null)}
               layout 
               className="cursor-pointer"
             >
@@ -186,7 +183,7 @@ export default function HomePage() {
                 </CardHeader>
                 <CardContent className="flex-grow w-full">
                   <p className="text-muted-foreground text-sm">{item.description}</p>
-                  {expandedExpertise === item.id && (
+                  {hoveredExpertiseId === item.id && (
                     <motion.div
                       initial={{ opacity: 0, height: 0, marginTop: 0 }}
                       animate={{ opacity: 1, height: 'auto', marginTop: '1rem' }}
@@ -228,7 +225,7 @@ export default function HomePage() {
           viewport={{ once: true, amount: 0.2 }}
         >
           {featuredProjects.map((project) => (
-            <motion.div key={project.id} variants={cardVariants}>
+            <motion.div key={project.id} variants={cardVariants} className="[perspective:1000px]">
               <ProjectCard project={project} />
             </motion.div>
           ))}
@@ -279,5 +276,4 @@ export default function HomePage() {
     </div>
   );
 }
-
     
