@@ -11,7 +11,7 @@ import Image from 'next/image';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { AskMeAnythingWidget } from '@/components/ai/ask-me-anything';
-import { CryptoVisitorCounter } from '@/components/misc/crypto-visitor-counter';
+import { HackerTerminal } from '@/components/misc/hacker-terminal'; 
 import {
   BookOpen, Send, ShieldCheck,
   Network, ClipboardCheck, Target, MessagesSquare,
@@ -117,7 +117,7 @@ export default function HomePage() {
           />
         </motion.p>
         <motion.p
-          className="max-w-2xl mx-auto text-lg text-muted-foreground mb-8"
+          className="max-w-2xl mx-auto text-lg text-muted-foreground mb-8 px-4"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, delay: 0.6, ease: "easeOut" }}
@@ -254,14 +254,14 @@ export default function HomePage() {
       </motion.section>
 
       <motion.section
-        id="visitor-counter"
+        id="hacker-terminal"
         className="py-12"
         variants={fadeInVariants}
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true, amount: 0.2 }}
       >
-        <CryptoVisitorCounter />
+        <HackerTerminal />
       </motion.section>
     </div>
   );
