@@ -11,7 +11,7 @@ import Image from 'next/image';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { AskMeAnythingWidget } from '@/components/ai/ask-me-anything';
-import { HackerTerminal } from '@/components/misc/hacker-terminal'; 
+// Removed HackerTerminal import
 import {
   BookOpen, Send, ShieldCheck,
   Network, ClipboardCheck, Target, MessagesSquare,
@@ -26,7 +26,7 @@ const expertiseItems = [
   { id: 'sec-audits', icon: ClipboardCheck, title: 'Security Audits', description: 'Identify vulnerabilities and ensure compliance.', skillsAndTools: ['ISO 27001', 'NIST CSF', 'Compliance Scanning', 'Vulnerability Assessment Tools', 'CIS Benchmarks'] },
   { id: 'pen-testing', icon: Target, title: 'Penetration Testing', description: 'Simulate real-world attacks to test defenses.', skillsAndTools: ['OWASP ZAP', 'SQLMap', 'Nessus', 'Manual Exploit Development', 'Report Writing'] },
   { id: 'sec-consult', icon: MessagesSquare, title: 'Security Consulting', description: 'Guidance for robust cybersecurity strategies.', skillsAndTools: ['Risk Assessment', 'Security Policy Development', 'Incident Response Planning', 'Tabletop Exercises'] },
-  { id: 'mdr', icon: ServerCog, title: 'MDR', description: '24/7 threat detection and response.', skillsAndTools: ['SIEM (Splunk, ELK)', 'EDR Solutions (CrowdStrike, SentinelOne)', 'SOAR Playbooks', 'Threat Hunting'] },
+  { id: 'mdr', icon: ServerCog, title: 'MDR', description: '24/7 threat detection and response.', skillsAndTools: ['SIEM (Splunk', 'ELK)', 'EDR Solutions (CrowdStrike', 'SentinelOne)', 'SOAR Playbooks', 'Threat Hunting'] },
 ];
 
 const fadeInVariants = {
@@ -173,7 +173,7 @@ export default function HomePage() {
               }}
               className="cursor-pointer"
             >
-              <Card className="flex flex-col items-center">
+              <Card className="flex flex-col items-center"> {/* Removed h-full */}
                 <CardHeader className="pb-4 w-full">
                   <motion.div
                     className="inline-block p-2"
@@ -253,16 +253,7 @@ export default function HomePage() {
         </Button>
       </motion.section>
 
-      <motion.section
-        id="hacker-terminal"
-        className="py-12"
-        variants={fadeInVariants}
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true, amount: 0.2 }}
-      >
-        <HackerTerminal />
-      </motion.section>
+      {/* HackerTerminal component removed from here */}
     </div>
   );
 }
