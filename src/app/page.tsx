@@ -5,7 +5,6 @@ import { useState } from 'react';
 import { Typewriter } from 'react-simple-typewriter';
 import { Button } from '@/components/ui/button';
 import { SectionTitle } from '@/components/ui/section-title';
-import { AiTipGenerator } from '@/components/ai/ai-tip-generator';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -220,17 +219,6 @@ export default function HomePage() {
       >
         <SectionTitle className="text-center animate-glitch">Ask My AI Assistant</SectionTitle>
         <AskMeAnythingWidget />
-      </motion.section>
-
-      <motion.section
-        id="ai-tip"
-        className="py-8 sm:py-12"
-        variants={fadeInVariants}
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true, amount: 0.2 }}
-      >
-        <AiTipGenerator />
       </motion.section>
 
       <motion.section
