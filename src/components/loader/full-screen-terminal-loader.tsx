@@ -3,19 +3,9 @@
 
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-
-// --- Data Interfaces ---
-export interface GeolocationData {
-  ip: string;
-  city: string | null;
-  region: string | null; 
-  country: string | null;
-}
-
-interface FullScreenTerminalLoaderProps {
-  onSequenceComplete: (geoData: GeolocationData | null) => void;
-}
-
+import { Button } from '@/components/ui/button';
+import { Label } from '@/components/ui/label';
+import { Loader2 } from 'lucide-react';
 
 // --- Tone.js Script Loader & Audio Management ---
 const useTerminalAudio = () => {
@@ -23,13 +13,13 @@ const useTerminalAudio = () => {
     const synths = useRef<any>(null);
 
     useEffect(() => {
-        // Check if Tone.js is already loaded or if the script tag already exists
+        if (typeof window === 'undefined') return;
+
         if (window.Tone || document.querySelector('script[src*="tone"]')) {
             if (window.Tone) setIsLoaded(true);
-            // If script tag exists but window.Tone is not yet available, wait for onload
             const existingScript = document.querySelector('script[src*="tone"]') as HTMLScriptElement;
             if (existingScript && !window.Tone) {
-                existingScript.onload = () => setIsLoaded(true);
+                existingScript.onload = () => { if(window.Tone) setIsLoaded(true); };
                 existingScript.onerror = () => console.error("Error in existing Tone.js script");
             }
             return;
@@ -38,7 +28,9 @@ const useTerminalAudio = () => {
         const script = document.createElement('script');
         script.src = "https://cdnjs.cloudflare.com/ajax/libs/tone/14.7.77/Tone.js";
         script.async = true;
-        script.onload = () => setIsLoaded(true);
+        script.onload = () => {
+            if (window.Tone) setIsLoaded(true);
+        };
         script.onerror = () => console.error("Failed to load Tone.js");
         document.body.appendChild(script);
         
@@ -61,7 +53,7 @@ const useTerminalAudio = () => {
     }, [isLoaded]);
 
     const playSound = useCallback((sound: 'keypress' | 'confirm') => {
-        if (!synths.current || !window.Tone || window.Tone.context.state !== 'running') return;
+        if (!synths.current || !window.Tone || typeof window.Tone.now !== 'function' ||  (window.Tone.context && window.Tone.context.state !== 'running')) return;
         const now = window.Tone.now();
         try {
             switch (sound) {
@@ -77,235 +69,263 @@ const useTerminalAudio = () => {
         }
     }, []);
     
-    // Attempt to start audio context on first interaction
     useEffect(() => {
-        if (!isLoaded) return; // Use isLoaded here
+        if (typeof window === 'undefined' || !isLoaded) return; 
         const startAudioContext = async () => {
-            if (window.Tone && window.Tone.context.state !== 'running') {
+            if (window.Tone && window.Tone.context && window.Tone.context.state !== 'running') {
                 try {
                     await window.Tone.start();
                 } catch (error) {
                     console.warn("Failed to start Tone.js audio context:", error);
                 }
             }
-            // Clean up listeners once context is running or attempt has been made
-            window.removeEventListener('click', startAudioContext);
-            window.removeEventListener('keydown', startAudioContext);
-            window.removeEventListener('touchstart', startAudioContext);
+            if (typeof window !== 'undefined') {
+              window.removeEventListener('click', startAudioContext);
+              window.removeEventListener('keydown', startAudioContext);
+              window.removeEventListener('touchstart', startAudioContext);
+            }
         };
 
-        // Add multiple event listeners for robust activation
-        window.addEventListener('click', startAudioContext, { once: true });
-        window.addEventListener('keydown', startAudioContext, { once: true });
-        window.addEventListener('touchstart', startAudioContext, { once: true });
+        if (typeof window !== 'undefined') {
+          window.addEventListener('click', startAudioContext, { once: true });
+          window.addEventListener('keydown', startAudioContext, { once: true });
+          window.addEventListener('touchstart', startAudioContext, { once: true });
+        }
 
         return () => {
+            if (typeof window === 'undefined') return;
             window.removeEventListener('click', startAudioContext);
             window.removeEventListener('keydown', startAudioContext);
             window.removeEventListener('touchstart', startAudioContext);
         };
-    }, [isLoaded]); // Use isLoaded in dependency array
-
+    }, [isLoaded]); 
 
     return { isAudioReady: isLoaded, playSound };
 };
 
-
-// --- Main Application ---
-export default function FullScreenTerminalLoader({ onSequenceComplete }: FullScreenTerminalLoaderProps) {
-    const [appState, setAppState] = useState<'booting' | 'welcome' | 'done'>('booting');
-    const [geoDataForToast, setGeoDataForToast] = useState<GeolocationData | null>(null);
-    const { isAudioReady, playSound } = useTerminalAudio();
-
-    const handleBootComplete = useCallback((fetchedGeoData: GeolocationData | null) => {
-        setGeoDataForToast(fetchedGeoData);
-        if (isAudioReady) playSound('confirm');
-        setAppState('welcome');
-    }, [playSound, isAudioReady]);
-
-    const handleWelcomeComplete = useCallback(() => {
-        setAppState('done');
-        onSequenceComplete(geoDataForToast);
-    }, [onSequenceComplete, geoDataForToast]);
-
-    return (
-        <>
-            {/* Styles are in globals.css or defined via Tailwind in the component */}
-            <AnimatePresence>
-                {appState === 'booting' && (
-                    <TerminalSequence onComplete={handleBootComplete} playSound={playSound} />
-                )}
-                {appState === 'welcome' && (
-                    <WelcomeScreen name={geoDataForToast?.ip || 'Visitor'} onComplete={handleWelcomeComplete} />
-                )}
-            </AnimatePresence>
-        </>
-    );
+interface FullScreenTerminalLoaderProps {
+  onSequenceComplete: () => void;
 }
 
-// --- Typing Effect Component ---
-const Typewriter = ({ text, onComplete, playSound, speed = 50 }: { text: string, onComplete: () => void, playSound: (sound: 'keypress') => void, speed?: number }) => {
+type LoaderPhase = 'initial-text' | 'login-form' | 'authenticating' | 'access-granted';
+
+const initialTexts = ["Loading Systems...", "Processing Credentials...", "Authentication Required..."];
+const DOT_COUNT = 10; // Number of dots for username/password
+
+const Typewriter = ({ text, onComplete, playSound, speed = 80, showCursorAfter = true }: { text: string, onComplete: () => void, playSound: (sound: 'keypress') => void, speed?: number, showCursorAfter?: boolean }) => {
     const [typedText, setTypedText] = useState('');
+    const [cursorVisible, setCursorVisible] = useState(true);
+    const textRef = useRef(text);
+
+    useEffect(() => {
+        textRef.current = text;
+        setTypedText('');
+        setCursorVisible(true);
+    }, [text]);
     
     useEffect(() => {
-        if (typedText.length < text.length) {
-            const timeoutId = setTimeout(() => {
-                setTypedText(text.slice(0, typedText.length + 1));
-                if (text[typedText.length] !== ' ' && text[typedText.length]) { 
+        let charTimeout: NodeJS.Timeout;
+        if (typedText.length < textRef.current.length) {
+            charTimeout = setTimeout(() => {
+                setTypedText(textRef.current.slice(0, typedText.length + 1));
+                if (textRef.current[typedText.length] !== ' ' && textRef.current[typedText.length]) { 
                     playSound('keypress');
                 }
             }, speed);
-            return () => clearTimeout(timeoutId);
         } else {
-            const timeoutId = setTimeout(onComplete, 100); 
-            return () => clearTimeout(timeoutId);
+            if (!showCursorAfter) setCursorVisible(false);
+            const completionTimeout = setTimeout(onComplete, showCursorAfter ? 400 : 150);
+            return () => clearTimeout(completionTimeout);
         }
-    }, [typedText, text, onComplete, playSound, speed]);
-
-    return <span>{typedText}</span>;
-};
-
-// --- Terminal Sequence Component ---
-const TerminalSequence = ({ onComplete, playSound }: { onComplete: (geoData: GeolocationData | null) => void, playSound: (sound: 'keypress') => void }) => {
-    const [lines, setLines] = useState<React.ReactNode[]>([]);
-    const [step, setStep] = useState(0);
-    const [showCursor, setShowCursor] = useState(false);
-    const IP2LOCATION_API_KEY = "53F1806FA9B697F562AB2EAE6321B9A6"; 
-
-    const addLine = useCallback((newLine: React.ReactNode, lineDelay = 0) => {
-        setTimeout(() => {
-            setLines(prev => [...prev, newLine]);
-        }, lineDelay);
-    }, []);
-
-    const runCommand = useCallback((commandText: string, nextStepDelay = 500) => {
-        setShowCursor(true);
-        const Command = (
-            <div className="flex">
-                <span className="text-accent">umer@cybersec</span>
-                <span className="text-muted-foreground">:</span>
-                <span className="text-primary">~</span>
-                <span className="text-muted-foreground">$ &nbsp;</span>
-                <Typewriter text={commandText} onComplete={() => {
-                    setShowCursor(false);
-                    setTimeout(() => setStep(s => s + 1), nextStepDelay);
-                }} playSound={playSound} speed={60} />
-            </div>
-        );
-        addLine(Command);
-    }, [addLine, playSound]);
-
-    useEffect(() => {
-        const sequence = async () => {
-            if (step === 0) {
-                addLine('System Booting...', 100);
-                setStep(s => s + 1);
-            } else if (step === 1 && lines.length === 1) { 
-                addLine('Establishing Secure Connection...', 800);
-                setStep(s => s + 1);
-            } else if (step === 2 && lines.length === 2) {
-                 setTimeout(() => runCommand('trace_user --verbose', 100), 800); 
-            } else if (step === 3 && lines.length === 3) {
-                addLine((<span className="text-muted-foreground">Initiating geolocation lookup...</span>), 200);
-                try {
-                    const geoRes = await fetch(`https://api.ip2location.io/?key=${IP2LOCATION_API_KEY}&format=json`);
-                    if (!geoRes.ok) throw new Error(`ip2location.io API error: ${geoRes.statusText || geoRes.status}`);
-                    const geoData = await geoRes.json();
-
-                    if (geoData.error_message) throw new Error(geoData.error_message);
-                    
-                    const fetchedGeo: GeolocationData = {
-                        ip: geoData.ip || 'Unknown IP',
-                        city: geoData.city_name || 'Unknown City',
-                        region: geoData.region_name || 'Unknown Region',
-                        country: geoData.country_name || 'Unknown Country',
-                    };
-
-                    addLine((<span className="text-primary">IP Detected: {fetchedGeo.ip}</span>), 100);
-                    addLine((<span className="text-primary">Location: {fetchedGeo.city}, {fetchedGeo.region}, {fetchedGeo.country}</span>), 200);
-                    addLine((<span className="text-primary">ISP (Example): {geoData.isp || 'Not Available'}</span>), 300); 
-
-                    setTimeout(() => onComplete(fetchedGeo), 1200);
-
-                } catch (error: any) {
-                    console.error("Failed to get location info:", error);
-                    let errorMsg = 'Could not resolve user identity.';
-                    if (error && error.message && error.message.toLowerCase().includes('failed to fetch')) {
-                        errorMsg = '[NETWORK/CORS ERROR] Geolocation lookup failed. Check connection or ad-blockers.';
-                    } else if (error && error.message) {
-                        errorMsg = `[API ERROR] ${error.message}`;
-                    }
-
-                    addLine((<span className="text-destructive">> Error: {errorMsg}</span>), 100);
-                    addLine((<span className="text-muted-foreground">> Granting anonymous access...</span>), 200);
-                    setTimeout(() => onComplete({ip: 'Anonymous', city: null, region: null, country: null}), 1200);
-                }
-                setStep(s => s + 1); 
-            }
-        };
-        sequence();
-    }, [step, addLine, runCommand, onComplete, lines.length]); 
+        return () => clearTimeout(charTimeout);
+    }, [typedText, onComplete, playSound, speed, showCursorAfter]);
 
     return (
-        <motion.div 
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }} 
-            transition={{ duration: 0.5 }} 
-            className="fixed inset-0 z-[200] flex items-center justify-center bg-background font-terminal text-sm md:text-base"
-        >
-            <div className="w-full max-w-3xl p-4 md:p-6">
-                <div className="bg-black/40 p-4 md:p-6 rounded-lg border border-primary/30 h-80 md:h-96 overflow-y-auto space-y-1.5 shadow-2xl">
-                    {lines.map((line, i) => (
-                        <div key={i} className="text-primary text-glow-primary">
-                           {line}
-                        </div>
-                    ))}
-                    {showCursor && <div className="terminal-cursor"></div>}
-                </div>
-            </div>
-        </motion.div>
+        <span>
+            {typedText}
+            {cursorVisible && typedText.length === textRef.current.length && <span className="terminal-cursor"></span>}
+        </span>
     );
 };
 
+export default function FullScreenTerminalLoader({ onSequenceComplete }: FullScreenTerminalLoaderProps) {
+    const [phase, setPhase] = useState<LoaderPhase>('initial-text');
+    const [currentInitialTextIndex, setCurrentInitialTextIndex] = useState(0);
+    const [usernameDots, setUsernameDots] = useState('');
+    const [passwordDots, setPasswordDots] = useState('');
+    const [isSkipped, setIsSkipped] = useState(false);
+    const { playSound } = useTerminalAudio();
 
-// --- Welcome Screen Component ---
-const WelcomeScreen = ({ name, onComplete }: { name: string, onComplete: () => void }) => {
+    const skipIntro = useCallback(() => {
+        setIsSkipped(true);
+        onSequenceComplete();
+    }, [onSequenceComplete]);
+
+    useEffect(() => {
+        const handleEsc = (event: KeyboardEvent) => {
+            if (event.key === 'Escape') {
+                skipIntro();
+            }
+        };
+        window.addEventListener('keydown', handleEsc);
+        return () => window.removeEventListener('keydown', handleEsc);
+    }, [skipIntro]);
+
+    const handleInitialTextComplete = useCallback(() => {
+        if (currentInitialTextIndex < initialTexts.length - 1) {
+            setTimeout(() => setCurrentInitialTextIndex(prev => prev + 1), 600); // Slightly longer pause
+        } else {
+             setTimeout(() => setPhase('login-form'), 1000); // Pause before showing form
+        }
+    }, [currentInitialTextIndex]);
+
+    useEffect(() => {
+        if (phase === 'login-form') {
+            let dotTimeouts: NodeJS.Timeout[] = [];
+            const typeDots = (setter: React.Dispatch<React.SetStateAction<string>>, delayOffset = 0) => {
+                for (let i = 0; i < DOT_COUNT; i++) {
+                    dotTimeouts.push(setTimeout(() => {
+                        setter(prev => prev + '●');
+                        playSound('keypress');
+                    }, delayOffset + i * 90)); // Slower dot typing
+                }
+            };
+
+            typeDots(setUsernameDots);
+            typeDots(setPasswordDots, DOT_COUNT * 90 + 300); // Stagger password dots
+
+            dotTimeouts.push(setTimeout(() => {
+                setPhase('authenticating');
+            }, (DOT_COUNT * 90 * 2) + 700)); // Wait for dots then transition
+
+            return () => dotTimeouts.forEach(clearTimeout);
+        }
+    }, [phase, playSound]);
     
     useEffect(() => {
-        const timer = setTimeout(() => {
-            onComplete();
-        }, 2800); 
-        return () => clearTimeout(timer);
-    }, [onComplete]);
+        if (phase === 'authenticating') {
+            // Sound already played by previous phase or can be added here
+            const timer = setTimeout(() => {
+                setPhase('access-granted');
+                playSound('confirm'); 
+            }, 2200); 
+            return () => clearTimeout(timer);
+        }
+    }, [phase, playSound]);
+
+    useEffect(() => {
+        if (phase === 'access-granted' && !isSkipped) {
+            // playSound('confirm'); // Confirm sound already played when transitioning to this phase
+            const timer = setTimeout(() => {
+                onSequenceComplete();
+            }, 2800); 
+            return () => clearTimeout(timer);
+        }
+    }, [phase, onSequenceComplete, isSkipped, playSound]);
+
+
+    if (isSkipped) return null;
 
     return (
         <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.7 }}
-            className="fixed inset-0 z-[210] flex flex-col items-center justify-center bg-background font-terminal"
+            key="loader-main"
+            initial={{ opacity: 1 }}
+            exit={{ opacity: 0, transition: { duration: 0.5 } }}
+            className="fixed inset-0 z-[300] flex flex-col items-center justify-center bg-background font-code text-primary p-4 overflow-hidden"
         >
-            <div className="text-center">
-                 <motion.h1 
-                    initial={{y: 60, opacity: 0}} 
-                    animate={{y: 0, opacity: 1}} 
-                    transition={{delay: 0.2, duration: 0.9, ease: 'easeOut'}} 
-                    className="text-5xl md:text-7xl font-bold text-primary text-glow-primary uppercase tracking-wider"
-                 >
-                    Access Granted
-                </motion.h1>
-                <motion.p 
-                    initial={{y: 30, opacity: 0}} 
-                    animate={{y: 0, opacity: 1}} 
-                    transition={{delay: 0.6, duration: 0.9, ease: 'easeOut'}} 
-                    className="mt-5 text-accent text-glow-primary text-md md:text-lg tracking-widest"
+            <AnimatePresence mode="wait">
+                {phase === 'initial-text' && (
+                    <motion.div
+                        key="initial-text-phase"
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -20, transition: {duration: 0.3} }}
+                        transition={{ duration: 0.5 }}
+                        className="text-center"
+                    >
+                        <h2 className="text-2xl md:text-3xl lg:text-4xl text-primary">
+                            <Typewriter
+                                key={`initial-text-${currentInitialTextIndex}`}
+                                text={initialTexts[currentInitialTextIndex]}
+                                onComplete={handleInitialTextComplete}
+                                playSound={playSound}
+                                speed={100}
+                            />
+                        </h2>
+                    </motion.div>
+                )}
+
+                {phase === 'login-form' && (
+                    <motion.div
+                        key="login-form-phase"
+                        initial={{ opacity: 0, scale: 0.85, y: 30 }}
+                        animate={{ opacity: 1, scale: 1, y: 0 }}
+                        exit={{ opacity: 0, scale: 0.85, y: -30, transition: {duration: 0.3} }}
+                        transition={{ duration: 0.4, delay: 0.1, ease: "circOut" }}
+                        className="w-full max-w-xs sm:max-w-sm p-6 sm:p-8 bg-card/50 border border-primary/40 rounded-xl shadow-2xl shadow-primary/20"
+                    >
+                        <h3 className="text-xl sm:text-2xl font-headline text-center text-primary mb-6 tracking-wider">SYSTEM LOGIN</h3>
+                        <div className="space-y-5">
+                            <div>
+                                <Label htmlFor="fake-username" className="text-sm text-muted-foreground uppercase tracking-wider">Identity Key:</Label>
+                                <div className="mt-1.5 p-2.5 h-10 bg-input rounded-md border border-border text-primary/90 font-mono text-lg tracking-[0.2em] overflow-hidden whitespace-nowrap flex items-center">
+                                    {usernameDots}
+                                    {usernameDots.length < DOT_COUNT && <span className="terminal-cursor !h-5 !translate-y-0"></span>}
+                                </div>
+                            </div>
+                            <div>
+                                <Label htmlFor="fake-password" className="text-sm text-muted-foreground uppercase tracking-wider">Auth Code:</Label>
+                                <div className="mt-1.5 p-2.5 h-10 bg-input rounded-md border border-border text-primary/90 font-mono text-lg tracking-[0.2em] overflow-hidden whitespace-nowrap flex items-center">
+                                    {passwordDots}
+                                    {passwordDots.length < DOT_COUNT && usernameDots.length === DOT_COUNT && <span className="terminal-cursor !h-5 !translate-y-0"></span>}
+                                </div>
+                            </div>
+                            <Button className="w-full bg-accent hover:bg-accent/90 text-accent-foreground mt-5 py-3 text-base tracking-wider opacity-60 cursor-not-allowed" disabled>
+                                ESTABLISHING CONNECTION...
+                            </Button>
+                        </div>
+                    </motion.div>
+                )}
+
+                {phase === 'authenticating' && (
+                    <motion.div
+                        key="authenticating-phase"
+                        initial={{ opacity: 0, y:10 }}
+                        animate={{ opacity: 1, y:0, transition: { delay: 0.2 } }}
+                        exit={{ opacity: 0, y:-10, transition: {duration: 0.3} }}
+                        className="text-center flex flex-col items-center"
+                    >
+                        <Loader2 className="h-10 w-10 sm:h-12 sm:w-12 text-accent animate-spin mb-4" />
+                        <p className="text-lg sm:text-xl text-accent tracking-wide">Authenticating Matrix Link...</p>
+                        <p className="text-xs sm:text-sm text-muted-foreground animate-pulse mt-1">Secure handshake in progress</p>
+                    </motion.div>
+                )}
+                
+                {phase === 'access-granted' && (
+                     <motion.div
+                        key="access-granted-phase"
+                        initial={{ opacity: 0, scale: 0.7 }}
+                        animate={{ opacity: 1, scale: 1, transition: { type: 'spring', stiffness: 260, damping: 12, delay: 0.1 } }}
+                        exit={{ opacity: 0, scale: 0.8, transition: { duration: 0.4 } }}
+                        className="text-center"
+                    >
+                        <h1 className="text-4xl sm:text-5xl md:text-6xl font-headline text-primary animate-neon-glow-primary mb-2 sm:mb-3 tracking-wider">ACCESS GRANTED</h1>
+                        <p className="text-base sm:text-lg text-accent animate-pulse tracking-widest">Mainframe Connection Established.</p>
+                    </motion.div>
+                )}
+            </AnimatePresence>
+
+            {!isSkipped && phase !== 'access-granted' && (phase === 'initial-text' || phase === 'login-form') && (
+                <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={skipIntro}
+                    className="absolute bottom-6 right-6 sm:bottom-8 sm:right-8 text-muted-foreground/70 hover:text-foreground hover:bg-card/30 text-xs py-1 px-2"
+                    aria-label="Skip Intro"
                 >
-                   Welcome, {name}
-                </motion.p>
-            </div>
+                    [ESC] Skip Intro
+                </Button>
+            )}
         </motion.div>
     );
-};
-    
+}
