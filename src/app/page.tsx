@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useState } from 'react';
@@ -158,55 +157,55 @@ export default function HomePage() {
         >
           {expertiseItems.map((item) => (
              <motion.div
-              key={item.id}
-              variants={cardVariants}
-              onMouseEnter={() => setHoveredExpertiseId(item.id)}
-              onMouseLeave={() => setHoveredExpertiseId(null)}
-              whileHover={{ 
-                scale: 1.03, 
-                y: -5,
-                zIndex: 10, 
-                transition: { duration: 0.2, ease: "easeInOut" } 
-              }}
-              className="cursor-pointer"
-            >
-              <Card className="flex flex-col items-center h-full p-3 sm:p-4">
-                <CardHeader className="pb-3 sm:pb-4 w-full px-2 sm:px-3">
-                  <motion.div
-                    className="inline-block p-1 sm:p-2"
-                    whileHover={{ scale: 1.15, y: -5 }}
-                    transition={{ type: "spring", stiffness: 400, damping: 10 }}
-                  >
-                    <item.icon className="h-8 w-8 sm:h-10 md:h-12 sm:w-10 md:w-12 text-primary mx-auto" />
-                  </motion.div>
-                  <CardTitle className="text-base sm:text-lg md:text-xl">{item.title}</CardTitle>
-                </CardHeader>
-                <CardContent className="flex-grow w-full px-2 sm:px-3">
-                  <p className="text-muted-foreground text-xs sm:text-sm">{item.description}</p>
-                  {hoveredExpertiseId === item.id && (
-                    <motion.div
-                      initial={{ opacity: 0, height: 0, marginTop: 0 }}
-                      animate={{ opacity: 1, height: 'auto', marginTop: '0.75rem' }} 
-                      exit={{ opacity: 0, height: 0, marginTop: 0 }}
-                      transition={{ duration: 0.3, ease: "easeInOut" }}
-                      className="pt-2 sm:pt-3 md:pt-4 border-t border-border/50"
-                    >
-                      <h4 className="text-xs font-semibold text-accent mb-1.5 sm:mb-2 uppercase tracking-wider">Key Skills & Tools:</h4>
-                      <div className="flex flex-wrap gap-1 sm:gap-1.5 justify-center">
-                        {item.skillsAndTools.map(skill => (
-                          <Badge key={skill} variant="secondary" className="text-xs font-code">
-                            {skill}
-                          </Badge>
-                        ))}
-                      </div>
-                    </motion.div>
-                  )}
-                </CardContent>
-              </Card>
-            </motion.div>
+               key={item.id}
+               variants={cardVariants}
+               onMouseEnter={() => setHoveredExpertiseId(item.id)}
+               onMouseLeave={() => setHoveredExpertiseId(null)}
+               whileHover={{ 
+                 scale: 1.03, 
+                 y: -5,
+                 zIndex: 10, 
+                 transition: { duration: 0.2, ease: "easeInOut" } 
+               }}
+               className="cursor-pointer"
+             >
+               <Card className="flex flex-col items-center h-full p-3 sm:p-4">
+                 <CardHeader className="pb-3 sm:pb-4 w-full px-2 sm:px-3">
+                   <motion.div
+                     className="inline-block p-1 sm:p-2"
+                     whileHover={{ scale: 1.15, y: -5 }}
+                     transition={{ type: "spring", stiffness: 400, damping: 10 }}
+                   >
+                     <item.icon className="h-8 w-8 sm:h-10 md:h-12 sm:w-10 md:w-12 text-primary mx-auto" />
+                   </motion.div>
+                   <CardTitle className="text-base sm:text-lg md:text-xl">{item.title}</CardTitle>
+                 </CardHeader>
+                 <CardContent className="flex-grow w-full px-2 sm:px-3">
+                   <p className="text-muted-foreground text-xs sm:text-sm">{item.description}</p>
+                   {hoveredExpertiseId === item.id && (
+                     <motion.div
+                       initial={{ opacity: 0, height: 0, marginTop: 0 }}
+                       animate={{ opacity: 1, height: 'auto', marginTop: '0.75rem' }} 
+                       exit={{ opacity: 0, height: 0, marginTop: 0 }}
+                       transition={{ duration: 0.3, ease: "easeInOut" }}
+                       className="pt-2 sm:pt-3 md:pt-4 border-t border-border/50"
+                     >
+                       <h4 className="text-xs font-semibold text-accent mb-1.5 sm:mb-2 uppercase tracking-wider">Key Skills & Tools:</h4>
+                       <div className="flex flex-wrap gap-1 sm:gap-1.5 justify-center">
+                         {item.skillsAndTools.map(skill => (
+                           <Badge key={skill} variant="secondary" className="text-xs font-code">
+                             {skill}
+                           </Badge>
+                         ))}
+                       </div>
+                     </motion.div>
+                   )}
+                 </CardContent>
+               </Card>
+             </motion.div>
           ))}
         </motion.div>
-      </section>
+      </motion.section>
     </div>
   );
 }

@@ -9,15 +9,15 @@ body {
 
 @layer base {
   :root {
-    /* Dark Theme - Reverted to an earlier "black and green" style */
+    /* Dark Theme - Using primary green for more text elements */
     --background: 0 0% 7%; /* Original: #121212 */
     --foreground: 120 39% 50%; /* Original primary green, used as main text color */
     
     --card: 0 0% 8%; /* Original: #141414 */
-    --card-foreground: 170 100% 48%; /* Original bright cyan/turquoise for text on cards */
+    --card-foreground: 120 39% 50%; /* Changed from cyan to primary green */
     
-    --popover: 0 0% 8%; /* Matching card for consistency with this older theme */
-    --popover-foreground: 170 100% 48%; /* Matching card-foreground */
+    --popover: 0 0% 8%; /* Matching card for consistency */
+    --popover-foreground: 120 39% 50%; /* Changed from cyan to primary green */
     
     --primary: 120 39% 50%; /* Main Green #4CAF50 - kept from PRD */
     --primary-foreground: 0 0% 95%; /* Light text for on-primary elements (e.g., white or very light grey) */
@@ -26,7 +26,7 @@ body {
     --secondary-foreground: 120 40% 55%; /* Dimmer green for secondary text. */
     
     --muted: 0 0% 15%; /* Muted elements. */
-    --muted-foreground: 0 0% 45%; /* Muted text (greyish) */
+    --muted-foreground: 120 39% 35%; /* Changed from grey to a darker primary green */
     
     --accent: 81 46% 50%; /* Vibrant Green Accent #A7C957 - kept from PRD */
     --accent-foreground: 0 0% 7%; /* Dark text for on-accent elements. */
