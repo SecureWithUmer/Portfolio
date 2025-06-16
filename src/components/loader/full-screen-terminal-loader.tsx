@@ -110,7 +110,7 @@ interface FullScreenTerminalLoaderProps {
 type LoaderPhase = 'initial-text' | 'login-form' | 'authenticating' | 'access-granted';
 
 const initialTexts = ["Loading Systems...", "Processing Credentials...", "Authentication Required..."];
-const DOT_COUNT = 10; // Number of dots for username/password
+const DOT_COUNT = 8; // Reduced for better mobile fit
 
 const Typewriter = ({ text, onComplete, playSound, speed = 80, showCursorAfter = true }: { text: string, onComplete: () => void, playSound: (sound: 'keypress') => void, speed?: number, showCursorAfter?: boolean }) => {
     const [typedText, setTypedText] = useState('');
@@ -173,9 +173,9 @@ export default function FullScreenTerminalLoader({ onSequenceComplete }: FullScr
 
     const handleInitialTextComplete = useCallback(() => {
         if (currentInitialTextIndex < initialTexts.length - 1) {
-            setTimeout(() => setCurrentInitialTextIndex(prev => prev + 1), 600); // Slightly longer pause
+            setTimeout(() => setCurrentInitialTextIndex(prev => prev + 1), 600); 
         } else {
-             setTimeout(() => setPhase('login-form'), 1000); // Pause before showing form
+             setTimeout(() => setPhase('login-form'), 1000); 
         }
     }, [currentInitialTextIndex]);
 
@@ -187,16 +187,16 @@ export default function FullScreenTerminalLoader({ onSequenceComplete }: FullScr
                     dotTimeouts.push(setTimeout(() => {
                         setter(prev => prev + '●');
                         playSound('keypress');
-                    }, delayOffset + i * 90)); // Slower dot typing
+                    }, delayOffset + i * 90)); 
                 }
             };
 
             typeDots(setUsernameDots);
-            typeDots(setPasswordDots, DOT_COUNT * 90 + 300); // Stagger password dots
+            typeDots(setPasswordDots, DOT_COUNT * 90 + 300); 
 
             dotTimeouts.push(setTimeout(() => {
                 setPhase('authenticating');
-            }, (DOT_COUNT * 90 * 2) + 700)); // Wait for dots then transition
+            }, (DOT_COUNT * 90 * 2) + 700));
 
             return () => dotTimeouts.forEach(clearTimeout);
         }
@@ -204,7 +204,6 @@ export default function FullScreenTerminalLoader({ onSequenceComplete }: FullScr
     
     useEffect(() => {
         if (phase === 'authenticating') {
-            // Sound already played by previous phase or can be added here
             const timer = setTimeout(() => {
                 setPhase('access-granted');
                 playSound('confirm'); 
@@ -215,7 +214,6 @@ export default function FullScreenTerminalLoader({ onSequenceComplete }: FullScr
 
     useEffect(() => {
         if (phase === 'access-granted' && !isSkipped) {
-            // playSound('confirm'); // Confirm sound already played when transitioning to this phase
             const timer = setTimeout(() => {
                 onSequenceComplete();
             }, 2800); 
@@ -243,7 +241,7 @@ export default function FullScreenTerminalLoader({ onSequenceComplete }: FullScr
                         transition={{ duration: 0.5 }}
                         className="text-center"
                     >
-                        <h2 className="text-2xl md:text-3xl lg:text-4xl text-primary">
+                        <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl text-primary">
                             <Typewriter
                                 key={`initial-text-${currentInitialTextIndex}`}
                                 text={initialTexts[currentInitialTextIndex]}
@@ -262,25 +260,25 @@ export default function FullScreenTerminalLoader({ onSequenceComplete }: FullScr
                         animate={{ opacity: 1, scale: 1, y: 0 }}
                         exit={{ opacity: 0, scale: 0.85, y: -30, transition: {duration: 0.3} }}
                         transition={{ duration: 0.4, delay: 0.1, ease: "circOut" }}
-                        className="w-full max-w-xs sm:max-w-sm p-6 sm:p-8 bg-card/50 border border-primary/40 rounded-xl shadow-2xl shadow-primary/20"
+                        className="w-full max-w-[280px] xs:max-w-xs sm:max-w-sm p-4 xs:p-6 sm:p-8 bg-card/50 border border-primary/40 rounded-xl shadow-2xl shadow-primary/20"
                     >
-                        <h3 className="text-xl sm:text-2xl font-headline text-center text-primary mb-6 tracking-wider">SYSTEM LOGIN</h3>
-                        <div className="space-y-5">
+                        <h3 className="text-lg sm:text-xl md:text-2xl font-headline text-center text-primary mb-5 sm:mb-6 tracking-wider">SYSTEM LOGIN</h3>
+                        <div className="space-y-4 sm:space-y-5">
                             <div>
-                                <Label htmlFor="fake-username" className="text-sm text-muted-foreground uppercase tracking-wider">Identity Key:</Label>
-                                <div className="mt-1.5 p-2.5 h-10 bg-input rounded-md border border-border text-primary/90 font-mono text-lg tracking-[0.2em] overflow-hidden whitespace-nowrap flex items-center">
+                                <Label htmlFor="fake-username" className="text-xs sm:text-sm text-muted-foreground uppercase tracking-wider">Identity Key:</Label>
+                                <div className="mt-1 p-2 sm:p-2.5 h-9 sm:h-10 bg-input rounded-md border border-border text-primary/90 font-mono text-sm sm:text-base tracking-widest sm:tracking-[0.15em] md:tracking-[0.2em] overflow-hidden whitespace-nowrap flex items-center">
                                     {usernameDots}
-                                    {usernameDots.length < DOT_COUNT && <span className="terminal-cursor !h-5 !translate-y-0"></span>}
+                                    {usernameDots.length < DOT_COUNT && <span className="terminal-cursor !h-4 sm:!h-5 !translate-y-0"></span>}
                                 </div>
                             </div>
                             <div>
-                                <Label htmlFor="fake-password" className="text-sm text-muted-foreground uppercase tracking-wider">Auth Code:</Label>
-                                <div className="mt-1.5 p-2.5 h-10 bg-input rounded-md border border-border text-primary/90 font-mono text-lg tracking-[0.2em] overflow-hidden whitespace-nowrap flex items-center">
+                                <Label htmlFor="fake-password" className="text-xs sm:text-sm text-muted-foreground uppercase tracking-wider">Auth Code:</Label>
+                                <div className="mt-1 p-2 sm:p-2.5 h-9 sm:h-10 bg-input rounded-md border border-border text-primary/90 font-mono text-sm sm:text-base tracking-widest sm:tracking-[0.15em] md:tracking-[0.2em] overflow-hidden whitespace-nowrap flex items-center">
                                     {passwordDots}
-                                    {passwordDots.length < DOT_COUNT && usernameDots.length === DOT_COUNT && <span className="terminal-cursor !h-5 !translate-y-0"></span>}
+                                    {passwordDots.length < DOT_COUNT && usernameDots.length === DOT_COUNT && <span className="terminal-cursor !h-4 sm:!h-5 !translate-y-0"></span>}
                                 </div>
                             </div>
-                            <Button className="w-full bg-accent hover:bg-accent/90 text-accent-foreground mt-5 py-3 text-base tracking-wider opacity-60 cursor-not-allowed" disabled>
+                            <Button className="w-full bg-accent hover:bg-accent/90 text-accent-foreground mt-4 sm:mt-5 py-2.5 sm:py-3 text-sm sm:text-base tracking-wider opacity-60 cursor-not-allowed" disabled>
                                 ESTABLISHING CONNECTION...
                             </Button>
                         </div>
@@ -295,8 +293,8 @@ export default function FullScreenTerminalLoader({ onSequenceComplete }: FullScr
                         exit={{ opacity: 0, y:-10, transition: {duration: 0.3} }}
                         className="text-center flex flex-col items-center"
                     >
-                        <Loader2 className="h-10 w-10 sm:h-12 sm:w-12 text-accent animate-spin mb-4" />
-                        <p className="text-lg sm:text-xl text-accent tracking-wide">Authenticating Matrix Link...</p>
+                        <Loader2 className="h-8 w-8 sm:h-10 sm:w-10 md:h-12 md:w-12 text-accent animate-spin mb-3 sm:mb-4" />
+                        <p className="text-base sm:text-lg md:text-xl text-accent tracking-wide">Authenticating Matrix Link...</p>
                         <p className="text-xs sm:text-sm text-muted-foreground animate-pulse mt-1">Secure handshake in progress</p>
                     </motion.div>
                 )}
@@ -309,8 +307,8 @@ export default function FullScreenTerminalLoader({ onSequenceComplete }: FullScr
                         exit={{ opacity: 0, scale: 0.8, transition: { duration: 0.4 } }}
                         className="text-center"
                     >
-                        <h1 className="text-4xl sm:text-5xl md:text-6xl font-headline text-primary animate-neon-glow-primary mb-2 sm:mb-3 tracking-wider">ACCESS GRANTED</h1>
-                        <p className="text-base sm:text-lg text-accent animate-pulse tracking-widest">Mainframe Connection Established.</p>
+                        <h1 className="text-3xl xs:text-4xl sm:text-5xl md:text-6xl font-headline text-primary animate-neon-glow-primary mb-2 sm:mb-3 tracking-wider">ACCESS GRANTED</h1>
+                        <p className="text-sm sm:text-base md:text-lg text-accent animate-pulse tracking-widest">Mainframe Connection Established.</p>
                     </motion.div>
                 )}
             </AnimatePresence>
@@ -320,7 +318,7 @@ export default function FullScreenTerminalLoader({ onSequenceComplete }: FullScr
                     variant="ghost"
                     size="sm"
                     onClick={skipIntro}
-                    className="absolute bottom-6 right-6 sm:bottom-8 sm:right-8 text-muted-foreground/70 hover:text-foreground hover:bg-card/30 text-xs py-1 px-2"
+                    className="absolute bottom-4 right-4 xs:bottom-6 xs:right-6 sm:bottom-8 sm:right-8 text-muted-foreground/70 hover:text-foreground hover:bg-card/30 text-xs py-1 px-2"
                     aria-label="Skip Intro"
                 >
                     [ESC] Skip Intro
@@ -329,3 +327,4 @@ export default function FullScreenTerminalLoader({ onSequenceComplete }: FullScr
         </motion.div>
     );
 }
+
