@@ -90,7 +90,7 @@ export default function HomePage() {
           />
         </motion.div>
         <motion.h1
-          className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-cyberName mb-2 text-primary animate-neon-glow-primary"
+          className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-cyberName font-bold mb-2 text-primary animate-neon-glow-primary"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, delay: 0.4, ease: "easeOut" }}
@@ -207,7 +207,7 @@ export default function HomePage() {
             </motion.div>
           ))}
         </motion.div>
-      </motion.section>
+      </section>
     </div>
   );
 }
