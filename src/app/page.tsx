@@ -9,7 +9,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { AskMeAnythingWidget } from '@/components/ai/ask-me-anything';
+
 import {
   Send, ShieldCheck,
   Network, ClipboardCheck, Target, MessagesSquare,
@@ -208,19 +208,6 @@ export default function HomePage() {
           ))}
         </motion.div>
       </motion.section>
-      
-      <motion.section
-        id="ask-ai"
-        className="py-8 sm:py-12 md:py-16"
-        variants={fadeInVariants}
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true, amount: 0.2 }}
-      >
-        <SectionTitle className="text-center animate-glitch">Ask My AI Assistant</SectionTitle>
-        <AskMeAnythingWidget />
-      </motion.section>
-
     </div>
   );
 }
