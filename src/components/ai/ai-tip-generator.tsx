@@ -24,11 +24,11 @@ export function AiTipGenerator() {
     const storedProfile = localStorage.getItem(LOCAL_STORAGE_KEY);
     if (storedProfile) {
       setUserProfile(storedProfile);
-      fetchTip(storedProfile);
+      // Removed automatic fetchTip(storedProfile) call from here
     }
   }, []);
 
-  const handleProfileSave = () => {
+  const handleProfileSaveAndFetch = () => {
     localStorage.setItem(LOCAL_STORAGE_KEY, userProfile);
     toast({
       title: "Profile Saved",
@@ -40,11 +40,17 @@ export function AiTipGenerator() {
   const fetchTip = async (profile: string) => {
     if (!profile.trim()) {
       setTipOutput(null);
-      setError(null);
+      setError("Please enter a profile to generate a tip.");
+      toast({
+        title: "Profile Missing",
+        description: "Please enter a profile description first.",
+        variant: "destructive",
+      });
       return;
     }
     setIsLoading(true);
     setError(null);
+    setTipOutput(null); // Clear previous tip
     try {
       const output = await generateCybersecurityTip({ userProfile: profile });
       setTipOutput(output);
@@ -66,7 +72,7 @@ export function AiTipGenerator() {
       <CardHeader className="px-4 pt-4 pb-3 sm:p-6 sm:pb-4">
         <CardTitle className="flex items-center gap-2 text-accent text-lg sm:text-xl">
           <Lightbulb className="h-5 w-5 sm:h-6 sm:w-6" />
-          AI Cybersecurity Tip of the Week
+          AI Cybersecurity Tip
         </CardTitle>
         <CardDescription className="text-xs sm:text-sm">
           Personalize your tips by describing your cybersecurity knowledge (e.g., "beginner", "IT professional", "home user").
@@ -89,7 +95,7 @@ export function AiTipGenerator() {
             <p className="ml-2 text-sm sm:text-base">Generating your personalized tip...</p>
           </div>
         )}
-        {error && <p className="text-destructive text-xs sm:text-sm">{error}</p>}
+        {error && !isLoading && <p className="text-destructive text-xs sm:text-sm">{error}</p>}
         {tipOutput && !isLoading && (
           <div className="space-y-2 sm:space-y-3 pt-3 sm:pt-4 border-t border-border">
             <h3 className="font-semibold text-base sm:text-lg text-primary">{tipOutput.tip}</h3>
@@ -104,10 +110,10 @@ export function AiTipGenerator() {
       </CardContent>
       <CardFooter className="flex justify-end gap-2 px-4 pb-4 pt-2 sm:p-6 sm:pt-3">
         <Button variant="outline" onClick={() => fetchTip(userProfile)} disabled={isLoading || !userProfile.trim()} size="sm" className="text-xs sm:text-sm">
-          {isLoading ? <Loader2 className="mr-2 h-3 w-3 sm:h-4 sm:w-4 animate-spin" /> : null}
+          {isLoading && userProfile.trim() ? <Loader2 className="mr-2 h-3 w-3 sm:h-4 sm:w-4 animate-spin" /> : null}
           New Tip
         </Button>
-        <Button onClick={handleProfileSave} disabled={isLoading} size="sm" className="text-xs sm:text-sm">
+        <Button onClick={handleProfileSaveAndFetch} disabled={isLoading || !userProfile.trim()} size="sm" className="text-xs sm:text-sm">
           Save Profile & Get Tip
         </Button>
       </CardFooter>
