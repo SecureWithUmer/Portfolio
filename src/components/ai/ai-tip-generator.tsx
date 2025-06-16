@@ -23,12 +23,23 @@ export function AiTipGenerator() {
   useEffect(() => {
     const storedProfile = localStorage.getItem(LOCAL_STORAGE_KEY);
     if (storedProfile) {
-      setUserProfile(storedProfile);
-      // Removed automatic fetchTip(storedProfile) call from here
+      // Defer this state update to ensure it happens after initial layout and scroll fixes
+      const timerId = setTimeout(() => {
+        setUserProfile(storedProfile);
+      }, 10); // A small delay
+      return () => clearTimeout(timerId); // Cleanup timeout if component unmounts
     }
-  }, []);
+  }, []); // Empty dependency array: runs once on mount
 
   const handleProfileSaveAndFetch = () => {
+    if (!userProfile.trim()) {
+      toast({
+        title: "Profile Missing",
+        description: "Please enter a profile description first.",
+        variant: "destructive",
+      });
+      return;
+    }
     localStorage.setItem(LOCAL_STORAGE_KEY, userProfile);
     toast({
       title: "Profile Saved",
@@ -41,11 +52,8 @@ export function AiTipGenerator() {
     if (!profile.trim()) {
       setTipOutput(null);
       setError("Please enter a profile to generate a tip.");
-      toast({
-        title: "Profile Missing",
-        description: "Please enter a profile description first.",
-        variant: "destructive",
-      });
+      // No toast here, as handleProfileSaveAndFetch already handles it for empty profile on save.
+      // For "New Tip" button, if profile is empty, it's disabled.
       return;
     }
     setIsLoading(true);
@@ -87,6 +95,7 @@ export function AiTipGenerator() {
             value={userProfile}
             onChange={(e) => setUserProfile(e.target.value)}
             placeholder="e.g., small business owner, student"
+            className="sm:text-sm"
           />
         </div>
         {isLoading && (
@@ -108,12 +117,12 @@ export function AiTipGenerator() {
           </div>
         )}
       </CardContent>
-      <CardFooter className="flex justify-end gap-2 px-4 pb-4 pt-2 sm:p-6 sm:pt-3">
-        <Button variant="outline" onClick={() => fetchTip(userProfile)} disabled={isLoading || !userProfile.trim()} size="sm" className="text-xs sm:text-sm">
+      <CardFooter className="flex flex-col sm:flex-row justify-end gap-2 px-4 pb-4 pt-2 sm:p-6 sm:pt-3">
+        <Button variant="outline" onClick={() => fetchTip(userProfile)} disabled={isLoading || !userProfile.trim()} size="sm" className="w-full sm:w-auto text-xs sm:text-sm">
           {isLoading && userProfile.trim() ? <Loader2 className="mr-2 h-3 w-3 sm:h-4 sm:w-4 animate-spin" /> : null}
           New Tip
         </Button>
-        <Button onClick={handleProfileSaveAndFetch} disabled={isLoading || !userProfile.trim()} size="sm" className="text-xs sm:text-sm">
+        <Button onClick={handleProfileSaveAndFetch} disabled={isLoading || !userProfile.trim()} size="sm" className="w-full sm:w-auto text-xs sm:text-sm">
           Save Profile & Get Tip
         </Button>
       </CardFooter>
