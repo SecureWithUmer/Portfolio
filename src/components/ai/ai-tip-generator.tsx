@@ -20,16 +20,7 @@ export function AiTipGenerator() {
   const [error, setError] = useState<string | null>(null);
   const { toast } = useToast();
 
-  useEffect(() => {
-    const storedProfile = localStorage.getItem(LOCAL_STORAGE_KEY);
-    if (storedProfile) {
-      // Defer this state update to ensure it happens after initial layout and scroll fixes
-      const timerId = setTimeout(() => {
-        setUserProfile(storedProfile);
-      }, 10); // A small delay
-      return () => clearTimeout(timerId); // Cleanup timeout if component unmounts
-    }
-  }, []); // Empty dependency array: runs once on mount
+  // Removed useEffect that loaded profile from localStorage
 
   const handleProfileSaveAndFetch = () => {
     if (!userProfile.trim()) {
@@ -40,10 +31,10 @@ export function AiTipGenerator() {
       });
       return;
     }
-    localStorage.setItem(LOCAL_STORAGE_KEY, userProfile);
+    localStorage.setItem(LOCAL_STORAGE_KEY, userProfile); // Still save for current session use if desired
     toast({
       title: "Profile Saved",
-      description: "Your cybersecurity profile has been updated.",
+      description: "Your cybersecurity profile has been updated for this session.",
     });
     fetchTip(userProfile);
   };
@@ -52,8 +43,6 @@ export function AiTipGenerator() {
     if (!profile.trim()) {
       setTipOutput(null);
       setError("Please enter a profile to generate a tip.");
-      // No toast here, as handleProfileSaveAndFetch already handles it for empty profile on save.
-      // For "New Tip" button, if profile is empty, it's disabled.
       return;
     }
     setIsLoading(true);
@@ -83,7 +72,7 @@ export function AiTipGenerator() {
           AI Cybersecurity Tip
         </CardTitle>
         <CardDescription className="text-xs sm:text-sm">
-          Personalize your tips by describing your cybersecurity knowledge (e.g., "beginner", "IT professional", "home user").
+          Personalize your tips by describing your cybersecurity knowledge (e.g., "beginner", "IT professional", "home user"). Profile is cleared on page refresh.
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-3 sm:space-y-4 px-4 sm:p-6">
