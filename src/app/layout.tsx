@@ -7,7 +7,7 @@ import { Header } from '@/components/layout/header';
 import { Footer } from '@/components/layout/footer';
 import { Toaster } from "@/components/ui/toaster";
 import { AnimatedBackground } from '@/components/animated-background';
-import { FullScreenTerminalLoader, type GeolocationData } from '@/components/loader/full-screen-terminal-loader';
+import FullScreenTerminalLoader, { type GeolocationData } from '@/components/loader/full-screen-terminal-loader';
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useToast } from "@/hooks/use-toast";
@@ -109,4 +109,3 @@ export default function RootLayout({
     </html>
   );
 }
-
