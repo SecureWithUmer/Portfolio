@@ -7,8 +7,7 @@ import { useEffect, useState } from 'react';
 // Dynamically import ParticlesBg with SSR turned off
 const DynamicParticlesBg = dynamic(() => import('particles-bg'), {
   ssr: false,
-  // You can add a loading component here if needed:
-  // loading: () => <p>Loading background...</p>,
+  loading: () => <div className="fixed inset-0 -z-10 overflow-hidden animated-bg" aria-hidden="true" />, // Basic fallback
 });
 
 export function AnimatedBackground() {
@@ -26,6 +25,7 @@ export function AnimatedBackground() {
   if (!mounted) {
     // Render only the wrapper div on the server and before client-side mount
     // to prevent layout shifts and apply the base background color.
+    // This also serves as a fallback if JS is disabled or DynamicParticlesBg fails to load initially.
     return <div className={wrapperDivClass} aria-hidden="true" />;
   }
 
@@ -33,8 +33,8 @@ export function AnimatedBackground() {
     <div className={wrapperDivClass} aria-hidden="true">
       {/* Render DynamicParticlesBg only when mounted on the client */}
       {/* Pass props directly to ensure they are applied */}
-      <DynamicParticlesBg 
-        type="cobweb" 
+      <DynamicParticlesBg
+        type="cobweb"
         color="#FFFFFF" // Explicit white hex color
         num={70}        // Increased number for better visibility
         bg={false}      // Explicitly set canvas background to transparent
