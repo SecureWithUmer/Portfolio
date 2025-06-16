@@ -55,11 +55,13 @@ export function FullScreenTerminalLoader({ onSequenceComplete }: FullScreenTermi
       try {
         const response = await fetch(`https://api.ip2location.io/?key=${IP2LOCATION_API_KEY}&format=json`);
         if (!response.ok) {
-          throw new Error(`API Error: ${response.status} ${response.statusText}`);
+          // This handles HTTP errors (e.g., 401, 403, 500)
+          throw new Error(`API request failed: ${response.status} ${response.statusText}`);
         }
         const data = await response.json();
         if (data.error) {
-          throw new Error(data.error?.error_message || `API returned an error.`);
+          // This handles errors returned in the JSON payload by ip2location.io
+          throw new Error(data.error?.error_message || `API returned an error structure.`);
         }
         setGeolocation({
           ip: data.ip || 'Resolving...',
@@ -68,11 +70,13 @@ export function FullScreenTerminalLoader({ onSequenceComplete }: FullScreenTermi
           country: data.country_name || 'Unknown Country',
         });
       } catch (err) {
-        let specificErrorMsg = 'Failed to retrieve geolocation data.';
-        if (err instanceof TypeError && err.message.toLowerCase().includes('failed to fetch')) {
-          specificErrorMsg = 'Network error or CORS issue prevented geolocation lookup.';
-        } else if (err instanceof Error) {
-          specificErrorMsg = err.message;
+        let specificErrorMsg = 'Error: Failed to retrieve geolocation data.';
+        if (err instanceof Error) {
+            if (err.message.toLowerCase().includes('failed to fetch')) {
+                specificErrorMsg = '[NETWORK/CORS ERROR] Geolocation lookup failed. This can be due to network connectivity, ad-blockers, or CORS policies (especially during local development). Proceeding with defaults.';
+            } else {
+                specificErrorMsg = `[API ERROR] Geolocation Service: ${err.message}. Proceeding with defaults.`;
+            }
         }
         setErrorGeo(specificErrorMsg);
         setGeolocation({ ip: 'Unavailable', city: null, region: null, country: null });
@@ -92,9 +96,9 @@ export function FullScreenTerminalLoader({ onSequenceComplete }: FullScreenTermi
       { text: "[*] Attempting user geolocation via ip2location.io...", isCommand: false, delay: LINE_DELAY },
     ];
 
-    const geoErrorLine = errorGeo ? [{ text: `[!] Geolocation Error: ${errorGeo}. Proceeding...`, isCommand: false, isError: true, delay: LINE_DELAY }] : [];
+    const geoErrorLine = errorGeo ? [{ text: `[!] Geolocation Info: ${errorGeo}`, isCommand: false, isError: true, delay: LINE_DELAY }] : [];
     
-    const geoSuccessLines = geolocation ? [
+    const geoSuccessLines = geolocation && !errorGeo ? [ // Only show success lines if no explicit error occurred
       { text: `[+] IP Address Detected: ${geolocation.ip}`, isCommand: false, delay: LINE_DELAY },
       { text: `[+] Location Identified: ${geolocation.city || 'N/A'}, ${geolocation.region || 'N/A'}, ${geolocation.country || 'N/A'}`, isCommand: false, delay: LINE_DELAY },
     ] : [];
@@ -145,7 +149,6 @@ export function FullScreenTerminalLoader({ onSequenceComplete }: FullScreenTermi
 
     const initialDelay = setTimeout(typeLine, 500); // Initial delay before starting
     
-    // Overall timeout for the sequence
     sequenceTimerRef.current = setTimeout(() => {
         if (!isComplete) {
             console.log("Loader sequence timed out.");
@@ -187,9 +190,9 @@ export function FullScreenTerminalLoader({ onSequenceComplete }: FullScreenTermi
 
 
   const getLineClass = (lineText: string) => {
-    if (lineText.startsWith('[!]')) return 'text-red-400';
+    if (lineText.startsWith('[!]') || lineText.startsWith('[NETWORK/CORS ERROR]') || lineText.startsWith('[API ERROR]')) return 'text-red-400';
     if (lineText.startsWith('[+]')) return 'text-green-400';
-    if (lineText.startsWith(PROMPT) || lineText.startsWith('[*]')) return 'text-primary'; // Use primary for commands and neutral info
+    if (lineText.startsWith(PROMPT) || lineText.startsWith('[*]')) return 'text-primary';
     return 'text-primary';
   };
   
@@ -211,7 +214,7 @@ export function FullScreenTerminalLoader({ onSequenceComplete }: FullScreenTermi
           </div>
         ))}
         {currentLineText && (
-          <div className={`whitespace-pre-wrap break-words inline ${getLineClass(currentLineText)} ${isFinalWelcomeLine(PROMPT + currentLineText) ? 'animate-glitch': '' }`}>
+          <div className={`whitespace-pre-wrap break-words inline ${getLineClass(PROMPT + currentLineText)} ${isFinalWelcomeLine(PROMPT + currentLineText) ? 'animate-glitch': '' }`}>
             {currentLineText}
             {showCursor && !isComplete && <span className="terminal-cursor"></span>}
           </div>
@@ -233,7 +236,7 @@ export function FullScreenTerminalLoader({ onSequenceComplete }: FullScreenTermi
         </Button>
       )}
 
-      {isLoadingGeo && lines.length < 2 && ( // Show loader only at the very beginning if geo is loading
+      {isLoadingGeo && lines.length < 2 && ( 
           <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/50">
               <TerminalSquare className="h-12 w-12 text-primary animate-pulse mb-4"/>
               <p className="text-primary text-lg">Booting UmerFarooq.Cyber Systems...</p>
