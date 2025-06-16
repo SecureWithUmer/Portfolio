@@ -85,7 +85,7 @@ export default function ContactPage() {
             </div>
             <div className="space-y-1.5 sm:space-y-2">
               <Label htmlFor="message">Message</Label>
-              <Textarea id="message" name="message" placeholder="Your detailed message..." rows={4} sm:rows={5} required defaultValue={state.fields?.message} />
+              <Textarea id="message" name="message" placeholder="Your detailed message..." rows={4} required defaultValue={state.fields?.message} />
             </div>
           </CardContent>
           <CardFooter className="px-4 pb-4 pt-2 sm:p-6 sm:pt-2">
