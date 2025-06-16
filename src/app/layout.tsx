@@ -42,7 +42,11 @@ export default function RootLayout({
 
   useEffect(() => {
     if (isMainContentVisible) {
-      window.scrollTo(0, 0);
+      // Delay scrolling to top slightly to ensure it happens after content is fully visible and interactive
+      const timer = setTimeout(() => {
+        window.scrollTo(0, 0);
+      }, 50); 
+      return () => clearTimeout(timer);
     }
   }, [isMainContentVisible]);
 
@@ -53,7 +57,8 @@ export default function RootLayout({
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@400;700&family=Orbitron:wght@400;500;700&display=swap" rel="stylesheet" />
+        {/* Updated to include both Source Code Pro and Orbitron */}
+        <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700&family=Source+Code+Pro:wght@400;700&display=swap" rel="stylesheet" />
       </head>
       <body className="font-code antialiased min-h-screen flex flex-col bg-background text-foreground">
         <AnimatePresence mode="wait">
