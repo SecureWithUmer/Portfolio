@@ -57,19 +57,18 @@ const cardVariants = {
   },
 };
 
+const professions = [
+  "Ethical Hacker",
+  "Penetration Tester",
+  "API Security Expert",
+  "Cloud Security Engineer",
+  "Cybersecurity Analyst",
+  "Security Consultant",
+  "Threat Hunter"
+];
 
 export default function HomePage() {
   const [hoveredExpertiseId, setHoveredExpertiseId] = useState<string | null>(null);
-
-  const professions = [
-    "Ethical Hacker",
-    "Penetration Tester",
-    "API Security Expert",
-    "Cloud Security Engineer",
-    "Cybersecurity Analyst",
-    "Security Consultant",
-    "Threat Hunter"
-  ];
 
   return (
     <div className="space-y-16 sm:space-y-20 md:space-y-24 lg:space-y-28">
