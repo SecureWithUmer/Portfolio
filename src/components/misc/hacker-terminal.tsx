@@ -39,7 +39,7 @@ export function HackerTerminal() {
         const data = await response.json();
 
         if (!response.ok || data.error) {
-          throw new Error(data.error?.error_message || `API Error: ${response.status}`);
+          throw new Error(data.error?.error_message || `API Error: ${response.statusText || response.status}`);
         }
         
         setGeolocation({
@@ -50,7 +50,7 @@ export function HackerTerminal() {
         });
       } catch (err) {
         console.error("Geolocation fetch error:", err);
-        setErrorGeo(err instanceof Error ? err.message : 'Failed to fetch geolocation.');
+        setErrorGeo(err instanceof Error ? err.message : 'Failed to fetch geolocation data.');
         // Fallback data
         setGeolocation({
           ip: 'Unavailable',
@@ -82,17 +82,31 @@ export function HackerTerminal() {
   useEffect(() => {
     if (isLoadingGeo) return; // Wait for geolocation data
 
-    const script = [
-      { text: `${PROMPT}system_diagnostics --user_session --geolocate`, isCommand: true },
-      { text: "[*] Initializing diagnostic sequence for current session...", isCommand: false, delay: LINE_DELAY },
-      { text: "[+] Attempting user geolocation via ip2location.io...", isCommand: false, delay: LINE_DELAY },
-      { text: `[+] IP Address Detected: ${geolocation?.ip || 'Resolving...'}`, isCommand: false, delay: LINE_DELAY },
-      { text: `[+] Location Identified: ${geolocation?.city}, ${geolocation?.region}, ${geolocation?.country}`, isCommand: false, delay: LINE_DELAY },
-      { text: "[*] Establishing secure connection to Umer Farooq's Cyber Hub...", isCommand: false, delay: LINE_DELAY },
-      { text: `[+] Welcome, operative from ${geolocation?.city || 'the Ether'}. Access granted.`, isCommand: false, delay: LINE_DELAY },
-      { text: "[*] All systems nominal. Standby for operations.", isCommand: false, delay: LINE_DELAY },
-      { text: PROMPT, isCommand: false, finalPrompt: true, delay: LINE_DELAY },
+    const scriptPreamble = [
+      { text: `${PROMPT}system_diagnostics --user_session --geolocate`, isCommand: true, isError: false },
+      { text: "[*] Initializing diagnostic sequence for current session...", isCommand: false, isError: false, delay: LINE_DELAY },
     ];
+
+    if (errorGeo) {
+      scriptPreamble.push({ text: `[!] Geolocation Error: ${errorGeo}. Using fallback.`, isCommand: false, isError: true, delay: LINE_DELAY });
+    } else {
+      scriptPreamble.push({ text: "[+] Attempting user geolocation via ip2location.io...", isCommand: false, isError: false, delay: LINE_DELAY });
+    }
+
+    const scriptCore = [
+      { text: `[+] IP Address Detected: ${geolocation?.ip || 'Resolving...'}`, isCommand: false, isError: false, delay: LINE_DELAY },
+      { text: `[+] Location Identified: ${geolocation?.city}, ${geolocation?.region}, ${geolocation?.country}`, isCommand: false, isError: false, delay: LINE_DELAY },
+      { text: "[*] Establishing secure connection to Umer Farooq's Cyber Hub...", isCommand: false, isError: false, delay: LINE_DELAY },
+      { text: `[+] Welcome, operative from ${geolocation?.city || 'the Ether'}. Access granted.`, isCommand: false, isError: false, delay: LINE_DELAY },
+      { text: "[*] All systems nominal. Standby for operations.", isCommand: false, isError: false, delay: LINE_DELAY },
+      { text: PROMPT, isCommand: false, finalPrompt: true, isError: false, delay: LINE_DELAY },
+    ];
+
+    const script = [...scriptPreamble, ...scriptCore];
+    
+    // Reset lines if the script is re-generating due to errorGeo or geolocation update after initial load
+    setLines([]);
+    setCurrentLineText("");
 
     let scriptIndex = 0;
     let charIndex = 0;
@@ -111,7 +125,7 @@ export function HackerTerminal() {
         currentTimeoutId = setTimeout(typeLine, TYPING_SPEED);
       } else {
         // Line finished typing
-        setLines(prev => [...prev, currentScriptLine.text]);
+        setLines(prev => [...prev, currentScriptLine.text]); // Could also store isError here if needed for styling lines
         setCurrentLineText("");
         charIndex = 0;
         scriptIndex++;
@@ -123,7 +137,7 @@ export function HackerTerminal() {
 
             currentTimeoutId = setTimeout(typeLine, delay);
         } else {
-            // Script finished, ensure the last line (prompt) is added if not already
+             // Script finished, ensure the last line (prompt) is added if not already
             if (lines[lines.length -1] !== PROMPT && currentScriptLine.finalPrompt) {
                 setLines(prev => [...prev, PROMPT]);
             }
@@ -139,7 +153,8 @@ export function HackerTerminal() {
       clearTimeout(currentTimeoutId);
       clearTimeout(initialDelay);
     };
-  }, [geolocation, isLoadingGeo, lines]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps 
+  }, [geolocation, isLoadingGeo, errorGeo]); // Corrected dependencies
 
 
   return (
@@ -147,23 +162,26 @@ export function HackerTerminal() {
       <CardContent className="p-4 md:p-6 font-code text-sm text-primary min-h-[280px] max-h-[400px] overflow-y-auto relative flex flex-col">
         <div className="flex-grow">
           {lines.map((line, index) => (
-            <div key={index} className="whitespace-pre-wrap break-words">
+            // For simplicity, error lines are not specially styled here, but you could adapt it.
+            // Example: check if line content matches errorGeo to style it.
+            <div key={index} className={`whitespace-pre-wrap break-words ${line.startsWith('[!] Geolocation Error:') ? 'text-destructive' : 'text-primary'}`}>
               {line}
             </div>
           ))}
           {currentLineText && (
-            <div className="whitespace-pre-wrap break-words">
+            <div className={`whitespace-pre-wrap break-words ${currentLineText.startsWith('[!] Geolocation Error:') ? 'text-destructive' : 'text-primary'}`}>
               {currentLineText}
               {showCursor && <span className="terminal-cursor"></span>}
             </div>
           )}
+          {/* Ensure cursor blinks at the prompt after script finishes */}
           {!currentLineText && lines.length > 0 && lines[lines.length -1] === PROMPT && showCursor && (
-             <div className="whitespace-pre-wrap break-words inline">
+             <div className={`whitespace-pre-wrap break-words inline ${lines[lines.length-1].startsWith('[!] Geolocation Error:') ? 'text-destructive' : 'text-primary'}`}>
                 <span className="terminal-cursor"></span>
             </div>
           )}
         </div>
-        {isLoadingGeo && lines.length === 0 && (
+        {isLoadingGeo && lines.length === 0 && currentLineText === "" && ( // Only show loader if no lines and no current text
           <div className="absolute inset-0 flex items-center justify-center bg-black/70">
             <Loader2 className="h-8 w-8 animate-spin text-accent" />
             <p className="ml-3 text-accent">Initializing Secure Terminal...</p>
