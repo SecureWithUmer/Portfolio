@@ -1,15 +1,109 @@
 
 "use client";
 
-import { useState, useEffect, useRef, useCallback } from 'react';
-import { motion } from 'framer-motion';
-import { Button } from '@/components/ui/button';
-import { Loader2, TerminalSquare } from 'lucide-react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 
+// --- Tone.js Script Loader & Audio Management ---
+const useTerminalAudio = () => {
+    const [isLoaded, setIsLoaded] = useState(false);
+    const synths = useRef<any>(null);
+
+    useEffect(() => {
+        // Check if Tone.js is already loaded or if the script tag already exists
+        if (window.Tone || document.querySelector('script[src*="tone"]')) {
+            if (window.Tone) setIsLoaded(true);
+            // If script tag exists but window.Tone is not yet available, wait for onload
+            const existingScript = document.querySelector('script[src*="tone"]') as HTMLScriptElement;
+            if (existingScript && !window.Tone) {
+                existingScript.onload = () => setIsLoaded(true);
+                existingScript.onerror = () => console.error("Error in existing Tone.js script");
+            }
+            return;
+        }
+
+        const script = document.createElement('script');
+        script.src = "https://cdnjs.cloudflare.com/ajax/libs/tone/14.7.77/Tone.js";
+        script.async = true;
+        script.onload = () => setIsLoaded(true);
+        script.onerror = () => console.error("Failed to load Tone.js");
+        document.body.appendChild(script);
+        
+        return () => { 
+            if (script.parentNode) script.parentNode.removeChild(script); 
+            // Potentially reset synths.current or clean up Tone.js instances if necessary
+        };
+    }, []);
+
+    useEffect(() => {
+        if (isLoaded && window.Tone && !synths.current) {
+            synths.current = {
+                keypress: new window.Tone.MembraneSynth({
+                    pitchDecay: 0.01,
+                    octaves: 2,
+                    envelope: { attack: 0.001, decay: 0.2, sustain: 0 },
+                }).toDestination(),
+                confirm: new window.Tone.Synth({ oscillator: { type: 'triangle' }, envelope: { attack: 0.01, decay: 0.2, sustain: 0.2, release: 0.5 } }).toDestination(),
+            };
+        }
+    }, [isLoaded]);
+
+    const playSound = useCallback((sound: 'keypress' | 'confirm') => {
+        if (!synths.current || !window.Tone || window.Tone.context.state !== 'running') return;
+        const now = window.Tone.now();
+        try {
+            switch (sound) {
+                case 'keypress':
+                    synths.current.keypress.triggerAttackRelease('C1', '8n', now);
+                    break;
+                case 'confirm':
+                     synths.current.confirm.triggerAttackRelease('G5', '8n', now);
+                    break;
+            }
+        } catch (error) {
+            console.warn("Tone.js playback error:", error);
+        }
+    }, []);
+    
+    // Attempt to start audio context on first interaction
+    useEffect(() => {
+        if (!isAudioReady) return;
+        const startAudioContext = async () => {
+            if (window.Tone && window.Tone.context.state !== 'running') {
+                try {
+                    await window.Tone.start();
+                } catch (error) {
+                    console.warn("Failed to start Tone.js audio context:", error);
+                }
+            }
+            // Clean up listeners once context is running or attempt has been made
+            window.removeEventListener('click', startAudioContext);
+            window.removeEventListener('keydown', startAudioContext);
+            window.removeEventListener('touchstart', startAudioContext);
+        };
+
+        // Add multiple event listeners for robust activation
+        window.addEventListener('click', startAudioContext, { once: true });
+        window.addEventListener('keydown', startAudioContext, { once: true });
+        window.addEventListener('touchstart', startAudioContext, { once: true });
+
+        return () => {
+            window.removeEventListener('click', startAudioContext);
+            window.removeEventListener('keydown', startAudioContext);
+            window.removeEventListener('touchstart', startAudioContext);
+        };
+    }, [isAudioReady]);
+
+
+    return { isAudioReady, playSound };
+};
+
+
+// --- Data Interfaces ---
 export interface GeolocationData {
   ip: string;
   city: string | null;
-  region: string | null;
+  region: string | null; // Added for ip2location
   country: string | null;
 }
 
@@ -17,232 +111,231 @@ interface FullScreenTerminalLoaderProps {
   onSequenceComplete: (geoData: GeolocationData | null) => void;
 }
 
-const TYPING_SPEED = 60; // ms per character
-const LINE_DELAY = 200; // ms delay before typing next line
-const COMMAND_DELAY = 700; // ms delay after typing command
-const MAX_SEQUENCE_DURATION = 10000; // 10 seconds max
+// --- Main Application ---
+export default function FullScreenTerminalLoader({ onSequenceComplete }: FullScreenTerminalLoaderProps) {
+    const [appState, setAppState] = useState<'booting' | 'welcome' | 'done'>('booting');
+    const [geoDataForToast, setGeoDataForToast] = useState<GeolocationData | null>(null);
+    const { isAudioReady, playSound } = useTerminalAudio();
 
-const PROMPT = "root@UmerFarooq:~# ";
-const IP2LOCATION_API_KEY = "53F1806FA9B697F562AB2EAE6321B9A6"; // Your API Key
+    const handleBootComplete = useCallback((fetchedGeoData: GeolocationData | null) => {
+        setGeoDataForToast(fetchedGeoData);
+        if (isAudioReady) playSound('confirm');
+        setAppState('welcome');
+    }, [playSound, isAudioReady]);
 
-export function FullScreenTerminalLoader({ onSequenceComplete }: FullScreenTerminalLoaderProps) {
-  const [lines, setLines] = useState<string[]>([]);
-  const [currentLineText, setCurrentLineText] = useState("");
-  const [geolocation, setGeolocation] = useState<GeolocationData | null>(null);
-  const [isLoadingGeo, setIsLoadingGeo] = useState(true);
-  const [errorGeo, setErrorGeo] = useState<string | null>(null);
-  const [showCursor, setShowCursor] = useState(true);
-  const [isSkipped, setIsSkipped] = useState(false);
-  const [isComplete, setIsComplete] = useState(false);
+    const handleWelcomeComplete = useCallback(() => {
+        setAppState('done');
+        onSequenceComplete(geoDataForToast);
+    }, [onSequenceComplete, geoDataForToast]);
 
-  const terminalContentRef = useRef<HTMLDivElement | null>(null);
-  const scriptTimeoutRef = useRef<NodeJS.Timeout | null>(null);
-  const sequenceTimerRef = useRef<NodeJS.Timeout | null>(null);
+    return (
+        <>
+            <style>{`
+                /* Ensure font-code (Source Code Pro) is used if @import is not ideal here */
+                .font-terminal { font-family: var(--font-source-code-pro), 'Source Code Pro', monospace; }
+                .terminal-bg { background-color: hsl(var(--background)); }
+                .terminal-text-primary { color: hsl(var(--primary)); }
+                .terminal-text-accent { color: hsl(var(--accent)); }
+                .terminal-text-muted { color: hsl(var(--muted-foreground)); }
+                .terminal-text-destructive { color: hsl(var(--destructive)); }
+                .text-glow-primary { text-shadow: 0 0 8px hsl(var(--primary) / 0.5); }
+                .terminal-cursor {
+                    display: inline-block;
+                    width: 0.6em;
+                    height: 1.2em;
+                    background-color: hsl(var(--primary));
+                    animation: blink 1s step-end infinite;
+                    box-shadow: 0 0 5px hsl(var(--primary)), 0 0 10px hsl(var(--primary));
+                    margin-left: 2px;
+                    transform: translateY(0.2em); /* Adjust vertical alignment */
+                }
 
-  const completeSequence = useCallback((finalGeoData: GeolocationData | null) => {
-    if (isComplete) return;
-    setIsComplete(true);
-    setIsSkipped(true); // Ensure all typing stops
-    if (scriptTimeoutRef.current) clearTimeout(scriptTimeoutRef.current);
-    if (sequenceTimerRef.current) clearTimeout(sequenceTimerRef.current);
-    onSequenceComplete(finalGeoData);
-  }, [onSequenceComplete, isComplete]);
-
-  useEffect(() => {
-    const fetchGeolocation = async () => {
-      setIsLoadingGeo(true);
-      setErrorGeo(null);
-      try {
-        const response = await fetch(`https://api.ip2location.io/?key=${IP2LOCATION_API_KEY}&format=json`);
-        if (!response.ok) {
-          // This handles HTTP errors (e.g., 401, 403, 500)
-          throw new Error(`API request failed: ${response.status} ${response.statusText}`);
-        }
-        const data = await response.json();
-        if (data.error) {
-          // This handles errors returned in the JSON payload by ip2location.io
-          throw new Error(data.error?.error_message || `API returned an error structure.`);
-        }
-        setGeolocation({
-          ip: data.ip || 'Resolving...',
-          city: data.city_name || 'Unknown City',
-          region: data.region_name || 'Unknown Region',
-          country: data.country_name || 'Unknown Country',
-        });
-      } catch (err) {
-        let specificErrorMsg = 'Error: Failed to retrieve geolocation data.';
-        if (err instanceof Error) {
-            if (err.message.toLowerCase().includes('failed to fetch')) {
-                specificErrorMsg = '[NETWORK/CORS ERROR] Geolocation lookup failed. This can be due to network connectivity, ad-blockers, or CORS policies (especially during local development). Proceeding with defaults.';
-            } else {
-                specificErrorMsg = `[API ERROR] Geolocation Service: ${err.message}. Proceeding with defaults.`;
-            }
-        }
-        setErrorGeo(specificErrorMsg);
-        setGeolocation({ ip: 'Unavailable', city: null, region: null, country: null });
-      } finally {
-        setIsLoadingGeo(false);
-      }
-    };
-    fetchGeolocation();
-  }, []);
-
-  useEffect(() => {
-    if (isSkipped || isLoadingGeo) return;
-
-    const baseScript = [
-      { text: `${PROMPT}system_diagnostics --initiate`, isCommand: true },
-      { text: "[*] Initializing connection sequence...", isCommand: false, delay: LINE_DELAY },
-      { text: "[*] Attempting user geolocation via ip2location.io...", isCommand: false, delay: LINE_DELAY },
-    ];
-
-    const geoErrorLine = errorGeo ? [{ text: `[!] Geolocation Info: ${errorGeo}`, isCommand: false, isError: true, delay: LINE_DELAY }] : [];
-    
-    const geoSuccessLines = geolocation && !errorGeo ? [ // Only show success lines if no explicit error occurred
-      { text: `[+] IP Address Detected: ${geolocation.ip}`, isCommand: false, delay: LINE_DELAY },
-      { text: `[+] Location Identified: ${geolocation.city || 'N/A'}, ${geolocation.region || 'N/A'}, ${geolocation.country || 'N/A'}`, isCommand: false, delay: LINE_DELAY },
-    ] : [];
-
-    const finalScript = [
-      ...baseScript,
-      ...geoErrorLine,
-      ...geoSuccessLines,
-      { text: `${PROMPT}access_control --grant --user ${geolocation?.ip || 'guest'}`, isCommand: true },
-      { text: "[+] Secure channel established.", isCommand: false, delay: LINE_DELAY },
-      { text: `[+] Access Granted. Welcome, ${geolocation?.ip || 'visitor'}.`, isCommand: false, isFinal: true, delay: LINE_DELAY, preGlitch: true },
-      { text: PROMPT, isCommand: false, finalPrompt: true, delay: LINE_DELAY },
-    ];
-    
-    let scriptIdx = 0;
-    let charIdx = 0;
-    let currentDisplayedLines: string[] = [];
-
-    const typeLine = () => {
-      if (isSkipped || scriptIdx >= finalScript.length) {
-        if(!isSkipped) completeSequence(geolocation);
-        return;
-      }
-
-      const currentScriptItem = finalScript[scriptIdx];
-      if (charIdx < currentScriptItem.text.length) {
-        setCurrentLineText(prev => prev + currentScriptItem.text[charIdx]);
-        charIdx++;
-        scriptTimeoutRef.current = setTimeout(typeLine, TYPING_SPEED);
-      } else {
-        currentDisplayedLines = [...currentDisplayedLines, currentScriptItem.text];
-        setLines([...currentDisplayedLines]);
-        setCurrentLineText("");
-        charIdx = 0;
-        scriptIdx++;
-        
-        let delayForNextLine = currentScriptItem.delay || LINE_DELAY;
-        if (currentScriptItem.isCommand) delayForNextLine = COMMAND_DELAY;
-        if (currentScriptItem.isFinal) delayForNextLine = 1500; // Longer pause before finishing
-
-        if (scriptIdx < finalScript.length) {
-          scriptTimeoutRef.current = setTimeout(typeLine, delayForNextLine);
-        } else {
-          completeSequence(geolocation);
-        }
-      }
-    };
-
-    const initialDelay = setTimeout(typeLine, 500); // Initial delay before starting
-    
-    sequenceTimerRef.current = setTimeout(() => {
-        if (!isComplete) {
-            console.log("Loader sequence timed out.");
-            completeSequence(geolocation);
-        }
-    }, MAX_SEQUENCE_DURATION);
-
-
-    return () => {
-      if (scriptTimeoutRef.current) clearTimeout(scriptTimeoutRef.current);
-      if (initialDelay) clearTimeout(initialDelay);
-      if (sequenceTimerRef.current) clearTimeout(sequenceTimerRef.current);
-    };
-  }, [isSkipped, isLoadingGeo, geolocation, errorGeo, completeSequence]);
-
-
-  useEffect(() => {
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') {
-        if (!isComplete) completeSequence(geolocation);
-      }
-    };
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [completeSequence, geolocation, isComplete]);
-
-  useEffect(() => {
-    const cursorInterval = setInterval(() => {
-      setShowCursor(prev => !prev);
-    }, 500);
-    return () => clearInterval(cursorInterval);
-  }, []);
-
-  useEffect(() => {
-    if (terminalContentRef.current) {
-      terminalContentRef.current.scrollTop = terminalContentRef.current.scrollHeight;
-    }
-  }, [lines, currentLineText]);
-
-
-  const getLineClass = (lineText: string) => {
-    if (lineText.startsWith('[!]') || lineText.startsWith('[NETWORK/CORS ERROR]') || lineText.startsWith('[API ERROR]')) return 'text-red-400';
-    if (lineText.startsWith('[+]')) return 'text-green-400';
-    if (lineText.startsWith(PROMPT) || lineText.startsWith('[*]')) return 'text-primary';
-    return 'text-primary';
-  };
-  
-  const isFinalWelcomeLine = (lineText: string) => {
-     return lineText.includes("Access Granted. Welcome");
-  };
-
-  return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      className="fixed inset-0 z-[200] flex flex-col items-center justify-center bg-black font-code text-sm md:text-base"
-    >
-      <div className="w-full h-full max-w-screen-xl p-4 md:p-8 overflow-y-auto" ref={terminalContentRef}>
-        {lines.map((line, index) => (
-          <div key={index} className={`whitespace-pre-wrap break-words ${getLineClass(line)} ${isFinalWelcomeLine(line) ? 'animate-glitch' : ''}`}>
-            {line}
-          </div>
-        ))}
-        {currentLineText && (
-          <div className={`whitespace-pre-wrap break-words inline ${getLineClass(PROMPT + currentLineText)} ${isFinalWelcomeLine(PROMPT + currentLineText) ? 'animate-glitch': '' }`}>
-            {currentLineText}
-            {showCursor && !isComplete && <span className="terminal-cursor"></span>}
-          </div>
-        )}
-         {!currentLineText && lines.length > 0 && lines[lines.length - 1]?.startsWith(PROMPT) && showCursor && !isComplete && (
-            <span className="terminal-cursor"></span>
-        )}
-      </div>
-
-      {!isComplete && (
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={() => completeSequence(geolocation)}
-          className="absolute top-4 right-4 text-muted-foreground hover:text-primary hover:bg-gray-800"
-          aria-label="Skip intro sequence"
-        >
-          Skip Intro [ESC]
-        </Button>
-      )}
-
-      {isLoadingGeo && lines.length < 2 && ( 
-          <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/50">
-              <TerminalSquare className="h-12 w-12 text-primary animate-pulse mb-4"/>
-              <p className="text-primary text-lg">Booting UmerFarooq.Cyber Systems...</p>
-              <Loader2 className="h-6 w-6 animate-spin text-accent mt-3"/>
-          </div>
-      )}
-    </motion.div>
-  );
+                @keyframes blink {
+                    from, to { background-color: transparent; box-shadow: none; }
+                    50% { background-color: hsl(var(--primary)); box-shadow: 0 0 5px hsl(var(--primary)), 0 0 10px hsl(var(--primary)); }
+                }
+            `}</style>
+            
+            <AnimatePresence>
+                {appState === 'booting' && (
+                    <TerminalSequence onComplete={handleBootComplete} playSound={playSound} />
+                )}
+                {appState === 'welcome' && (
+                    <WelcomeScreen name={geoDataForToast?.ip || 'Visitor'} onComplete={handleWelcomeComplete} />
+                )}
+            </AnimatePresence>
+            {/* The main portfolio content will be rendered by RootLayout once appState is 'done' */}
+        </>
+    );
 }
+
+// --- Typing Effect Component ---
+const Typewriter = ({ text, onComplete, playSound, speed = 50 }: { text: string, onComplete: () => void, playSound: (sound: 'keypress') => void, speed?: number }) => {
+    const [typedText, setTypedText] = useState('');
+    
+    useEffect(() => {
+        if (typedText.length < text.length) {
+            const timeoutId = setTimeout(() => {
+                setTypedText(text.slice(0, typedText.length + 1));
+                if (text[typedText.length] !== ' ' && text[typedText.length]) { // Ensure not to play on last undefined char
+                    playSound('keypress');
+                }
+            }, speed);
+            return () => clearTimeout(timeoutId);
+        } else {
+            const timeoutId = setTimeout(onComplete, 100); // Shortened pause
+            return () => clearTimeout(timeoutId);
+        }
+    }, [typedText, text, onComplete, playSound, speed]);
+
+    return <span>{typedText}</span>;
+};
+
+// --- Terminal Sequence Component ---
+const TerminalSequence = ({ onComplete, playSound }: { onComplete: (geoData: GeolocationData | null) => void, playSound: (sound: 'keypress') => void }) => {
+    const [lines, setLines] = useState<React.ReactNode[]>([]);
+    const [step, setStep] = useState(0);
+    const [showCursor, setShowCursor] = useState(false);
+    const IP2LOCATION_API_KEY = "53F1806FA9B697F562AB2EAE6321B9A6"; // API Key
+
+    const addLine = useCallback((newLine: React.ReactNode, lineDelay = 0) => {
+        setTimeout(() => {
+            setLines(prev => [...prev, newLine]);
+        }, lineDelay);
+    }, []);
+
+    const runCommand = useCallback((commandText: string, nextStepDelay = 500) => {
+        setShowCursor(true);
+        const Command = (
+            <div className="flex">
+                <span className="terminal-text-accent">umer@cybersec</span>
+                <span className="terminal-text-muted">:</span>
+                <span className="terminal-text-primary">~</span>
+                <span className="terminal-text-muted">$ &nbsp;</span>
+                <Typewriter text={commandText} onComplete={() => {
+                    setShowCursor(false);
+                    setTimeout(() => setStep(s => s + 1), nextStepDelay);
+                }} playSound={playSound} speed={60} />
+            </div>
+        );
+        addLine(Command);
+    }, [addLine, playSound]);
+
+    useEffect(() => {
+        const sequence = async () => {
+            // This structure ensures each step runs once
+            if (step === 0) {
+                addLine('System Booting...', 100);
+                setStep(s => s + 1);
+            } else if (step === 1 && lines.length === 1) { // Ensure previous line added
+                addLine('Establishing Secure Connection...', 800);
+                setStep(s => s + 1);
+            } else if (step === 2 && lines.length === 2) {
+                 setTimeout(() => runCommand('trace_user --verbose', 100), 800); // nextStepDelay is handled by Typewriter's onComplete
+            } else if (step === 3 && lines.length === 3) {
+                addLine((<span className="terminal-text-muted">Initiating geolocation lookup...</span>), 200);
+                try {
+                    // Fetch IP first from a reliable source if needed, or let ip2location use client's IP
+                    const geoRes = await fetch(`https://api.ip2location.io/?key=${IP2LOCATION_API_KEY}&format=json`);
+                    if (!geoRes.ok) throw new Error(`ip2location.io API error: ${geoRes.status}`);
+                    const geoData = await geoRes.json();
+
+                    if (geoData.error_message) throw new Error(geoData.error_message);
+                    
+                    const fetchedGeo: GeolocationData = {
+                        ip: geoData.ip || 'Unknown IP',
+                        city: geoData.city_name || 'Unknown City',
+                        region: geoData.region_name || 'Unknown Region',
+                        country: geoData.country_name || 'Unknown Country',
+                    };
+
+                    addLine((<span className="terminal-text-primary">IP Detected: {fetchedGeo.ip}</span>), 100);
+                    addLine((<span className="terminal-text-primary">Location: {fetchedGeo.city}, {fetchedGeo.region}, {fetchedGeo.country}</span>), 200);
+                    addLine((<span className="terminal-text-primary">ISP (Example): {geoData.isp || 'Not Available'}</span>), 300); // ISP if available
+
+                    setTimeout(() => onComplete(fetchedGeo), 1200);
+
+                } catch (error: any) {
+                    console.error("Failed to get location info:", error);
+                    let errorMsg = 'Could not resolve user identity.';
+                    if (error && error.message && error.message.toLowerCase().includes('failed to fetch')) {
+                        errorMsg = '[NETWORK/CORS ERROR] Geolocation lookup failed. Check connection or ad-blockers.';
+                    } else if (error && error.message) {
+                        errorMsg = `[API ERROR] ${error.message}`;
+                    }
+
+                    addLine((<span className="terminal-text-destructive">> Error: {errorMsg}</span>), 100);
+                    addLine((<span className="terminal-text-muted">> Granting anonymous access...</span>), 200);
+                    setTimeout(() => onComplete({ip: 'Anonymous', city: null, region: null, country: null}), 1200);
+                }
+                setStep(s => s + 1); // Mark step as processed to prevent re-running fetch
+            }
+        };
+        sequence();
+    }, [step, addLine, runCommand, onComplete, lines.length]); // Depend on lines.length to chain addLine calls correctly
+
+    return (
+        <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }} 
+            transition={{ duration: 0.5 }} 
+            className="fixed inset-0 z-[200] flex items-center justify-center terminal-bg font-terminal text-sm md:text-base"
+        >
+            <div className="w-full max-w-3xl p-4 md:p-6">
+                <div className="bg-black/40 p-4 md:p-6 rounded-lg border border-primary/30 h-80 md:h-96 overflow-y-auto space-y-1.5 shadow-2xl">
+                    {lines.map((line, i) => (
+                        <div key={i} className="terminal-text-primary text-glow-primary">
+                           {line}
+                        </div>
+                    ))}
+                    {showCursor && <div className="terminal-cursor"></div>}
+                </div>
+            </div>
+        </motion.div>
+    );
+};
+
+
+// --- Welcome Screen Component ---
+const WelcomeScreen = ({ name, onComplete }: { name: string, onComplete: () => void }) => {
+    
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            onComplete();
+        }, 2800); // Increased duration for welcome
+        return () => clearTimeout(timer);
+    }, [onComplete]);
+
+    return (
+        <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.7 }}
+            className="fixed inset-0 z-[210] flex flex-col items-center justify-center terminal-bg font-terminal"
+        >
+            <div className="text-center">
+                 <motion.h1 
+                    initial={{y: 60, opacity: 0}} 
+                    animate={{y: 0, opacity: 1}} 
+                    transition={{delay: 0.2, duration: 0.9, ease: 'easeOut'}} 
+                    className="text-5xl md:text-7xl font-bold terminal-text-primary text-glow-primary uppercase tracking-wider"
+                 >
+                    Access Granted
+                </motion.h1>
+                <motion.p 
+                    initial={{y: 30, opacity: 0}} 
+                    animate={{y: 0, opacity: 1}} 
+                    transition={{delay: 0.6, duration: 0.9, ease: 'easeOut'}} 
+                    className="mt-5 terminal-text-accent text-glow-primary text-md md:text-lg tracking-widest"
+                >
+                   Welcome, {name}
+                </motion.p>
+            </div>
+        </motion.div>
+    );
+};
+
+
+    
