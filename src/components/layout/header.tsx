@@ -5,9 +5,10 @@ import { Button } from '@/components/ui/button';
 import {
   Sheet,
   SheetContent,
-  SheetHeader, // Removed SheetDescription as it's not used
+  SheetHeader,
   SheetTitle,
   SheetClose,
+  SheetTrigger, // Added SheetTrigger here
 } from "@/components/ui/sheet";
 
 const navItems = [
