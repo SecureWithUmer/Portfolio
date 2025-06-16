@@ -11,8 +11,6 @@ import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useToast } from "@/hooks/use-toast";
 
-// Removed GeolocationData import as it's no longer used by the loader
-
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -33,7 +31,7 @@ export default function RootLayout({
     
     toast({
       title: "System Online",
-      description: "Welcome to UmerFarooq.Cyber!", // Generic welcome
+      description: "Welcome to UmerFarooq.Cyber!",
       duration: 4500, 
     });
 
@@ -52,6 +50,7 @@ export default function RootLayout({
   return (
     <html lang="en" className="dark">
       <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@400;700&family=Orbitron:wght@400;500;700&display=swap" rel="stylesheet" />
@@ -79,7 +78,7 @@ export default function RootLayout({
             >
               <AnimatedBackground />
               <Header />
-              <main className="flex-grow container mx-auto px-4 py-8 relative z-10">
+              <main className="flex-grow container mx-auto px-4 py-6 sm:py-8 relative z-10">
                 {children}
               </main>
               <Footer />

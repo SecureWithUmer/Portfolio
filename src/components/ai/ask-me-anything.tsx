@@ -22,8 +22,6 @@ export function AskMeAnythingWidget() {
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
   const messagesEndRef = useRef<null | HTMLDivElement>(null);
-  const scrollAreaRef = useRef<null | HTMLDivElement>(null);
-
 
   const scrollToBottom = () => {
     if (messagesEndRef.current) {
@@ -32,7 +30,6 @@ export function AskMeAnythingWidget() {
   };
 
   useEffect(() => {
-    // Slightly delay scroll to allow DOM to update
     const timer = setTimeout(() => {
         scrollToBottom();
     }, 100);
@@ -69,21 +66,21 @@ export function AskMeAnythingWidget() {
   };
 
   return (
-    <Card className="w-full max-w-lg mx-auto shadow-xl border-primary/50">
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2 text-primary">
-          <Sparkles className="h-6 w-6 text-accent" />
+    <Card className="w-full max-w-md sm:max-w-lg mx-auto shadow-xl border-primary/50">
+      <CardHeader className="px-4 pt-4 pb-3 sm:p-6 sm:pb-4">
+        <CardTitle className="flex items-center gap-2 text-primary text-lg sm:text-xl">
+          <Sparkles className="h-5 w-5 sm:h-6 sm:w-6 text-accent" />
           Ask Me Anything (AI Powered)
         </CardTitle>
-        <CardDescription>
+        <CardDescription className="text-xs sm:text-sm">
           Have a question about cybersecurity or my work? Ask my AI assistant! (Based on my profile & general knowledge)
         </CardDescription>
       </CardHeader>
-      <CardContent className="space-y-4">
-        <ScrollArea className="h-72 w-full rounded-md border border-border/70 p-4 bg-secondary/30">
-          <div className="space-y-4">
+      <CardContent className="space-y-3 sm:space-y-4 px-4 sm:p-6">
+        <ScrollArea className="h-60 sm:h-72 w-full rounded-md border border-border/70 p-3 sm:p-4 bg-secondary/30">
+          <div className="space-y-3 sm:space-y-4">
             {messages.length === 0 && (
-              <p className="text-sm text-muted-foreground text-center py-10 italic">
+              <p className="text-xs sm:text-sm text-muted-foreground text-center py-8 sm:py-10 italic">
                 No messages yet. Ask something like "What is ethical hacking?" or "Tell me about your MDR expertise."
               </p>
             )}
@@ -93,20 +90,20 @@ export function AskMeAnythingWidget() {
                 className={`flex ${msg.type === 'user' ? 'justify-end' : 'justify-start'}`}
               >
                 <div
-                  className={`max-w-[85%] p-3 rounded-xl shadow ${
+                  className={`max-w-[85%] p-2.5 sm:p-3 rounded-lg sm:rounded-xl shadow ${
                     msg.type === 'user'
                       ? 'bg-primary text-primary-foreground rounded-br-none'
                       : 'bg-card text-card-foreground border border-border/50 rounded-bl-none'
                   }`}
                 >
-                  <p className="text-sm whitespace-pre-wrap">{msg.text}</p>
+                  <p className="text-xs sm:text-sm whitespace-pre-wrap">{msg.text}</p>
                 </div>
               </div>
             ))}
             <div ref={messagesEndRef} />
           </div>
         </ScrollArea>
-        <form onSubmit={handleSubmit} className="flex items-center gap-2 pt-2">
+        <form onSubmit={handleSubmit} className="flex items-center gap-2 pt-1 sm:pt-2">
           <Input
             id="aiQuery"
             type="text"
@@ -115,15 +112,15 @@ export function AskMeAnythingWidget() {
             placeholder="Type your question here..."
             disabled={isLoading}
             aria-label="Ask a question"
-            className="flex-grow"
+            className="flex-grow h-9 sm:h-10"
           />
-          <Button type="submit" disabled={isLoading || !query.trim()} className="bg-accent hover:bg-accent/90 text-accent-foreground">
+          <Button type="submit" disabled={isLoading || !query.trim()} className="bg-accent hover:bg-accent/90 text-accent-foreground h-9 sm:h-10 px-3 sm:px-4">
             {isLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
             <span className="sr-only">Send question</span>
           </Button>
         </form>
       </CardContent>
-      <CardFooter>
+      <CardFooter className="px-4 pb-4 pt-2 sm:p-6 sm:pt-3">
         <p className="text-xs text-muted-foreground/80 italic text-center w-full">
           AI responses are generated and may not always be perfectly accurate. For critical matters, please contact me directly.
         </p>

@@ -10,7 +10,6 @@ export interface BlogPost {
   date: string;
   excerpt: string;
   categories: string[];
-  // content: string; // Full content would be for the individual blog post page
 }
 
 interface BlogPostPreviewProps {
@@ -19,21 +18,21 @@ interface BlogPostPreviewProps {
 
 export function BlogPostPreview({ post }: BlogPostPreviewProps) {
   return (
-    <Card className="overflow-hidden transition-shadow duration-300">
-      <CardHeader>
-        <CardTitle className="text-xl text-primary hover:underline">
+    <Card className="overflow-hidden transition-shadow duration-300 flex flex-col h-full">
+      <CardHeader className="pb-3">
+        <CardTitle className="text-lg sm:text-xl text-primary hover:underline">
           <Link href={`/blog/${post.slug}`}>{post.title}</Link>
         </CardTitle>
         <div className="text-xs text-muted-foreground flex items-center mt-1">
-          <CalendarDays className="h-4 w-4 mr-1.5" />
+          <CalendarDays className="h-3.5 w-3.5 mr-1.5" />
           {new Date(post.date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
         </div>
       </CardHeader>
-      <CardContent>
-        <CardDescription className="text-muted-foreground text-sm mb-4">
+      <CardContent className="flex-grow pb-3">
+        <CardDescription className="text-xs sm:text-sm text-muted-foreground mb-3 sm:mb-4">
           {post.excerpt}
         </CardDescription>
-        <div className="flex flex-wrap gap-2">
+        <div className="flex flex-wrap gap-1.5 sm:gap-2">
           {post.categories.map((category) => (
             <Badge key={category} variant="outline" className="font-code text-xs border-accent text-accent">
               {category}
@@ -41,9 +40,9 @@ export function BlogPostPreview({ post }: BlogPostPreviewProps) {
           ))}
         </div>
       </CardContent>
-      <CardFooter>
-        <Link href={`/blog/${post.slug}`} className="text-sm text-accent font-semibold hover:underline flex items-center">
-          Read More <ArrowRight className="ml-1 h-4 w-4" />
+      <CardFooter className="mt-auto pt-3 pb-4">
+        <Link href={`/blog/${post.slug}`} className="text-xs sm:text-sm text-accent font-semibold hover:underline flex items-center">
+          Read More <ArrowRight className="ml-1 h-3.5 w-3.5 sm:h-4 sm:w-4" />
         </Link>
       </CardFooter>
     </Card>

@@ -132,9 +132,9 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
 
   if (!post) {
     return (
-      <div>
+      <div className="py-6 sm:py-8">
         <PageTitle>Post Not Found</PageTitle>
-        <p className="text-center text-muted-foreground">Sorry, the blog post you are looking for does not exist.</p>
+        <p className="text-center text-muted-foreground text-base sm:text-lg">Sorry, the blog post you are looking for does not exist.</p>
       </div>
     );
   }
@@ -143,14 +143,14 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
   const contentParts = post.content.split(/(\`\`\`[\s\S]*?\`\`\`)/g);
 
   return (
-    <article className="max-w-3xl mx-auto py-8">
+    <article className="max-w-full md:max-w-3xl mx-auto py-6 sm:py-8">
       <PageTitle>{post.title}</PageTitle>
-      <div className="mb-6 text-center">
-        <div className="text-sm text-muted-foreground flex items-center justify-center gap-1">
-          <CalendarDays className="h-4 w-4" />
+      <div className="mb-4 sm:mb-6 text-center">
+        <div className="text-xs sm:text-sm text-muted-foreground flex items-center justify-center gap-1">
+          <CalendarDays className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
           <span>{new Date(post.date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</span>
         </div>
-        <div className="mt-2 flex flex-wrap gap-2 justify-center">
+        <div className="mt-2 flex flex-wrap gap-1.5 sm:gap-2 justify-center">
           {post.categories.map((category) => (
             <Badge key={category} variant="outline" className="font-code text-xs border-accent text-accent">
               <Tag className="h-3 w-3 mr-1"/>{category}
@@ -159,7 +159,7 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
         </div>
       </div>
       
-      <div className="prose prose-invert dark:prose-invert max-w-none prose-headings:text-primary prose-a:text-accent prose-strong:text-foreground/90 prose-code:text-accent prose-code:font-code prose-code:before:content-none prose-code:after:content-none prose-pre:bg-card">
+      <div className="prose prose-sm sm:prose-base dark:prose-invert max-w-none prose-headings:text-primary prose-a:text-accent prose-strong:text-foreground/90 prose-code:text-accent prose-code:font-code prose-code:before:content-none prose-code:after:content-none prose-pre:bg-card">
         {contentParts.map((part, index) => {
           if (part.startsWith('```') && part.endsWith('```')) {
             const languageMatch = part.match(/^```(\w+)?\n/);
@@ -168,11 +168,12 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
             return <CodeBlock key={index} code={code} language={language} />;
           }
           // Replace newline characters with <br /> for simple text formatting
-          return part.split('\n').map((line, lineIndex) => (
-            <span key={`${index}-${lineIndex}`}>
+          // Ensure this part doesn't cause excessive <br> tags if not needed
+          return part.split('\n').map((line, lineIndex, arr) => (
+            <React.Fragment key={`${index}-${lineIndex}`}>
               {line}
-              {lineIndex < part.split('\n').length - 1 && <br />}
-            </span>
+              {lineIndex < arr.length - 1 && <br />}
+            </React.Fragment>
           ));
         })}
       </div>

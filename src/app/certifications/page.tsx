@@ -15,13 +15,13 @@ export const metadata: Metadata = {
 export default function CertificationsPage() {
   if (!certifications || certifications.length === 0) {
     return (
-      <div className="space-y-12">
+      <div className="space-y-10 sm:space-y-12">
         <PageTitle subtitle="My professional credentials and qualifications in cybersecurity.">
           Certifications Timeline
         </PageTitle>
-        <div className="text-center space-y-4">
-          <p className="text-muted-foreground text-lg">No certifications to display at the moment.</p>
-          <p className="text-sm text-muted-foreground">Please check back later as I continue to grow my expertise.</p>
+        <div className="text-center space-y-3 sm:space-y-4">
+          <p className="text-muted-foreground text-base sm:text-lg">No certifications to display at the moment.</p>
+          <p className="text-xs sm:text-sm text-muted-foreground">Please check back later as I continue to grow my expertise.</p>
           <Button asChild variant="outline">
             <Link href="/">Return Home</Link>
           </Button>
@@ -31,7 +31,7 @@ export default function CertificationsPage() {
   }
 
   return (
-    <div className="space-y-12">
+    <div className="space-y-10 sm:space-y-12">
       <PageTitle subtitle="My professional credentials and qualifications in cybersecurity.">
         Certifications Timeline
       </PageTitle>
@@ -41,11 +41,11 @@ export default function CertificationsPage() {
           <CertificationTimelineItem
             key={cert.id}
             certification={cert}
-            align={index % 2 === 0 ? 'left' : 'right'} // Alternate alignment for visual balance
+            align={index % 2 === 0 ? 'left' : 'right'} 
           />
         ))}
       </VerticalTimeline>
-       <p className="text-center text-sm text-muted-foreground mt-12">
+       <p className="text-center text-xs sm:text-sm text-muted-foreground mt-10 sm:mt-12 px-2">
         Note: Some download/verification links are placeholders. Logos are illustrative.
       </p>
     </div>

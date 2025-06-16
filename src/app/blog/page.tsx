@@ -1,8 +1,6 @@
 import type { Metadata } from 'next';
 import { PageTitle } from '@/components/ui/page-title';
 import { BlogPostPreview, type BlogPost } from '@/components/blog/blog-post-preview';
-// Placeholder for actual blog post page (not implemented in this step)
-// import Link from 'next/link'; 
 
 export const metadata: Metadata = {
   title: 'Cybersecurity Blog',
@@ -46,27 +44,17 @@ const blogPosts: BlogPost[] = [
 
 export default function BlogPage() {
   return (
-    <div className="space-y-12">
+    <div className="space-y-10 sm:space-y-12">
       <PageTitle subtitle="Stay updated with the latest in cybersecurity.">
         Cyber Insights Blog
       </PageTitle>
       
-      {/* Basic category filter placeholder - non-functional in this iteration */}
-      {/*
-      <div className="mb-8 flex flex-wrap gap-2 justify-center">
-        <Button variant="outline" size="sm">All</Button>
-        <Button variant="ghost" size="sm">Security Models</Button>
-        <Button variant="ghost" size="sm">AI</Button>
-        <Button variant="ghost" size="sm">Best Practices</Button>
-      </div>
-      */}
-
-      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
         {blogPosts.map((post) => (
           <BlogPostPreview key={post.id} post={post} />
         ))}
       </div>
-       <p className="text-center text-muted-foreground mt-12">
+       <p className="text-center text-xs sm:text-sm text-muted-foreground mt-10 sm:mt-12">
         Note: Individual blog post pages are for demonstration and not fully implemented.
       </p>
     </div>
