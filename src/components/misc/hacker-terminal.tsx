@@ -33,13 +33,16 @@ export function HackerTerminal() {
       setIsLoadingGeo(true);
       setErrorGeo(null);
       try {
-        // Fetch IP and geolocation from ip2location.io
-        // The API returns the current user's IP info if no IP is specified in the query
         const response = await fetch(`https://api.ip2location.io/?key=${IP2LOCATION_API_KEY}&format=json`);
+        
+        if (!response.ok) { // Handles HTTP errors like 4xx, 5xx
+          throw new Error(`API Error: ${response.status} ${response.statusText}`);
+        }
+        
         const data = await response.json();
 
-        if (!response.ok || data.error) {
-          throw new Error(data.error?.error_message || `API Error: ${response.statusText || response.status}`);
+        if (data.error) { // Handles errors specific to ip2location.io's response format
+          throw new Error(data.error?.error_message || `API returned an error.`);
         }
         
         setGeolocation({
@@ -50,8 +53,14 @@ export function HackerTerminal() {
         });
       } catch (err) {
         console.error("Geolocation fetch error:", err);
-        setErrorGeo(err instanceof Error ? err.message : 'Failed to fetch geolocation data.');
-        // Fallback data
+        let specificErrorMsg = 'Failed to retrieve geolocation data.';
+        if (err instanceof TypeError && err.message.toLowerCase().includes('failed to fetch')) {
+          specificErrorMsg = 'Network error or CORS issue prevented geolocation lookup.';
+        } else if (err instanceof Error) {
+          specificErrorMsg = err.message;
+        }
+        setErrorGeo(specificErrorMsg);
+        
         setGeolocation({
           ip: 'Unavailable',
           city: 'Location Hidden',
@@ -80,7 +89,7 @@ export function HackerTerminal() {
   }, [lines, currentLineText]);
 
   useEffect(() => {
-    if (isLoadingGeo) return; // Wait for geolocation data
+    if (isLoadingGeo) return; 
 
     const scriptPreamble = [
       { text: `${PROMPT}system_diagnostics --user_session --geolocate`, isCommand: true, isError: false },
@@ -104,7 +113,6 @@ export function HackerTerminal() {
 
     const script = [...scriptPreamble, ...scriptCore];
     
-    // Reset lines if the script is re-generating due to errorGeo or geolocation update after initial load
     setLines([]);
     setCurrentLineText("");
 
@@ -124,8 +132,7 @@ export function HackerTerminal() {
         charIndex++;
         currentTimeoutId = setTimeout(typeLine, TYPING_SPEED);
       } else {
-        // Line finished typing
-        setLines(prev => [...prev, currentScriptLine.text]); // Could also store isError here if needed for styling lines
+        setLines(prev => [...prev, currentScriptLine.text]); 
         setCurrentLineText("");
         charIndex = 0;
         scriptIndex++;
@@ -137,7 +144,6 @@ export function HackerTerminal() {
 
             currentTimeoutId = setTimeout(typeLine, delay);
         } else {
-             // Script finished, ensure the last line (prompt) is added if not already
             if (lines[lines.length -1] !== PROMPT && currentScriptLine.finalPrompt) {
                 setLines(prev => [...prev, PROMPT]);
             }
@@ -146,15 +152,13 @@ export function HackerTerminal() {
       }
     };
 
-    // Start the script after a brief initial delay
     const initialDelay = setTimeout(typeLine, 500);
 
     return () => {
       clearTimeout(currentTimeoutId);
       clearTimeout(initialDelay);
     };
-  // eslint-disable-next-line react-hooks/exhaustive-deps 
-  }, [geolocation, isLoadingGeo, errorGeo]); // Corrected dependencies
+  }, [geolocation, isLoadingGeo, errorGeo]);
 
 
   return (
@@ -162,26 +166,23 @@ export function HackerTerminal() {
       <CardContent className="p-4 md:p-6 font-code text-sm text-primary min-h-[280px] max-h-[400px] overflow-y-auto relative flex flex-col">
         <div className="flex-grow">
           {lines.map((line, index) => (
-            // For simplicity, error lines are not specially styled here, but you could adapt it.
-            // Example: check if line content matches errorGeo to style it.
-            <div key={index} className={`whitespace-pre-wrap break-words ${line.startsWith('[!] Geolocation Error:') ? 'text-destructive' : 'text-primary'}`}>
+            <div key={index} className={`whitespace-pre-wrap break-words ${line.startsWith('[!] Geolocation Error:') || line.startsWith('[!] API Error:') ? 'text-destructive' : 'text-primary'}`}>
               {line}
             </div>
           ))}
           {currentLineText && (
-            <div className={`whitespace-pre-wrap break-words ${currentLineText.startsWith('[!] Geolocation Error:') ? 'text-destructive' : 'text-primary'}`}>
+            <div className={`whitespace-pre-wrap break-words ${currentLineText.startsWith('[!] Geolocation Error:') || currentLineText.startsWith('[!] API Error:') ? 'text-destructive' : 'text-primary'}`}>
               {currentLineText}
               {showCursor && <span className="terminal-cursor"></span>}
             </div>
           )}
-          {/* Ensure cursor blinks at the prompt after script finishes */}
           {!currentLineText && lines.length > 0 && lines[lines.length -1] === PROMPT && showCursor && (
-             <div className={`whitespace-pre-wrap break-words inline ${lines[lines.length-1].startsWith('[!] Geolocation Error:') ? 'text-destructive' : 'text-primary'}`}>
+             <div className={`whitespace-pre-wrap break-words inline ${lines[lines.length-1].startsWith('[!] Geolocation Error:') || lines[lines.length-1].startsWith('[!] API Error:') ? 'text-destructive' : 'text-primary'}`}>
                 <span className="terminal-cursor"></span>
             </div>
           )}
         </div>
-        {isLoadingGeo && lines.length === 0 && currentLineText === "" && ( // Only show loader if no lines and no current text
+        {isLoadingGeo && lines.length === 0 && currentLineText === "" && ( 
           <div className="absolute inset-0 flex items-center justify-center bg-black/70">
             <Loader2 className="h-8 w-8 animate-spin text-accent" />
             <p className="ml-3 text-accent">Initializing Secure Terminal...</p>
