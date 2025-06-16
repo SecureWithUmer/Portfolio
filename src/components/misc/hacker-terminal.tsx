@@ -17,6 +17,7 @@ const LINE_DELAY = 300; // ms delay before typing next line
 const COMMAND_DELAY = 1000; // ms delay after typing command
 
 const PROMPT = "root@kali:~# ";
+const IP2LOCATION_API_KEY = "53F1806FA9B697F562AB2EAE6321B9A6";
 
 export function HackerTerminal() {
   const [lines, setLines] = useState<string[]>([]);
@@ -32,19 +33,20 @@ export function HackerTerminal() {
       setIsLoadingGeo(true);
       setErrorGeo(null);
       try {
-        const response = await fetch('http://ip-api.com/json/?fields=query,city,regionName,country');
-        if (!response.ok) {
-          throw new Error(`API Error: ${response.status}`);
-        }
+        // Fetch IP and geolocation from ip2location.io
+        // The API returns the current user's IP info if no IP is specified in the query
+        const response = await fetch(`https://api.ip2location.io/?key=${IP2LOCATION_API_KEY}&format=json`);
         const data = await response.json();
-        if (data.status === 'fail') {
-          throw new Error('Geolocation lookup failed.');
+
+        if (!response.ok || data.error) {
+          throw new Error(data.error?.error_message || `API Error: ${response.status}`);
         }
+        
         setGeolocation({
-          ip: data.query,
-          city: data.city || 'Unknown City',
-          region: data.regionName || 'Unknown Region',
-          country: data.country || 'Unknown Country',
+          ip: data.ip || 'Resolving...',
+          city: data.city_name || 'Unknown City',
+          region: data.region_name || 'Unknown Region',
+          country: data.country_name || 'Unknown Country',
         });
       } catch (err) {
         console.error("Geolocation fetch error:", err);
@@ -83,7 +85,7 @@ export function HackerTerminal() {
     const script = [
       { text: `${PROMPT}system_diagnostics --user_session --geolocate`, isCommand: true },
       { text: "[*] Initializing diagnostic sequence for current session...", isCommand: false, delay: LINE_DELAY },
-      { text: "[+] Attempting user geolocation...", isCommand: false, delay: LINE_DELAY },
+      { text: "[+] Attempting user geolocation via ip2location.io...", isCommand: false, delay: LINE_DELAY },
       { text: `[+] IP Address Detected: ${geolocation?.ip || 'Resolving...'}`, isCommand: false, delay: LINE_DELAY },
       { text: `[+] Location Identified: ${geolocation?.city}, ${geolocation?.region}, ${geolocation?.country}`, isCommand: false, delay: LINE_DELAY },
       { text: "[*] Establishing secure connection to Umer Farooq's Cyber Hub...", isCommand: false, delay: LINE_DELAY },
@@ -98,7 +100,7 @@ export function HackerTerminal() {
 
     const typeLine = () => {
       if (scriptIndex >= script.length) {
-        setCurrentLineText(""); // Clear current line text after script finishes if needed or keep prompt
+        setCurrentLineText(""); 
         return;
       }
 
@@ -121,9 +123,11 @@ export function HackerTerminal() {
 
             currentTimeoutId = setTimeout(typeLine, delay);
         } else {
-            // Script finished, set final prompt without typing animation
-            setLines(prev => [...prev, PROMPT]);
-            setCurrentLineText(""); // Ensure current typing buffer is clear
+            // Script finished, ensure the last line (prompt) is added if not already
+            if (lines[lines.length -1] !== PROMPT && currentScriptLine.finalPrompt) {
+                setLines(prev => [...prev, PROMPT]);
+            }
+            setCurrentLineText(""); 
         }
       }
     };
@@ -135,7 +139,7 @@ export function HackerTerminal() {
       clearTimeout(currentTimeoutId);
       clearTimeout(initialDelay);
     };
-  }, [geolocation, isLoadingGeo]);
+  }, [geolocation, isLoadingGeo, lines]);
 
 
   return (
@@ -153,7 +157,7 @@ export function HackerTerminal() {
               {showCursor && <span className="terminal-cursor"></span>}
             </div>
           )}
-          {!currentLineText && lines.length > 0 && lines[lines.length -1].startsWith(PROMPT) && showCursor && (
+          {!currentLineText && lines.length > 0 && lines[lines.length -1] === PROMPT && showCursor && (
              <div className="whitespace-pre-wrap break-words inline">
                 <span className="terminal-cursor"></span>
             </div>
