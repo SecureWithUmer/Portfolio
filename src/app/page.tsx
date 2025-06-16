@@ -11,9 +11,9 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { AskMeAnythingWidget } from '@/components/ai/ask-me-anything';
 import {
-  BookOpen, Send, ShieldCheck,
+  Send, ShieldCheck,
   Network, ClipboardCheck, Target, MessagesSquare,
-  ServerCog, Star
+  ServerCog
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 
@@ -72,8 +72,8 @@ export default function HomePage() {
   ];
 
   return (
-    <div className="space-y-16 sm:space-y-20">
-      <section className="text-center pt-0 pb-12 sm:pb-16 min-h-[60vh] sm:min-h-[70vh] flex flex-col justify-start items-center overflow-hidden">
+    <div className="space-y-16 sm:space-y-20 md:space-y-24 lg:space-y-28">
+      <section className="text-center pt-0 pb-12 sm:pb-16 md:pb-20 min-h-[60vh] sm:min-h-[70vh] flex flex-col justify-start items-center overflow-hidden">
         <motion.div
           initial={{ opacity: 0, scale: 0.8 }}
           animate={{ opacity: 1, scale: 1 }}
@@ -84,7 +84,7 @@ export default function HomePage() {
             alt="Umer Farooq"
             width={160}
             height={160}
-            className="rounded-full mx-auto mb-4 sm:mb-6 border-4 border-primary w-32 h-32 sm:w-40 sm:h-40"
+            className="rounded-full mx-auto mb-4 sm:mb-6 border-4 border-primary w-32 h-32 sm:w-36 md:w-40 sm:h-36 md:h-40"
             data-ai-hint="cybersecurity shield abstract"
             priority
           />
@@ -128,12 +128,12 @@ export default function HomePage() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, delay: 0.8, ease: "easeOut" }}
         >
-          <Button asChild size="default" className="w-full sm:w-auto md:size-lg">
+          <Button asChild size="default" className="w-full sm:w-auto text-sm sm:text-base md:h-11 md:px-8">
             <Link href="/about">
               About Me
             </Link>
           </Button>
-          <Button asChild size="default" variant="outline" className="w-full sm:w-auto md:size-lg">
+          <Button asChild size="default" variant="outline" className="w-full sm:w-auto text-sm sm:text-base md:h-11 md:px-8">
             <Link href="/contact">
               Get In Touch <Send className="ml-2 h-4 sm:h-5 w-4 sm:w-5" />
             </Link>
@@ -143,7 +143,7 @@ export default function HomePage() {
 
       <motion.section
         id="expertise"
-        className="py-8 sm:py-12"
+        className="py-8 sm:py-12 md:py-16"
         variants={fadeInVariants}
         initial="hidden"
         whileInView="visible"
@@ -151,7 +151,7 @@ export default function HomePage() {
       >
         <SectionTitle className="text-center animate-glitch">My Expertise</SectionTitle>
         <motion.div
-          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 sm:gap-8 text-center"
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6 md:gap-8 text-center"
           variants={cardContainerVariants}
           initial="hidden"
           whileInView="visible"
@@ -171,26 +171,26 @@ export default function HomePage() {
               }}
               className="cursor-pointer"
             >
-              <Card className="flex flex-col items-center h-full">
-                <CardHeader className="pb-3 sm:pb-4 w-full">
+              <Card className="flex flex-col items-center h-full p-3 sm:p-4">
+                <CardHeader className="pb-3 sm:pb-4 w-full px-2 sm:px-3">
                   <motion.div
                     className="inline-block p-1 sm:p-2"
                     whileHover={{ scale: 1.15, y: -5 }}
                     transition={{ type: "spring", stiffness: 400, damping: 10 }}
                   >
-                    <item.icon className="h-10 w-10 sm:h-12 sm:w-12 text-primary mx-auto" />
+                    <item.icon className="h-8 w-8 sm:h-10 md:h-12 sm:w-10 md:w-12 text-primary mx-auto" />
                   </motion.div>
-                  <CardTitle className="text-lg sm:text-xl">{item.title}</CardTitle>
+                  <CardTitle className="text-base sm:text-lg md:text-xl">{item.title}</CardTitle>
                 </CardHeader>
-                <CardContent className="flex-grow w-full px-3 sm:px-4">
+                <CardContent className="flex-grow w-full px-2 sm:px-3">
                   <p className="text-muted-foreground text-xs sm:text-sm">{item.description}</p>
                   {hoveredExpertiseId === item.id && (
                     <motion.div
                       initial={{ opacity: 0, height: 0, marginTop: 0 }}
-                      animate={{ opacity: 1, height: 'auto', marginTop: '0.75rem' }} // sm:mt-4
+                      animate={{ opacity: 1, height: 'auto', marginTop: '0.75rem' }} 
                       exit={{ opacity: 0, height: 0, marginTop: 0 }}
                       transition={{ duration: 0.3, ease: "easeInOut" }}
-                      className="pt-3 sm:pt-4 border-t border-border/50"
+                      className="pt-2 sm:pt-3 md:pt-4 border-t border-border/50"
                     >
                       <h4 className="text-xs font-semibold text-accent mb-1.5 sm:mb-2 uppercase tracking-wider">Key Skills & Tools:</h4>
                       <div className="flex flex-wrap gap-1 sm:gap-1.5 justify-center">
@@ -211,7 +211,7 @@ export default function HomePage() {
       
       <motion.section
         id="ask-ai"
-        className="py-8 sm:py-12"
+        className="py-8 sm:py-12 md:py-16"
         variants={fadeInVariants}
         initial="hidden"
         whileInView="visible"
@@ -221,24 +221,6 @@ export default function HomePage() {
         <AskMeAnythingWidget />
       </motion.section>
 
-      <motion.section
-        id="cta-certifications"
-        className="py-8 sm:py-12 text-center bg-card rounded-lg p-6 sm:p-8"
-        variants={fadeInVariants}
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true, amount: 0.2 }}
-      >
-        <SectionTitle className="animate-glitch">My Credentials</SectionTitle>
-        <p className="max-w-lg sm:max-w-xl mx-auto text-sm sm:text-base text-muted-foreground mb-6">
-          Explore my professional certifications and qualifications in the field of cybersecurity.
-        </p>
-        <Button asChild size="default" className="md:size-lg bg-accent hover:bg-accent/90 text-accent-foreground">
-          <Link href="/certifications">
-            View My Certifications <Star className="ml-2 h-4 sm:h-5 w-4 sm:w-5" />
-          </Link>
-        </Button>
-      </motion.section>
     </div>
   );
 }

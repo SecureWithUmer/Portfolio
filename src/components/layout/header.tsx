@@ -1,6 +1,16 @@
 
 import Link from 'next/link';
-import { ShieldCheck } from 'lucide-react';
+import { ShieldCheck, Menu } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+  SheetClose,
+} from "@/components/ui/sheet";
 
 const navItems = [
   { href: '/', label: 'Home' },
@@ -12,13 +22,14 @@ const navItems = [
 export function Header() {
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <div className="container flex h-14 max-w-screen-2xl items-center px-4 sm:px-6 lg:px-8">
-        <Link href="/" className="mr-4 flex items-center space-x-2 sm:mr-6">
+      <div className="container flex h-14 max-w-screen-2xl items-center justify-between px-4 sm:px-6 lg:px-8">
+        <Link href="/" className="flex items-center space-x-2">
           <ShieldCheck className="h-5 w-5 sm:h-6 sm:w-6 text-primary" />
           <span className="font-bold font-headline text-base sm:text-lg">UmerFarooq.Cyber</span>
         </Link>
-        {/* Basic responsive nav - consider a hamburger menu for more items or smaller screens */}
-        <nav className="flex flex-1 items-center space-x-2 sm:space-x-3 md:space-x-4 lg:space-x-6 overflow-x-auto">
+        
+        {/* Desktop Navigation */}
+        <nav className="hidden md:flex flex-1 items-center justify-end space-x-2 sm:space-x-3 md:space-x-4 lg:space-x-6">
           {navItems.map((item) => (
             <Link
               key={item.href}
@@ -29,6 +40,38 @@ export function Header() {
             </Link>
           ))}
         </nav>
+
+        {/* Mobile Navigation */}
+        <div className="md:hidden">
+          <Sheet>
+            <SheetTrigger asChild>
+              <Button variant="ghost" size="icon">
+                <Menu className="h-6 w-6 text-primary" />
+                <span className="sr-only">Open menu</span>
+              </Button>
+            </SheetTrigger>
+            <SheetContent side="left" className="w-[280px] sm:w-[320px] bg-background p-6">
+              <SheetHeader className="mb-8 text-left">
+                <SheetTitle className="flex items-center space-x-2">
+                    <ShieldCheck className="h-6 w-6 text-primary" />
+                    <span className="font-bold font-headline text-lg">UmerFarooq.Cyber</span>
+                </SheetTitle>
+              </SheetHeader>
+              <nav className="flex flex-col space-y-4">
+                {navItems.map((item) => (
+                  <SheetClose asChild key={item.href}>
+                    <Link
+                      href={item.href}
+                      className="text-base font-medium text-foreground/90 transition-colors hover:text-primary py-2 px-3 rounded-md hover:bg-muted"
+                    >
+                      {item.label}
+                    </Link>
+                  </SheetClose>
+                ))}
+              </nav>
+            </SheetContent>
+          </Sheet>
+        </div>
       </div>
     </header>
   );
