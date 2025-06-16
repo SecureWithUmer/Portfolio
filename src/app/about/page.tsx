@@ -1,18 +1,24 @@
 
-import type { Metadata } from 'next';
+"use client";
+
+import type { Metadata } from 'next'; // Keep for potential static metadata, though dynamic below
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import { PageTitle } from '@/components/ui/page-title';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Download, ShieldCheck, Network, ClipboardCheck, Target, MessagesSquare, ServerCog } from 'lucide-react';
+import { Download, ShieldCheck, Network, ClipboardCheck, Target, MessagesSquare, ServerCog, Loader2 } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { Progress } from "@/components/ui/progress";
+import { useToast } from "@/hooks/use-toast";
 
-export const metadata: Metadata = {
-  title: 'About Me | Umer Farooq',
-  description: 'Learn more about Umer Farooq, a cybersecurity enthusiast from Faisalabad, Pakistan, his skills, and professional background.',
-};
+// Dynamic metadata for client components is not standard.
+// export const metadata: Metadata = {
+//   title: 'About Me | Umer Farooq',
+//   description: 'Learn more about Umer Farooq, a cybersecurity enthusiast from Faisalabad, Pakistan, his skills, and professional background.',
+// };
 
-// Skills and expertise data. In a larger app, this might come from a shared data source.
+
 const expertiseItems = [
   { id: 'threat-intel', icon: ShieldCheck, title: 'Threat Intelligence', description: 'Proactive identification and analysis of cyber threats to preempt attacks.', skillsAndTools: ['MITRE ATT&CK', 'OSINT Tools', 'Maltego', 'VirusTotal API', 'Threat Feeds Integration', 'YARA Rules'] },
   { id: 'network-sec', icon: Network, title: 'Network Security', description: 'Designing and implementing secure network architectures and protocols.', skillsAndTools: ['Firewalls (NGFW)', 'IDS/IPS', 'VPN Setup', 'Microsegmentation', 'Zscaler', 'Palo Alto Networks'] },
@@ -25,7 +31,54 @@ const expertiseItems = [
 
 
 export default function AboutMePage() {
+  const [isScanning, setIsScanning] = useState(false);
+  const [scanProgress, setScanProgress] = useState(0);
+  const [showDownloadNote, setShowDownloadNote] = useState(true);
+  const { toast } = useToast();
+
+  useEffect(() => {
+    let timer: NodeJS.Timeout;
+    if (isScanning) {
+      setScanProgress(0); // Reset progress
+      const totalDuration = 2800; // Slightly less than timeout to ensure progress hits 100
+      const intervalDuration = 50;
+      const steps = totalDuration / intervalDuration;
+      const increment = 100 / steps;
+
+      let currentProgress = 0;
+      timer = setInterval(() => {
+        currentProgress += increment;
+        if (currentProgress >= 100) {
+          setScanProgress(100);
+          clearInterval(timer);
+        } else {
+          setScanProgress(currentProgress);
+        }
+      }, intervalDuration);
+    }
+    return () => clearInterval(timer);
+  }, [isScanning]);
+
+
   const aboutMeText = "As a passionate cybersecurity enthusiast hailing from Faisalabad, Pakistan, I am deeply committed to the art and science of digital defense. My journey in cybersecurity is driven by a relentless curiosity to understand and mitigate evolving threats. I possess a diverse skill set encompassing threat intelligence, network security, ethical hacking, and security audits. I thrive on dissecting complex security challenges and architecting robust solutions to protect digital assets and ensure operational resilience. My goal is to contribute meaningfully to creating a safer digital environment for individuals and organizations alike.";
+
+  const handleResumeDownload = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    e.preventDefault(); 
+    setIsScanning(true);
+    setShowDownloadNote(false);
+
+    setTimeout(() => {
+      setIsScanning(false);
+      setScanProgress(100); // Ensure progress visually completes
+      const link = document.createElement('a');
+      link.href = '/assets/resume.pdf'; // Ensure this path is correct
+      link.download = 'Umer_Farooq_Resume.pdf';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      toast({ title: "Download Started", description: "Your resume download should begin shortly." });
+    }, 3000); 
+  };
 
   return (
     <div className="space-y-16">
@@ -81,15 +134,44 @@ export default function AboutMePage() {
       </section>
 
       <section className="text-center py-8">
-        <Button asChild size="lg" className="bg-accent hover:bg-accent/90 text-accent-foreground">
-          <a href="/assets/resume.pdf" download="Umer_Farooq_Resume.pdf">
-            Download My Resume <Download className="ml-2 h-5 w-5" />
-          </a>
-        </Button>
-        <p className="text-xs text-muted-foreground mt-2">
-            (Note: Create an 'assets' folder in 'public' and add 'resume.pdf' there.)
-        </p>
+        {isScanning ? (
+          <div className="flex flex-col items-center space-y-3">
+            <Loader2 className="h-10 w-10 animate-spin text-primary" />
+            <p className="text-muted-foreground text-lg">Scanning document for security...</p>
+            <Progress value={scanProgress} className="w-full max-w-sm mt-2 h-2.5" />
+             <p className="text-xs text-muted-foreground mt-1">Ensuring file integrity and safety.</p>
+          </div>
+        ) : (
+          <Button
+            asChild={!isScanning} 
+            size="lg"
+            className="bg-accent hover:bg-accent/90 text-accent-foreground px-8 py-6 text-lg"
+            onClick={isScanning ? undefined : handleResumeDownload}
+          >
+            <a href="/assets/resume.pdf" download="Umer_Farooq_Resume.pdf">
+              Download My Resume <Download className="ml-2 h-5 w-5" />
+            </a>
+          </Button>
+        )}
+        {showDownloadNote && !isScanning && (
+          <p className="text-xs text-muted-foreground mt-3">
+              (Note: Create an 'assets' folder in 'public' and add 'resume.pdf' there for download.)
+          </p>
+        )}
       </section>
     </div>
   );
 }
+
+// To set dynamic title for client components, use useEffect in the component
+// or ensure metadata is handled by a parent server component or layout.
+// For simplicity, if this page should always have this title,
+// you can still define static metadata in a similar fashion if this file were named page.tsx
+// under a route group, or rely on the template in RootLayout.
+// For a specific title on this client page, a common pattern is:
+// useEffect(() => { document.title = 'About Me | Umer Farooq'; }, []);
+// However, Next.js 13+ prefers metadata API.
+// Since this is already `page.tsx`, the metadata object at the top (if uncommented and this was a server component) would work.
+// For client components, metadata must be exported from a `layout.tsx` or `page.tsx` that is a Server Component.
+// If this needs to be a client component and have dynamic metadata, it's more complex.
+// Given the structure, it might be better to make `src/app/about/layout.tsx` handle metadata.

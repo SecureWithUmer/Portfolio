@@ -5,7 +5,7 @@ import { ShieldCheck } from 'lucide-react';
 const navItems = [
   { href: '/', label: 'Home' },
   { href: '/about', label: 'About Me' },
-  { href: '/blog', label: 'Blog' },
+  { href: '/certifications', label: 'Certifications' },
   { href: '/contact', label: 'Contact' },
 ];
 

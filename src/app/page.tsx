@@ -10,10 +10,12 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { AskMeAnythingWidget } from '@/components/ai/ask-me-anything';
+import { CryptoVisitorCounter } from '@/components/misc/crypto-visitor-counter';
 import {
   BookOpen, Send, ShieldCheck,
   Network, ClipboardCheck, Target, MessagesSquare,
-  ServerCog
+  ServerCog, Star
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 
@@ -72,7 +74,7 @@ export default function HomePage() {
   ];
 
   return (
-    <div className="space-y-16">
+    <div className="space-y-20">
       <section className="text-center pt-0 pb-16 min-h-[70vh] flex flex-col justify-start items-center overflow-hidden">
         <motion.div
           initial={{ opacity: 0, scale: 0.8 }}
@@ -208,6 +210,18 @@ export default function HomePage() {
           ))}
         </motion.div>
       </motion.section>
+      
+      <motion.section
+        id="ask-ai"
+        className="py-12"
+        variants={fadeInVariants}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, amount: 0.2 }}
+      >
+        <SectionTitle className="text-center animate-glitch">Ask My AI Assistant</SectionTitle>
+        <AskMeAnythingWidget />
+      </motion.section>
 
       <motion.section
         id="ai-tip"
@@ -221,22 +235,33 @@ export default function HomePage() {
       </motion.section>
 
       <motion.section
-        id="cta-blog"
+        id="cta-certifications"
         className="py-12 text-center bg-card rounded-lg p-8"
         variants={fadeInVariants}
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true, amount: 0.2 }}
       >
-        <SectionTitle className="animate-glitch">Stay Informed</SectionTitle>
+        <SectionTitle className="animate-glitch">My Credentials</SectionTitle>
         <p className="max-w-xl mx-auto text-muted-foreground mb-6">
-          Explore my latest articles and insights on cybersecurity trends, best practices, and threat landscapes.
+          Explore my professional certifications and qualifications in the field of cybersecurity.
         </p>
         <Button asChild size="lg" className="bg-accent hover:bg-accent/90 text-accent-foreground">
-          <Link href="/blog">
-            Read The Blog <BookOpen className="ml-2 h-5 w-5" />
+          <Link href="/certifications">
+            View My Certifications <Star className="ml-2 h-5 w-5" />
           </Link>
         </Button>
+      </motion.section>
+
+      <motion.section
+        id="visitor-counter"
+        className="py-12"
+        variants={fadeInVariants}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, amount: 0.2 }}
+      >
+        <CryptoVisitorCounter />
       </motion.section>
     </div>
   );
