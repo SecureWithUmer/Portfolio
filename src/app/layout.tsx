@@ -11,6 +11,8 @@ import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useToast } from "@/hooks/use-toast";
 
+// Removed GeolocationData import as it's no longer used by the loader
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -31,7 +33,7 @@ export default function RootLayout({
     
     toast({
       title: "System Online",
-      description: "Welcome to UmerFarooq.Cyber!",
+      description: "Welcome to UmerFarooq.Cyber!", // Generic welcome
       duration: 4500, 
     });
 
@@ -39,6 +41,12 @@ export default function RootLayout({
       setIsMainContentVisible(true);
     }, 300); 
   };
+
+  useEffect(() => {
+    if (isMainContentVisible) {
+      window.scrollTo(0, 0);
+    }
+  }, [isMainContentVisible]);
 
 
   return (
