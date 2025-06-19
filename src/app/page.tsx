@@ -133,7 +133,7 @@ export default function HomePage() {
             </Link>
           </Button>
           <Button asChild size="default" variant="outline" className="w-full sm:w-auto text-sm sm:text-base md:h-11 md:px-8">
-            <Link href="/contact">
+            <Link href="https://www.linkedin.com/in/hackandsecurewithumer" target="_blank" rel="noopener noreferrer">
               Get In Touch <Send className="ml-2 h-4 sm:h-5 w-4 sm:w-5" />
             </Link>
           </Button>
