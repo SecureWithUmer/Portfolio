@@ -5,14 +5,12 @@ import type { Metadata } from 'next';
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import { PageTitle } from '@/components/ui/page-title';
-import { SectionTitle } from '@/components/ui/section-title';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Download, ShieldCheck, Network, ClipboardCheck, Target, MessagesSquare, ServerCog, Loader2 } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { Progress } from "@/components/ui/progress";
 import { useToast } from "@/hooks/use-toast";
-import { AskMeAnythingWidget } from '@/components/ai/ask-me-anything';
 
 
 const expertiseItems = [
@@ -154,11 +152,6 @@ export default function AboutMePage() {
               (Note: Create an 'assets' folder in 'public' and add 'resume.pdf' there for download.)
           </p>
         )}
-      </section>
-
-      <section id="ask-ai-about" className="py-8 sm:py-12 md:py-16">
-        <SectionTitle className="text-center animate-glitch">Ask My AI Assistant</SectionTitle>
-        <AskMeAnythingWidget />
       </section>
     </div>
   );

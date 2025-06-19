@@ -8,13 +8,14 @@ import {
   SheetHeader,
   SheetTitle,
   SheetClose,
-  SheetTrigger, // Added SheetTrigger here
+  SheetTrigger,
 } from "@/components/ui/sheet";
 
 const navItems = [
   { href: '/', label: 'Home' },
   { href: '/about', label: 'About Me' },
   { href: '/certifications', label: 'Certifications' },
+  { href: '/ai-assistant', label: 'AI Assistant' },
   { href: '/contact', label: 'Contact' },
 ];
 
