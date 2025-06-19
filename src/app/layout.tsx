@@ -31,7 +31,7 @@ export default function RootLayout({
     
     toast({
       title: "System Online",
-      description: "Welcome to UmerFarooq.Cyber!",
+      description: "Welcome to my portfolio",
       duration: 4500, 
     });
 
