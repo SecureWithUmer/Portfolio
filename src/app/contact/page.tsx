@@ -1,97 +1,68 @@
 
 "use client";
 
-import { useFormState, useFormStatus } from "react-dom";
-import { submitContactForm, type ContactFormState } from "./actions";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Label } from "@/components/ui/label";
 import { PageTitle } from "@/components/ui/page-title";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { useEffect } from "react";
-import { useToast } from "@/hooks/use-toast";
-import { Loader2 } from "lucide-react";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import Link from "next/link";
+import { Linkedin, Github, Mail } from "lucide-react";
 
-const initialState: ContactFormState = {
-  message: "",
-  success: false,
-};
-
-function SubmitButton() {
-  const { pending } = useFormStatus();
-  return (
-    <Button type="submit" disabled={pending} className="w-full bg-accent hover:bg-accent/90 text-accent-foreground text-sm sm:text-base py-2.5 sm:py-3">
-      {pending ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
-      Send Message
-    </Button>
-  );
-}
+const contactMethods = [
+  {
+    name: "LinkedIn",
+    href: "https://www.linkedin.com/in/hackandsecurewithumer",
+    icon: Linkedin,
+    username: "@hackandsecurewithumer",
+    external: true,
+  },
+  {
+    name: "GitHub",
+    href: "https://github.com/SecureWithUmer",
+    icon: Github,
+    username: "@SecureWithUmer",
+    external: true,
+  },
+  {
+    name: "Email",
+    href: "mailto:hackwithumer@outlook.com",
+    icon: Mail,
+    username: "hackwithumer@outlook.com",
+    external: false,
+  },
+];
 
 export default function ContactPage() {
-  const [state, formAction] = useFormState(submitContactForm, initialState);
-  const { toast } = useToast();
-
-  useEffect(() => {
-    if (state.message) {
-      if (state.success) {
-        toast({
-          title: "Success!",
-          description: state.message,
-        });
-      } else if (state.issues && state.issues.length > 0) {
-        state.issues.forEach(issue => {
-          toast({
-            title: "Validation Error",
-            description: issue,
-            variant: "destructive",
-          });
-        });
-      } else if(!state.success && state.message) {
-         toast({
-            title: "Error",
-            description: state.message,
-            variant: "destructive",
-          });
-      }
-    }
-  }, [state, toast]);
-
-
   return (
     <div className="space-y-10 sm:space-y-12">
-      <PageTitle subtitle="I'm always open to discussing new projects, creative ideas, or opportunities to be part of your visions.">
+      <PageTitle subtitle="Let's connect! Find me on these platforms or send me an email.">
         Get In Touch
       </PageTitle>
       
-      <Card className="max-w-full md:max-w-2xl mx-auto">
+      <Card className="max-w-full md:max-w-lg mx-auto">
         <CardHeader className="px-4 pt-4 pb-3 sm:p-6 sm:pb-4">
-          <CardTitle className="text-xl sm:text-2xl">Contact Form</CardTitle>
-          <CardDescription className="text-xs sm:text-sm">Fill out the form below and I'll get back to you as soon as possible.</CardDescription>
+          <CardTitle className="text-xl sm:text-2xl">Connect With Me</CardTitle>
+          <CardDescription className="text-xs sm:text-sm">
+            You can reach out to me via the following platforms. I'm always open to discussing new projects, cybersecurity topics, or collaboration opportunities.
+          </CardDescription>
         </CardHeader>
-        <form action={formAction}>
-          <CardContent className="space-y-4 sm:space-y-6 px-4 sm:p-6">
-            <div className="space-y-1.5 sm:space-y-2">
-              <Label htmlFor="name">Full Name</Label>
-              <Input id="name" name="name" placeholder="Your Name" required defaultValue={state.fields?.name} />
-            </div>
-            <div className="space-y-1.5 sm:space-y-2">
-              <Label htmlFor="email">Email Address</Label>
-              <Input id="email" name="email" type="email" placeholder="your.email@example.com" required defaultValue={state.fields?.email} />
-            </div>
-            <div className="space-y-1.5 sm:space-y-2">
-              <Label htmlFor="subject">Subject</Label>
-              <Input id="subject" name="subject" placeholder="Subject of your message" required defaultValue={state.fields?.subject} />
-            </div>
-            <div className="space-y-1.5 sm:space-y-2">
-              <Label htmlFor="message">Message</Label>
-              <Textarea id="message" name="message" placeholder="Your detailed message..." rows={4} required defaultValue={state.fields?.message} />
-            </div>
-          </CardContent>
-          <CardFooter className="px-4 pb-4 pt-2 sm:p-6 sm:pt-2">
-            <SubmitButton />
-          </CardFooter>
-        </form>
+        <CardContent className="space-y-4 sm:space-y-5 px-4 sm:p-6">
+          {contactMethods.map((method) => (
+            <Button
+              key={method.name}
+              asChild
+              variant="outline"
+              className="w-full justify-start text-left h-auto py-3 sm:py-3.5 border-primary/40 hover:bg-primary/10 hover:border-primary"
+            >
+              <Link href={method.href} target={method.external ? "_blank" : "_self"} rel={method.external ? "noopener noreferrer" : ""}>
+                <method.icon className="h-5 w-5 sm:h-6 sm:w-6 mr-3 text-accent flex-shrink-0" />
+                <div className="flex flex-col">
+                  <span className="text-sm sm:text-base font-medium text-foreground">{method.name}</span>
+                  <span className="text-xs sm:text-sm text-muted-foreground">{method.username}</span>
+                </div>
+              </Link>
+            </Button>
+          ))}
+        </CardContent>
       </Card>
     </div>
   );
