@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState } from 'react';
@@ -78,12 +79,12 @@ export default function HomePage() {
           transition={{ duration: 0.7, delay: 0.2, ease: "easeOut" }}
         >
           <Image
-            src="https://placehold.co/200x200.png"
+            src="/assets/profile-picture.png"
             alt="Umer Farooq"
             width={160}
             height={160}
             className="rounded-full mx-auto mb-4 sm:mb-6 border-4 border-primary w-32 h-32 sm:w-36 md:w-40 sm:h-36 md:h-40"
-            data-ai-hint="cybersecurity shield abstract"
+            data-ai-hint="professional headshot"
             priority
           />
         </motion.div>
