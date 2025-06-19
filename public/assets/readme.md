@@ -1,0 +1,1 @@
+upload resume and profile picture in assets folder
