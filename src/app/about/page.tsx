@@ -27,7 +27,6 @@ const expertiseItems = [
 export default function AboutMePage() {
   const [isScanning, setIsScanning] = useState(false);
   const [scanProgress, setScanProgress] = useState(0);
-  const [showDownloadNote, setShowDownloadNote] = useState(true);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -59,7 +58,6 @@ export default function AboutMePage() {
   const handleResumeDownload = (e: React.MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault(); 
     setIsScanning(true);
-    setShowDownloadNote(false);
 
     setTimeout(() => {
       setIsScanning(false);
@@ -89,7 +87,7 @@ export default function AboutMePage() {
         </div>
         <div className="flex justify-center order-first md:order-last md:justify-start md:pl-8">
           <Image
-            src="https://placehold.co/300x300.png" 
+            src="/assets/profile-picture.png" 
             alt="Umer Farooq - Cybersecurity Professional"
             width={200}
             height={200}
@@ -146,11 +144,6 @@ export default function AboutMePage() {
               Download My Resume <Download className="ml-2 h-4 w-4 sm:h-5 sm:w-5" />
             </a>
           </Button>
-        )}
-        {showDownloadNote && !isScanning && (
-          <p className="text-xs text-muted-foreground mt-2 sm:mt-3">
-              (Note: Create an 'assets' folder in 'public' and add 'resume.pdf' there for download.)
-          </p>
         )}
       </section>
     </div>
