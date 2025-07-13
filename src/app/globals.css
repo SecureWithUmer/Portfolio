@@ -148,3 +148,28 @@ body {
 .prose code {
   @apply font-code;
 }
+
+@keyframes scan-ray {
+    0% {
+        background-position: 50% -100%;
+    }
+    100% {
+        background-position: 50% 200%;
+    }
+}
+
+.animated-border-ray {
+    width: 2px;
+    height: auto;
+    background: linear-gradient(
+        transparent,
+        hsl(var(--primary) / 0.7),
+        transparent
+    );
+    background-size: 100% 50%; /* The 'ray' is 50% of the height */
+    background-repeat: no-repeat;
+    animation: scan-ray 3s linear infinite;
+    align-self: stretch;
+    margin-top: 2rem;
+    margin-bottom: 2rem;
+}
