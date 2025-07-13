@@ -2,46 +2,65 @@
 "use client";
 
 import Image from 'next/image';
-import { motion } from 'framer-motion';
+import { motion, useMotionValue, useTransform, useSpring } from 'framer-motion';
+import { useRef } from 'react';
 
 export function IdCard() {
+    const cardRef = useRef<HTMLDivElement>(null);
+
+    const mouseX = useMotionValue(0);
+    const mouseY = useMotionValue(0);
+
+    const springConfig = { stiffness: 150, damping: 20, mass: 1 };
+
+    const rotateX = useSpring(useTransform(mouseY, [-125, 125], [15, -15]), springConfig);
+    const rotateY = useSpring(useTransform(mouseX, [-125, 125], [-15, 15]), springConfig);
+    const translateX = useSpring(useTransform(mouseX, [-125, 125], [-5, 5]), springConfig);
+    const translateY = useSpring(useTransform(mouseY, [-125, 125], [-5, 5]), springConfig);
+
+    const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+        if (!cardRef.current) return;
+        const { left, top, width, height } = cardRef.current.getBoundingClientRect();
+        const x = e.clientX - left - width / 2;
+        const y = e.clientY - top - height / 2;
+        mouseX.set(x);
+        mouseY.set(y);
+    };
+
+    const handleMouseLeave = () => {
+        mouseX.set(0);
+        mouseY.set(0);
+    };
+
     return (
         <motion.div
+            ref={cardRef}
             className="relative w-48 mx-auto"
-            initial={{ y: -200, opacity: 0, rotate: -15 }}
-            animate={{ 
-                y: 0, 
-                opacity: 1, 
-                rotate: 0,
-                transition: { 
-                    type: 'spring', 
-                    stiffness: 50, 
-                    damping: 10,
-                    duration: 0.8,
-                    delay: 0.5 
-                } 
-            }}
+            style={{ perspective: '1200px' }}
+            initial={{ opacity: 0, y: -100 }}
+            animate={{ opacity: 1, y: 0, transition: { duration: 0.5, delay: 0.5 } }}
+            onMouseMove={handleMouseMove}
+            onMouseLeave={handleMouseLeave}
         >
-            {/* Lanyard Strap */}
-            <div className="absolute top-[-40px] left-1/2 -translate-x-1/2 h-12 w-1 bg-gray-700 rounded-t-sm"></div>
-            {/* Lanyard Clip */}
-            <div className="absolute top-[-10px] left-1/2 -translate-x-1/2 h-3 w-4 bg-gray-500 rounded-sm"></div>
+            {/* Lanyard Strap & Clip */}
+            <div className="absolute top-[-50px] left-1/2 -translate-x-1/2 flex flex-col items-center">
+                <div className="w-1.5 h-12 bg-gray-600 rounded-t-sm" />
+                <div className="w-5 h-3 bg-gray-400 border-b-2 border-gray-500 rounded-sm" />
+            </div>
 
             {/* ID Card */}
             <motion.div 
-                className="bg-gray-800 border-2 border-gray-600 rounded-xl overflow-hidden shadow-lg shadow-primary/20 backdrop-blur-sm bg-opacity-30"
-                animate={{
-                    rotate: [0, -2, 2, -2, 0], // Gentle sway
-                }}
-                transition={{
-                    duration: 8,
-                    ease: "easeInOut",
-                    repeat: Infinity,
-                    repeatDelay: 2
+                className="bg-card/80 border-2 border-border rounded-xl overflow-hidden shadow-2xl shadow-primary/20 backdrop-blur-sm"
+                style={{
+                    rotateX,
+                    rotateY,
+                    translateX,
+                    translateY,
+                    transformStyle: 'preserve-3d',
                 }}
             >
-                <div className="bg-gray-900 p-2 text-center">
-                    <span className="text-xs font-bold text-primary tracking-widest">CYBER-ID</span>
+                <div className="bg-secondary p-2 text-center border-b border-border">
+                    <span className="text-xs font-bold text-primary tracking-widest uppercase">Cyber-ID</span>
                 </div>
                 <div className="p-3">
                     <Image
@@ -54,7 +73,7 @@ export function IdCard() {
                         priority
                     />
                 </div>
-                <div className="bg-gray-900 p-2 text-center border-t border-gray-700">
+                <div className="bg-secondary p-2 text-center border-t border-border">
                     <p className="text-sm font-semibold text-foreground">Umer Farooq</p>
                     <p className="text-xs text-muted-foreground">Authorized Personnel</p>
                 </div>
