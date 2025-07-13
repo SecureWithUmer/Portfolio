@@ -9,38 +9,38 @@ body {
 
 @layer base {
   :root {
-    /* Dark Theme - Using primary green for more text elements */
-    --background: 0 0% 7%; /* Original: #121212 */
-    --foreground: 120 39% 50%; /* Original primary green, used as main text color */
+    /* Hacker Terminal Theme */
+    --background: 0 0% 0%; /* Black */
+    --foreground: 120 100% 50%; /* Bright Green */
     
-    --card: 0 0% 8%; /* Original: #141414 */
-    --card-foreground: 120 39% 50%; /* Changed from cyan to primary green */
+    --card: 0 0% 5%; /* Very dark grey for cards if needed */
+    --card-foreground: 120 100% 50%;
     
-    --popover: 0 0% 8%; /* Matching card for consistency */
-    --popover-foreground: 120 39% 50%; /* Changed from cyan to primary green */
+    --popover: 0 0% 5%;
+    --popover-foreground: 120 100% 50%;
     
-    --primary: 120 39% 50%; /* Main Green #4CAF50 - kept from PRD */
-    --primary-foreground: 0 0% 95%; /* Light text for on-primary elements (e.g., white or very light grey) */
+    --primary: 120 100% 50%; /* Bright Green */
+    --primary-foreground: 0 0% 0%; /* Black text for on-primary elements */
     
-    --secondary: 0 0% 12%; /* Darker shade for secondary elements. Original: #1F1F1F */
-    --secondary-foreground: 120 40% 55%; /* Dimmer green for secondary text. */
+    --secondary: 0 0% 12%; 
+    --secondary-foreground: 120 100% 60%;
     
-    --muted: 0 0% 15%; /* Muted elements. */
-    --muted-foreground: 120 39% 35%; /* Changed from grey to a darker primary green */
+    --muted: 0 0% 15%;
+    --muted-foreground: 120 100% 35%; /* Dimmer Green */
     
-    --accent: 81 46% 50%; /* Vibrant Green Accent #A7C957 - kept from PRD */
-    --accent-foreground: 0 0% 7%; /* Dark text for on-accent elements. */
+    --accent: 120 100% 65%; /* Lighter Green Accent */
+    --accent-foreground: 0 0% 0%;
     
     --destructive: 0 60% 50%; /* Red for destructive actions. */
-    --destructive-foreground: 0 0% 98%; /* Light text for on-destructive. */
+    --destructive-foreground: 0 0% 98%; 
     
-    --border: 120 39% 30%; /* Primary green, but darker for borders. */
-    --input: 0 0% 10%; /* Dark input background. */
-    --ring: 81 46% 60%; /* Accent green for rings, slightly lighter. */
+    --border: 120 100% 25%; /* Dark Green for borders */
+    --input: 0 0% 10%; 
+    --ring: 120 100% 60%; 
 
     --radius: 0.5rem;
 
-    /* Chart colors adjusted for dark theme, can be further customized */
+    /* Chart colors - not used in terminal theme but good to have */
     --chart-1: 120 39% 60%; 
     --chart-2: 81 46% 60%;
     --chart-3: 200 50% 60%; 
@@ -58,46 +58,7 @@ body {
     --sidebar-ring: 81 46% 50%;
   }
 
-  /* Light theme override if ever implemented via a class */
-  .light {
-    --background: 0 0% 96%; /* Light Gray */
-    --foreground: 220 10% 10%; /* Dark Gray/Black */
-    
-    --card: 0 0% 100%; /* White */
-    --card-foreground: 220 10% 10%;
-    
-    --popover: 0 0% 100%;
-    --popover-foreground: 220 10% 10%;
-    
-    --primary: 120 39% 45%; /* Darker Green for light theme contrast */
-    --primary-foreground: 0 0% 100%; 
-    
-    --secondary: 0 0% 93%;
-    --secondary-foreground: 220 10% 20%;
-    
-    --muted: 0 0% 90%;
-    --muted-foreground: 220 10% 40%;
-    
-    --accent: 81 46% 45%; /* Darker Accent Green */
-    --accent-foreground: 0 0% 100%; 
-    
-    --destructive: 0 70% 50%;
-    --destructive-foreground: 0 0% 100%;
-    
-    --border: 0 0% 85%;
-    --input: 0 0% 90%;
-    --ring: 81 46% 55%;
-
-    /* Sidebar for light theme */
-    --sidebar-background: 0 0% 98%;
-    --sidebar-foreground: 220 10% 20%;
-    --sidebar-primary: 120 39% 45%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 0 0% 93%;
-    --sidebar-accent-foreground: 120 39% 45%;
-    --sidebar-border: 0 0% 85%;
-    --sidebar-ring: 81 46% 55%;
-  }
+  /* No light theme needed for this design */
 }
 
 @layer base {
@@ -110,11 +71,9 @@ body {
   h1, h2, h3, h4, h5, h6 {
     @apply font-headline; /* Orbitron for headlines */
   }
-  /* Ensure pre and code also use font-code if not inheriting properly */
   pre, code {
     @apply font-code;
   }
-  /* Target specific name styling if needed, though font-cyberName is in tailwind.config */
   .cyber-name {
     @apply font-cyberName;
   }
@@ -125,74 +84,75 @@ body {
   top: 0;
   left: 0;
   width: 100%;
-  height: 100vh; /* Use vh for full viewport height */
-  z-index: -10; /* Ensure it's behind all content */
-  overflow: hidden; /* Prevent scrollbars if content exceeds viewport */
-  background-color: hsl(var(--background)); /* Base background color */
+  height: 100vh;
+  z-index: -10; 
+  overflow: hidden; 
+  background-color: hsl(var(--background)); 
 }
 
-/* Simplified terminal cursor to use animation from tailwind.config.ts */
 .terminal-cursor {
   display: inline-block;
-  width: 2px; 
+  width: 0.5em; 
   height: 1em; 
-  background-color: currentColor; /* Use current text color for cursor */
+  background-color: hsl(var(--primary));
   animation: blink 1s step-end infinite;
   margin-left: 2px; 
   vertical-align: text-bottom; 
+  box-shadow: 0 0 5px hsl(var(--primary)), 0 0 10px hsl(var(--primary));
 }
 
-/* Ensure keyframes are using HSL variables for theme consistency */
+@keyframes blink { 
+  '0%, 100%': { opacity: 1 },
+  '50%': { opacity: 0 },
+}
+
 @keyframes glitch {
   0% {
     transform: translate(0);
     text-shadow: 
-      1px 1px 0px hsl(var(--primary) / 0.3),
-      -1px -1px 0px hsl(var(--accent) / 0.3);
+      1px 1px 0px hsla(var(--primary) / 0.3),
+      -1px -1px 0px hsla(var(--accent) / 0.3);
   }
   25% {
     transform: translate(1px, -1px);
      text-shadow: 
-      -1px 1px 0px hsl(var(--primary) / 0.3),
-      1px -1px 0px hsl(var(--accent) / 0.3);
+      -1px 1px 0px hsla(var(--primary) / 0.3),
+      1px -1px 0px hsla(var(--accent) / 0.3);
   }
   50% {
     transform: translate(-1px, 1px);
      text-shadow: 
-      1px -1px 0px hsl(var(--primary) / 0.3),
-      -1px 1px 0px hsl(var(--accent) / 0.3);
+      1px -1px 0px hsla(var(--primary) / 0.3),
+      -1px 1px 0px hsla(var(--accent) / 0.3);
   }
   75% {
     transform: translate(1px, 1px);
      text-shadow: 
-      -1px -1px 0px hsl(var(--primary) / 0.3),
-      1px 1px 0px hsl(var(--accent) / 0.3);
+      -1px -1px 0px hsla(var(--primary) / 0.3),
+      1px 1px 0px hsla(var(--accent) / 0.3);
   }
   100% {
     transform: translate(0);
      text-shadow: 
-      1px 1px 0px hsl(var(--primary) / 0.3),
-      -1px -1px 0px hsl(var(--accent) / 0.3);
+      1px 1px 0px hsla(var(--primary) / 0.3),
+      -1px -1px 0px hsla(var(--accent) / 0.3);
   }
 }
 
 @keyframes neon-glow-primary {
   0%, 100% {
     text-shadow:
-      0 0 5px hsl(var(--primary) / 0.5), /* Adjusted alpha */
-      0 0 10px hsl(var(--primary) / 0.3); /* Adjusted alpha */
+      0 0 5px hsla(var(--primary) / 0.5),
+      0 0 10px hsla(var(--primary) / 0.3);
   }
   50% {
     text-shadow:
-      0 0 7px hsl(var(--primary) / 0.55), /* Adjusted alpha */
-      0 0 12px hsl(var(--primary) / 0.35); /* Adjusted alpha */
+      0 0 7px hsla(var(--primary) / 0.55),
+      0 0 12px hsla(var(--primary) / 0.35);
   }
 }
 
-/* Typography adjustments using @tailwindcss/typography plugin */
 .prose {
-  /* prose colors are set in tailwind.config.ts for dark mode specifically if needed */
-  /* Or can be general here */
   --tw-prose-body: hsl(var(--foreground));
   --tw-prose-headings: hsl(var(--primary));
   --tw-prose-lead: hsl(var(--muted-foreground));
@@ -210,7 +170,6 @@ body {
   --tw-prose-th-borders: hsl(var(--border));
   --tw-prose-td-borders: hsl(var(--border));
 
-  /* Dark mode specific prose colors if not using .dark variant in tailwind.config */
   --tw-prose-invert-body: hsl(var(--foreground));
   --tw-prose-invert-headings: hsl(var(--primary));
   --tw-prose-invert-lead: hsl(var(--muted-foreground));
@@ -229,8 +188,6 @@ body {
   --tw-prose-invert-td-borders: hsl(var(--border));
 }
 
-/* Apply font-code to prose code blocks for consistency */
 .prose pre code, .prose code {
   @apply font-code;
 }
-
