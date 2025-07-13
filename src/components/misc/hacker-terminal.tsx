@@ -137,20 +137,21 @@ const TypewriterOutput: React.FC<{ text: string; speed: number; onComplete: () =
     useEffect(() => {
         setTypedText('');
         if (text && text.length > 0) {
-            setTypedText(text[0]);
-        }
-    }, [text]);
-
-    useEffect(() => {
-        if (typedText.length < text.length) {
-            const timeoutId = setTimeout(() => {
-                setTypedText(text.slice(0, typedText.length + 1));
-            }, speed);
-            return () => clearTimeout(timeoutId);
+            let i = 0;
+            const type = () => {
+                if (i < text.length) {
+                    setTypedText(prev => prev + text.charAt(i));
+                    i++;
+                    setTimeout(type, speed);
+                } else {
+                    onComplete();
+                }
+            };
+            type();
         } else {
             onComplete();
         }
-    }, [typedText, text, speed, onComplete]);
+    }, [text, speed, onComplete]);
 
     return <div className="whitespace-pre-wrap">{typedText}</div>;
 };
@@ -282,7 +283,6 @@ export function HackerTerminal() {
                         {!isExecuting && (
                             <div className="flex items-center gap-2 mt-2">
                                 <TerminalPrompt />
-                                <div className="relative flex-grow flex items-center">
                                   <input
                                       ref={inputRef}
                                       id="terminal-input"
@@ -290,14 +290,12 @@ export function HackerTerminal() {
                                       value={inputValue}
                                       onChange={(e) => setInputValue(e.target.value)}
                                       onKeyDown={handleKeyDown}
-                                      className="bg-transparent border-none text-primary focus:ring-0 outline-none w-auto caret-transparent"
+                                      className="bg-transparent border-none text-primary focus:ring-0 outline-none w-auto"
                                       autoComplete="off"
                                       autoCapitalize="off"
                                       autoCorrect="off"
                                       disabled={isExecuting}
                                   />
-                                  <span className="terminal-cursor" />
-                                </div>
                             </div>
                         )}
                     </>
