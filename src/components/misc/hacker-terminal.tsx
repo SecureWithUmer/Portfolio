@@ -153,7 +153,7 @@ TypewriterOutput.displayName = 'TypewriterOutput';
 const CommandNav = ({ onCommandClick }: { onCommandClick: (cmd: string) => void }) => {
     const commands = Object.keys(commandMap);
     return (
-        <div className="flex flex-wrap gap-x-3 gap-y-1 p-1 text-primary">
+        <div className="flex flex-wrap gap-x-3 gap-y-1 p-1 text-accent">
             {commands.map((cmd, i) => (
                 <React.Fragment key={cmd}>
                     <button onClick={() => onCommandClick(cmd)} className="hover:underline focus:underline outline-none">
