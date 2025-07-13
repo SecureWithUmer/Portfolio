@@ -136,25 +136,18 @@ const TypewriterOutput: React.FC<{ text: string; speed: number; onComplete: () =
 
     useEffect(() => {
         setTypedText(''); // Reset on new text
-        const timeout = setTimeout(() => {
-             if (text && text.length > 0) {
-                let i = 0;
-                const intervalId = setInterval(() => {
-                    setTypedText(prev => prev + text[i]);
-                    i++;
-                    if (i === text.length) {
-                        clearInterval(intervalId);
-                        onComplete();
-                    }
-                }, speed);
-
-                return () => clearInterval(intervalId);
+        let i = 0;
+        const intervalId = setInterval(() => {
+            if (i < text.length) {
+                setTypedText(prev => prev + text[i]);
+                i++;
             } else {
-                 onComplete();
+                clearInterval(intervalId);
+                onComplete();
             }
-        }, 0);
-       
-        return () => clearTimeout(timeout);
+        }, speed);
+
+        return () => clearInterval(intervalId);
     }, [text, speed, onComplete]);
 
     return <div className="whitespace-pre-wrap">{typedText}</div>;
@@ -170,7 +163,7 @@ const CommandNav = ({ onCommandClick }: { onCommandClick: (cmd: string) => void 
                     <button onClick={() => onCommandClick(cmd)} className="hover:underline focus:underline outline-none">
                         {cmd}
                     </button>
-                    {i < commands.length && <span className="text-muted-foreground">|</span>}
+                    {i < commands.length -1 && <span className="text-muted-foreground">|</span>}
                 </React.Fragment>
             ))}
              <button onClick={() => onCommandClick('clear')} className="hover:underline focus:underline outline-none">
@@ -213,7 +206,7 @@ export function HackerTerminal() {
     
     const executeCommand = (cmd: string) => {
         if (isExecuting) return;
-        if (cmd === 'clear') {
+        if (cmd.toLowerCase().trim() === 'clear') {
             setHistory([]);
             setInputValue('');
             return;
@@ -239,7 +232,7 @@ export function HackerTerminal() {
             setIsExecuting(false);
             setCurrentCommand('');
         }
-    }, [currentCommand, isInitialOutputDone, getOutputForCommand]);
+    }, [currentCommand, isInitialOutputDone]);
 
     const handleNavCommand = (cmd: string) => {
         if (isExecuting) return;
@@ -287,18 +280,22 @@ export function HackerTerminal() {
                         {!isExecuting && (
                             <div className="flex items-center gap-2 mt-2">
                                 <TerminalPrompt />
-                                <input
-                                    ref={inputRef}
-                                    id="terminal-input"
-                                    type="text"
-                                    value={inputValue}
-                                    onChange={(e) => setInputValue(e.target.value)}
-                                    onKeyDown={handleKeyDown}
-                                    className="bg-transparent border-none text-primary focus:ring-0 outline-none w-full"
-                                    autoComplete="off"
-                                    disabled={isExecuting}
-                                />
-                                {!isExecuting && <span className="terminal-cursor"></span>}
+                                <div className="relative flex-grow">
+                                  <input
+                                      ref={inputRef}
+                                      id="terminal-input"
+                                      type="text"
+                                      value={inputValue}
+                                      onChange={(e) => setInputValue(e.target.value)}
+                                      onKeyDown={handleKeyDown}
+                                      className="bg-transparent border-none text-primary focus:ring-0 outline-none w-full"
+                                      autoComplete="off"
+                                      autoCapitalize="off"
+                                      autoCorrect="off"
+                                      disabled={isExecuting}
+                                  />
+                                  <span className="terminal-cursor" />
+                                </div>
                             </div>
                         )}
                     </>
