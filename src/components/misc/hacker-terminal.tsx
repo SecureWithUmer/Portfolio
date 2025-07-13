@@ -1,7 +1,7 @@
 
 "use client";
 
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import React, { useState, useEffect, useRef, useCallback, memo } from 'react';
 import { certifications } from '@/data/certifications';
 import { projects } from '@/data/projects'; 
 
@@ -144,10 +144,11 @@ interface CommandHistory {
     output: string;
 }
 
-const TypewriterOutput: React.FC<{ text: string; speed: number; onComplete: () => void }> = ({ text, speed, onComplete }) => {
+const TypewriterOutput: React.FC<{ text: string; speed: number; onComplete: () => void }> = memo(({ text, speed, onComplete }) => {
     const typedText = useTypewriter(text, onComplete, speed);
     return <div className="whitespace-pre-wrap">{typedText}</div>;
-};
+});
+TypewriterOutput.displayName = 'TypewriterOutput';
 
 const CommandNav = ({ onCommandClick }: { onCommandClick: (cmd: string) => void }) => {
     const commands = Object.keys(commandMap);

@@ -53,9 +53,6 @@ export function IdCard() {
                     transformStyle: 'preserve-3d',
                 }}
             >
-                <div className="bg-secondary p-2 text-center border-b border-border">
-                    <span className="text-xs font-bold text-primary tracking-widest uppercase">Cyber-ID</span>
-                </div>
                 <div className="p-3">
                     <Image
                         src="/assets/profile-picture.png"
