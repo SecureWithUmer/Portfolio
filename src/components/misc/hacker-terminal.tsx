@@ -135,9 +135,10 @@ const useTypewriter = (text: string, onComplete: () => void, speed: number) => {
             onComplete();
             return;
         }
+
         let i = 0;
         const intervalId = setInterval(() => {
-            setTypedText((prev) => prev + text.charAt(i));
+            setTypedText(currentText => currentText + text.charAt(i));
             i++;
             if (i >= text.length) {
                 clearInterval(intervalId);
