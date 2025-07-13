@@ -25,52 +25,7 @@ const expertiseItems = [
 
 
 export default function AboutMePage() {
-  const [isScanning, setIsScanning] = useState(false);
-  const [scanProgress, setScanProgress] = useState(0);
-  const { toast } = useToast();
-
-  useEffect(() => {
-    let timer: NodeJS.Timeout;
-    if (isScanning) {
-      setScanProgress(0); 
-      const totalDuration = 2800; 
-      const intervalDuration = 50;
-      const steps = totalDuration / intervalDuration;
-      const increment = 100 / steps;
-
-      let currentProgress = 0;
-      timer = setInterval(() => {
-        currentProgress += increment;
-        if (currentProgress >= 100) {
-          setScanProgress(100);
-          clearInterval(timer);
-        } else {
-          setScanProgress(currentProgress);
-        }
-      }, intervalDuration);
-    }
-    return () => clearInterval(timer);
-  }, [isScanning]);
-
-
   const aboutMeText = "As a passionate cybersecurity enthusiast hailing from Faisalabad, Pakistan, I am deeply committed to the art and science of digital defense. My journey in cybersecurity is driven by a relentless curiosity to understand and mitigate evolving threats. I possess a diverse skill set encompassing threat intelligence, network security, ethical hacking, and security audits. I thrive on dissecting complex security challenges and architecting robust solutions to protect digital assets and ensure operational resilience. My goal is to contribute meaningfully to creating a safer digital environment for individuals and organizations alike.";
-
-  const handleResumeDownload = (e: React.MouseEvent<HTMLAnchorElement>) => {
-    e.preventDefault(); 
-    setIsScanning(true);
-
-    setTimeout(() => {
-      setIsScanning(false);
-      setScanProgress(100); 
-      const link = document.createElement('a');
-      link.href = '/assets/resume.pdf'; 
-      link.download = 'Umer_Farooq_Resume.pdf';
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      toast({ title: "Download Started", description: "Your resume download should begin shortly." });
-    }, 3000); 
-  };
 
   return (
     <div className="space-y-12 sm:space-y-16">
@@ -123,28 +78,6 @@ export default function AboutMePage() {
             </Card>
           ))}
         </div>
-      </section>
-
-      <section className="text-center py-6 sm:py-8">
-        {isScanning ? (
-          <div className="flex flex-col items-center space-y-2 sm:space-y-3">
-            <Loader2 className="h-8 w-8 sm:h-10 sm:w-10 animate-spin text-primary" />
-            <p className="text-muted-foreground text-base sm:text-lg">Scanning document for security...</p>
-            <Progress value={scanProgress} className="w-full max-w-xs sm:max-w-sm mt-2 h-2 sm:h-2.5" />
-             <p className="text-xs text-muted-foreground mt-1">Ensuring file integrity and safety.</p>
-          </div>
-        ) : (
-          <Button
-            asChild={!isScanning} 
-            size="default"
-            className="bg-accent hover:bg-accent/90 text-accent-foreground px-6 py-3 sm:px-8 sm:py-6 text-base sm:text-lg md:size-lg"
-            onClick={isScanning ? undefined : handleResumeDownload}
-          >
-            <a href="/assets/resume.pdf" download="Umer_Farooq_Resume.pdf">
-              Download My Resume <Download className="ml-2 h-4 w-4 sm:h-5 sm:w-5" />
-            </a>
-          </Button>
-        )}
       </section>
     </div>
   );
