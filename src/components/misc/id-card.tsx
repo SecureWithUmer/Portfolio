@@ -35,19 +35,13 @@ export function IdCard() {
     return (
         <motion.div
             ref={cardRef}
-            className="relative w-48 mx-auto"
+            className="relative w-48 mx-auto mt-12"
             style={{ perspective: '1200px' }}
             initial={{ opacity: 0, y: -100 }}
             animate={{ opacity: 1, y: 0, transition: { duration: 0.5, delay: 0.5 } }}
             onMouseMove={handleMouseMove}
             onMouseLeave={handleMouseLeave}
         >
-            {/* Lanyard Strap & Clip */}
-            <div className="absolute top-[-50px] left-1/2 -translate-x-1/2 flex flex-col items-center">
-                <div className="w-1.5 h-12 bg-gray-600 rounded-t-sm" />
-                <div className="w-5 h-3 bg-gray-400 border-b-2 border-gray-500 rounded-sm" />
-            </div>
-
             {/* ID Card */}
             <motion.div 
                 className="bg-card/80 border-2 border-border rounded-xl overflow-hidden shadow-2xl shadow-primary/20 backdrop-blur-sm"
