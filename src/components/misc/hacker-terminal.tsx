@@ -133,25 +133,27 @@ interface CommandHistory {
 
 const TypewriterOutput: React.FC<{ text: string; speed: number; onComplete: () => void }> = ({ text, speed, onComplete }) => {
     const [typedText, setTypedText] = useState('');
+    const textRef = useRef(text);
+    const timeoutRef = useRef<NodeJS.Timeout>();
 
     useEffect(() => {
+        textRef.current = text;
         setTypedText('');
-        if (text && text.length > 0) {
-            let i = 0;
-            const type = () => {
-                if (i < text.length) {
-                    setTypedText(prev => prev + text.charAt(i));
-                    i++;
-                    setTimeout(type, speed);
-                } else {
-                    onComplete();
-                }
-            };
-            type();
-        } else {
-            onComplete();
-        }
-    }, [text, speed, onComplete]);
+    }, [text]);
+
+    useEffect(() => {
+        const type = () => {
+            if (typedText.length < textRef.current.length) {
+                setTypedText(prev => textRef.current.slice(0, prev.length + 1));
+            } else {
+                if(timeoutRef.current) clearTimeout(timeoutRef.current);
+                onComplete();
+            }
+        };
+        timeoutRef.current = setTimeout(type, speed);
+        
+        return () => clearTimeout(timeoutRef.current);
+    }, [typedText, onComplete, speed]);
 
     return <div className="whitespace-pre-wrap">{typedText}</div>;
 };
@@ -161,12 +163,12 @@ const CommandNav = ({ onCommandClick }: { onCommandClick: (cmd: string) => void 
     const commands = Object.keys(commandMap);
     return (
         <div className="flex flex-wrap gap-x-3 gap-y-1 p-1 text-accent">
-            {commands.map((cmd, i) => (
+            {commands.map((cmd) => (
                 <React.Fragment key={cmd}>
                     <button onClick={() => onCommandClick(cmd)} className="hover:underline focus:underline outline-none">
                         {cmd}
                     </button>
-                    {i < commands.length -1 && <span className="text-muted-foreground">|</span>}
+                    <span className="text-muted-foreground">|</span>
                 </React.Fragment>
             ))}
              <button onClick={() => onCommandClick('clear')} className="hover:underline focus:underline outline-none">
@@ -175,6 +177,7 @@ const CommandNav = ({ onCommandClick }: { onCommandClick: (cmd: string) => void 
         </div>
     );
 };
+CommandNav.displayName = 'CommandNav';
 
 export function HackerTerminal() {
     const [history, setHistory] = useState<CommandHistory[]>([]);
