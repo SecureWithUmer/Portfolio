@@ -7,7 +7,9 @@ import { projects } from '@/data/projects';
 
 const PROMPT_PREFIX = "umer@portfolio:~$";
 const TYPING_SPEED = 10;
-const COMMAND_TYPING_SPEED = 25;
+const COMMAND_TYPING_SPEED = 20; // Slightly faster for commands
+
+const NEXT_STEPS_PROMPT = "\nFeel free to explore more using the 'projects', 'skills', or 'contact' commands!";
 
 const initialOutput = `
 Initializing Umer Farooq's portfolio v2.3...
@@ -32,10 +34,17 @@ Available commands:
   clear          - Clear the terminal
 `;
 
-const aboutMeText = `As a passionate cybersecurity enthusiast hailing from Faisalabad, Pakistan, I am deeply committed to the art and science of digital defense. My journey in cybersecurity is driven by a relentless curiosity to understand and mitigate evolving threats. I possess a diverse skill set encompassing threat intelligence, network security, ethical hacking, and security audits.`;
+const aboutMeText = `
+Hello! I'm Umer Farooq, a cybersecurity enthusiast from Faisalabad, Pakistan.
+
+My journey in this field is driven by a deep-seated curiosity to understand and mitigate the complex, evolving threats in our digital world.
+
+I specialize in architecting robust security solutions and thrive on dissecting complex challenges to protect digital assets and ensure operational resilience.
+${NEXT_STEPS_PROMPT}`;
 
 const skillsText = `
-My core skills and expertise include:
+Here are my core skills and areas of expertise:
+
 - Threat Intelligence: Proactive identification and analysis of cyber threats.
 - Network Security: Designing and implementing secure network architectures.
 - Ethical Hacking: Simulating attacks to identify vulnerabilities.
@@ -43,10 +52,10 @@ My core skills and expertise include:
 - Penetration Testing: Simulating real-world attacks to test defenses.
 - Security Consulting: Providing guidance for robust cybersecurity strategies.
 - MDR: Offering 24/7 threat detection and response.
-`;
+${NEXT_STEPS_PROMPT}`;
 
 const experienceText = `
-// Note: This is placeholder data.
+// Note: This is a summary. For full details, please contact me.
 
 [2022-Present] Senior Security Analyst at CyberCorp Inc.
   - Lead threat intelligence and incident response teams.
@@ -55,7 +64,7 @@ const experienceText = `
 [2020-2022] Penetration Tester at SecureNet Solutions
   - Conducted network and application penetration tests.
   - Provided detailed reports and remediation guidance.
-`;
+${NEXT_STEPS_PROMPT}`;
 
 const educationText = `
 // Note: This is placeholder data.
@@ -63,7 +72,7 @@ const educationText = `
 [2016-2020] Bachelor of Science in Computer Science
   - University of Agriculture, Faisalabad, Pakistan
   - Specialization in Network Security.
-`;
+${NEXT_STEPS_PROMPT}`;
 
 const leadershipText = `
 // Note: This is placeholder data.
@@ -71,24 +80,36 @@ const leadershipText = `
 - Founder of the "FSD Cyber-Wing", a local community for cybersecurity enthusiasts.
 - Mentor for the "Code for Pakistan" initiative, guiding aspiring developers.
 - Regular speaker at local tech meetups on topics of cybersecurity awareness.
-`;
+${NEXT_STEPS_PROMPT}`;
 
 
 const contactInfo = `
 You can reach me through the following channels:
+
 - LinkedIn: https://www.linkedin.com/in/hackandsecurewithumer
 - GitHub:   https://github.com/SecureWithUmer
 - Email:    hackwithumer@outlook.com
-`;
+${NEXT_STEPS_PROMPT}`;
+
+const getProjectsText = () => {
+    const projectList = projects.map(p => `- ${p.title}: ${p.description.substring(0, 70)}...`).join('\n');
+    return `Fetching projects...\n\n${projectList}\n${NEXT_STEPS_PROMPT}`;
+};
+
+const getCertificationsText = () => {
+    const certList = certifications.map(c => `- ${c.title} (${c.issuingBody})`).join('\n');
+    return `Fetching certifications...\n\n${certList}\n${NEXT_STEPS_PROMPT}`;
+};
+
 
 const commandMap = {
     'help': helpText,
     'about': aboutMeText,
-    'projects': 'Fetching projects...\n\n' + projects.map(p => `- ${p.title}: ${p.description.substring(0, 60)}...`).join('\n'),
+    'projects': getProjectsText(),
     'skills': skillsText,
     'experience': experienceText,
     'education': educationText,
-    'certifications': 'Fetching certifications...\n\n' + certifications.map(c => `- ${c.title} (${c.issuingBody})`).join('\n'),
+    'certifications': getCertificationsText(),
     'leadership': leadershipText,
     'contact': contactInfo,
     'sudo': 'User is not in the sudoers file. This incident will be reported.',
@@ -183,6 +204,7 @@ export function HackerTerminal() {
     };
     
     const executeCommand = (cmd: string) => {
+        if (isExecuting) return;
         if (cmd === 'clear') {
             setHistory([]);
             setInputValue('');
@@ -236,7 +258,7 @@ export function HackerTerminal() {
                     <>
                         <div className="text-foreground whitespace-pre-wrap">{initialOutput}</div>
                         {history.map((item, index) => (
-                            <div key={index}>
+                            <div key={index} className="mt-2">
                                 <div className="flex items-center gap-2">
                                     <TerminalPrompt /> {item.command}
                                 </div>
@@ -245,16 +267,17 @@ export function HackerTerminal() {
                         ))}
 
                         {isExecuting && currentCommand && (
-                            <div>
+                            <div className="mt-2">
                                 <div className="flex items-center gap-2">
-                                    <TerminalPrompt /> {currentCommand}
+                                    <TerminalPrompt />
+                                     <TypewriterOutput text={currentCommand} speed={COMMAND_TYPING_SPEED} onComplete={() => {}} />
                                 </div>
-                                <TypewriterOutput text={getOutputForCommand(currentCommand)} speed={COMMAND_TYPING_SPEED} onComplete={handleTypewriterComplete} />
+                                <TypewriterOutput text={getOutputForCommand(currentCommand)} speed={TYPING_SPEED} onComplete={handleTypewriterComplete} />
                             </div>
                         )}
 
                         {!isExecuting && (
-                            <div className="flex items-center gap-2">
+                            <div className="flex items-center gap-2 mt-2">
                                 <TerminalPrompt />
                                 <input
                                     ref={inputRef}
