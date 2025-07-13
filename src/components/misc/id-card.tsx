@@ -13,10 +13,10 @@ export function IdCard() {
 
     const springConfig = { stiffness: 150, damping: 20, mass: 1 };
 
-    const rotateX = useSpring(useTransform(mouseY, [-125, 125], [15, -15]), springConfig);
-    const rotateY = useSpring(useTransform(mouseX, [-125, 125], [-15, 15]), springConfig);
-    const translateX = useSpring(useTransform(mouseX, [-125, 125], [-5, 5]), springConfig);
-    const translateY = useSpring(useTransform(mouseY, [-125, 125], [-5, 5]), springConfig);
+    const rotateX = useSpring(useTransform(mouseY, [-150, 150], [15, -15]), springConfig);
+    const rotateY = useSpring(useTransform(mouseX, [-150, 150], [-15, 15]), springConfig);
+    const translateX = useSpring(useTransform(mouseX, [-150, 150], [-5, 5]), springConfig);
+    const translateY = useSpring(useTransform(mouseY, [-150, 150], [-5, 5]), springConfig);
 
     const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
         if (!cardRef.current) return;
@@ -35,7 +35,7 @@ export function IdCard() {
     return (
         <motion.div
             ref={cardRef}
-            className="relative w-48 mx-auto mt-12"
+            className="relative w-56 mx-auto mt-12"
             style={{ perspective: '1200px' }}
             initial={{ opacity: 0, y: -100 }}
             animate={{ opacity: 1, y: 0, transition: { duration: 0.5, delay: 0.5 } }}

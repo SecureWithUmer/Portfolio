@@ -81,6 +81,19 @@ You can reach me through the following channels:
 - Email:    hackwithumer@outlook.com
 `;
 
+const commandMap = {
+    'help': helpText,
+    'about': aboutMeText,
+    'projects': 'Fetching projects...\n\n' + projects.map(p => `- ${p.title}: ${p.description.substring(0, 60)}...`).join('\n'),
+    'skills': skillsText,
+    'experience': experienceText,
+    'education': educationText,
+    'certifications': 'Fetching certifications...\n\n' + certifications.map(c => `- ${c.title} (${c.issuingBody})`).join('\n'),
+    'leadership': leadershipText,
+    'contact': contactInfo,
+    'sudo': 'User is not in the sudoers file. This incident will be reported.',
+};
+
 
 // --- Component Logic ---
 
@@ -119,6 +132,25 @@ const TypewriterOutput: React.FC<{ text: string; speed: number; onComplete: () =
     return <div className="whitespace-pre-wrap">{typedText}</div>;
 };
 
+const CommandNav = ({ onCommandClick }: { onCommandClick: (cmd: string) => void }) => {
+    const commands = Object.keys(commandMap);
+    return (
+        <div className="flex flex-wrap gap-x-3 gap-y-1 p-1 text-primary">
+            {commands.map((cmd, i) => (
+                <React.Fragment key={cmd}>
+                    <button onClick={() => onCommandClick(cmd)} className="hover:underline focus:underline outline-none">
+                        {cmd}
+                    </button>
+                    {i < commands.length - 1 && <span className="text-muted-foreground">|</span>}
+                </React.Fragment>
+            ))}
+             <button onClick={() => onCommandClick('clear')} className="hover:underline focus:underline outline-none">
+                clear
+            </button>
+        </div>
+    );
+};
+
 export function HackerTerminal() {
     const [history, setHistory] = useState<CommandHistory[]>([]);
     const [inputValue, setInputValue] = useState('');
@@ -146,49 +178,25 @@ export function HackerTerminal() {
     }, [isExecuting]);
 
     const getOutputForCommand = (cmd: string): string => {
-        const command = cmd.toLowerCase().trim();
-        switch (command) {
-            case 'help':
-                return helpText;
-            case 'about':
-                return aboutMeText;
-            case 'projects':
-                 return 'Fetching projects...\n\n' + projects.map(p => `- ${p.title}: ${p.description.substring(0, 60)}...`).join('\n');
-            case 'skills':
-                return skillsText;
-            case 'experience':
-                return experienceText;
-            case 'education':
-                return educationText;
-            case 'certifications':
-                return 'Fetching certifications...\n\n' + certifications.map(c => `- ${c.title} (${c.issuingBody})`).join('\n');
-            case 'leadership':
-                return leadershipText;
-            case 'contact':
-                return contactInfo;
-            case 'sudo':
-                return 'User is not in the sudoers file. This incident will be reported.';
-            case '':
-                return '';
-            default:
-                return `Command not found: ${cmd}. Type 'help' for a list of commands.`;
+        const command = cmd.toLowerCase().trim() as keyof typeof commandMap;
+        return commandMap[command] || `Command not found: ${cmd}. Type 'help' for a list of commands.`;
+    };
+    
+    const executeCommand = (cmd: string) => {
+        if (cmd === 'clear') {
+            setHistory([]);
+            setInputValue('');
+            return;
         }
+        setCurrentCommand(cmd);
+        setIsExecuting(true);
+        setInputValue('');
     };
 
     const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
         if (e.key === 'Enter' && !isExecuting) {
             e.preventDefault();
-            const cmd = inputValue.trim();
-
-            if (cmd === 'clear') {
-                setHistory([]);
-                setInputValue('');
-                return;
-            }
-            
-            setCurrentCommand(cmd);
-            setIsExecuting(true);
-            setInputValue('');
+            executeCommand(inputValue.trim());
         }
     };
     
@@ -203,6 +211,12 @@ export function HackerTerminal() {
         }
     }, [currentCommand, isInitialOutputDone]);
 
+    const handleNavCommand = (cmd: string) => {
+        if (isExecuting) return;
+        setInputValue(cmd);
+        executeCommand(cmd);
+    };
+
     const TerminalPrompt = () => (
         <label htmlFor="terminal-input" className="shrink-0">
             <span className="text-accent">umer@portfolio</span>
@@ -213,49 +227,52 @@ export function HackerTerminal() {
     );
 
     return (
-        <div ref={containerRef} className="h-full w-full font-code text-sm text-primary overflow-y-auto p-2" onClick={() => inputRef.current?.focus()}>
-            {!isInitialOutputDone ? (
-                 <TypewriterOutput text={initialOutput} speed={TYPING_SPEED} onComplete={handleTypewriterComplete} />
-            ) : (
-                <>
-                    <div className="text-foreground whitespace-pre-wrap">{initialOutput}</div>
-                    {history.map((item, index) => (
-                        <div key={index}>
-                            <div className="flex items-center gap-2">
-                                <TerminalPrompt /> {item.command}
+        <div className="h-full w-full flex flex-col">
+            <CommandNav onCommandClick={handleNavCommand} />
+            <div ref={containerRef} className="flex-grow w-full font-code text-sm text-primary overflow-y-auto p-2" onClick={() => inputRef.current?.focus()}>
+                {!isInitialOutputDone ? (
+                    <TypewriterOutput text={initialOutput} speed={TYPING_SPEED} onComplete={handleTypewriterComplete} />
+                ) : (
+                    <>
+                        <div className="text-foreground whitespace-pre-wrap">{initialOutput}</div>
+                        {history.map((item, index) => (
+                            <div key={index}>
+                                <div className="flex items-center gap-2">
+                                    <TerminalPrompt /> {item.command}
+                                </div>
+                                <div className="text-foreground whitespace-pre-wrap">{item.output}</div>
                             </div>
-                            <div className="text-foreground whitespace-pre-wrap">{item.output}</div>
-                        </div>
-                    ))}
+                        ))}
 
-                    {isExecuting && currentCommand && (
-                         <div>
-                            <div className="flex items-center gap-2">
-                                <TerminalPrompt /> {currentCommand}
+                        {isExecuting && currentCommand && (
+                            <div>
+                                <div className="flex items-center gap-2">
+                                    <TerminalPrompt /> {currentCommand}
+                                </div>
+                                <TypewriterOutput text={getOutputForCommand(currentCommand)} speed={COMMAND_TYPING_SPEED} onComplete={handleTypewriterComplete} />
                             </div>
-                            <TypewriterOutput text={getOutputForCommand(currentCommand)} speed={COMMAND_TYPING_SPEED} onComplete={handleTypewriterComplete} />
-                        </div>
-                    )}
+                        )}
 
-                    {!isExecuting && (
-                        <div className="flex items-center gap-2">
-                            <TerminalPrompt />
-                            <input
-                                ref={inputRef}
-                                id="terminal-input"
-                                type="text"
-                                value={inputValue}
-                                onChange={(e) => setInputValue(e.target.value)}
-                                onKeyDown={handleKeyDown}
-                                className="bg-transparent border-none text-primary focus:ring-0 outline-none w-full"
-                                autoComplete="off"
-                                disabled={isExecuting}
-                            />
-                             {!isExecuting && <span className="terminal-cursor"></span>}
-                        </div>
-                    )}
-                </>
-            )}
+                        {!isExecuting && (
+                            <div className="flex items-center gap-2">
+                                <TerminalPrompt />
+                                <input
+                                    ref={inputRef}
+                                    id="terminal-input"
+                                    type="text"
+                                    value={inputValue}
+                                    onChange={(e) => setInputValue(e.target.value)}
+                                    onKeyDown={handleKeyDown}
+                                    className="bg-transparent border-none text-primary focus:ring-0 outline-none w-full"
+                                    autoComplete="off"
+                                    disabled={isExecuting}
+                                />
+                                {!isExecuting && <span className="terminal-cursor"></span>}
+                            </div>
+                        )}
+                    </>
+                )}
+            </div>
         </div>
     );
 }

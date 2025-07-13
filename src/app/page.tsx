@@ -27,7 +27,7 @@ const StatusBar = () => {
 export default function HomePage() {
   return (
     <div className="flex w-full min-h-screen p-4 pb-8">
-      <aside className="hidden md:block md:w-1/3 lg:w-1/4 xl:w-1/5 pt-8 pr-8">
+      <aside className="hidden md:block md:w-1/3 lg:w-1/4 xl:w-1/5 pt-8 pl-8 pr-8">
         <div className="sticky top-8">
           <h1 className="text-2xl font-bold font-cyberName text-primary">Umer Farooq</h1>
           <p className="text-base text-muted-foreground mb-8">Cybersecurity Professional</p>
