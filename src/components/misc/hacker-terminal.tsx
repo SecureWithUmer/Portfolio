@@ -86,8 +86,22 @@ You can reach me through the following channels:
 - Email:    hackwithumer@outlook.com
 ${NEXT_STEPS_PROMPT}`;
 
+const projectIntros = {
+  '1': "Secured a financial institution's network with a modern Zero Trust model.",
+  '2': "Built an automated system to keep cloud environments safe and compliant.",
+  '3': "Played the role of a hacker to test a healthcare provider's cyber defenses.",
+  '4': "Helped a SaaS company build more secure software from the ground up.",
+  '5': "Launched a 24/7 security monitoring service to protect clients from threats.",
+  '6': "Created fun hacking challenges for a cybersecurity competition.",
+  '7': "Took apart Android malware to see how it works and how to stop it.",
+};
+
+
 const getProjectsText = () => {
-    const projectList = projects.map(p => `- ${p.title}: ${p.description.substring(0, 70)}...`).join('\n');
+    const projectList = projects.map(p => {
+        const intro = projectIntros[p.id as keyof typeof projectIntros] || "A cool cybersecurity project.";
+        return `- ${p.title}: ${intro}`;
+    }).join('\n');
     return `Fetching projects...\n\n${projectList}\n${NEXT_STEPS_PROMPT}`;
 };
 
