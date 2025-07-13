@@ -30,7 +30,6 @@ Available commands:
   education      - My educational background
   certifications - View my certifications
   leadership     - Leadership and community involvement
-  sudo           - Request elevated privileges
   clear          - Clear the terminal
 `;
 
@@ -108,7 +107,6 @@ const commandMap = {
     'certifications': getCertificationsText(),
     'leadership': leadershipText,
     'contact': contactInfo,
-    'sudo': 'User is not in the sudoers file. This incident will be reported.',
 };
 
 
