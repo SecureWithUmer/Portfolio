@@ -4,11 +4,53 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { certifications } from '@/data/certifications';
+import { projects } from '@/data/projects'; // Import project data
 
 const PROMPT_PREFIX = "umer@portfolio:~$";
 const TYPING_SPEED = 20;
 
+// --- Command Outputs ---
 const aboutMeText = `As a passionate cybersecurity enthusiast hailing from Faisalabad, Pakistan, I am deeply committed to the art and science of digital defense. My journey in cybersecurity is driven by a relentless curiosity to understand and mitigate evolving threats. I possess a diverse skill set encompassing threat intelligence, network security, ethical hacking, and security audits.`;
+
+const skillsText = `
+My core skills and expertise include:
+- Threat Intelligence: Proactive identification and analysis of cyber threats.
+- Network Security: Designing and implementing secure network architectures.
+- Ethical Hacking: Simulating attacks to identify vulnerabilities.
+- Security Audits: Ensuring compliance and identifying system vulnerabilities.
+- Penetration Testing: Simulating real-world attacks to test defenses.
+- Security Consulting: Providing guidance for robust cybersecurity strategies.
+- MDR: Offering 24/7 threat detection and response.
+`;
+
+const experienceText = `
+// Note: This is placeholder data.
+
+[2022-Present] Senior Security Analyst at CyberCorp Inc.
+  - Lead threat intelligence and incident response teams.
+  - Develop and implement MDR solutions for enterprise clients.
+
+[2020-2022] Penetration Tester at SecureNet Solutions
+  - Conducted network and application penetration tests.
+  - Provided detailed reports and remediation guidance.
+`;
+
+const educationText = `
+// Note: This is placeholder data.
+
+[2016-2020] Bachelor of Science in Computer Science
+  - University of Agriculture, Faisalabad, Pakistan
+  - Specialization in Network Security.
+`;
+
+const leadershipText = `
+// Note: This is placeholder data.
+
+- Founder of the "FSD Cyber-Wing", a local community for cybersecurity enthusiasts.
+- Mentor for the "Code for Pakistan" initiative, guiding aspiring developers.
+- Regular speaker at local tech meetups on topics of cybersecurity awareness.
+`;
+
 
 const contactInfo = `
 You can reach me through the following channels:
@@ -19,18 +61,28 @@ You can reach me through the following channels:
 
 const helpText = `
 Available commands:
-  about          - Displays a brief bio.
-  certifications - Lists all my professional certifications.
-  contact        - Shows my contact information.
-  clear          - Clears the terminal screen.
-  help           - Shows this help message.
+  about          - Learn about me
+  projects       - View my projects
+  skills         - See my technical skills
+  experience     - My work experience
+  contact        - How to reach me
+  education      - My educational background
+  certifications - View my certifications
+  leadership     - Leadership and community involvement
+  clear          - Clear the terminal
 `;
+
+// --- Component Logic ---
 
 const useTypewriter = (text: string, onComplete: () => void) => {
     const [typedText, setTypedText] = useState('');
 
     useEffect(() => {
         setTypedText('');
+        if (!text) {
+            onComplete();
+            return;
+        }
         let i = 0;
         const intervalId = setInterval(() => {
             setTypedText((prev) => prev + text.charAt(i));
@@ -49,7 +101,7 @@ const useTypewriter = (text: string, onComplete: () => void) => {
 
 interface CommandHistory {
     command: string;
-    output: string | React.ReactNode;
+    output: string;
 }
 
 const TypewriterOutput: React.FC<{ text: string; onComplete: () => void }> = ({ text, onComplete }) => {
@@ -61,7 +113,7 @@ export function HackerTerminal() {
     const [history, setHistory] = useState<CommandHistory[]>([]);
     const [inputValue, setInputValue] = useState('');
     const [isExecuting, setIsExecuting] = useState(false);
-    const [currentOutput, setCurrentOutput] = useState<string | null>(null);
+    const [currentCommand, setCurrentCommand] = useState('');
 
     const inputRef = useRef<HTMLInputElement>(null);
     const endOfTerminalRef = useRef<HTMLDivElement>(null);
@@ -72,119 +124,83 @@ export function HackerTerminal() {
 
     useEffect(() => {
         scrollToBottom();
-    }, [history, currentOutput, scrollToBottom]);
+    }, [history, isExecuting, scrollToBottom]);
 
-    useEffect(() => {
-        inputRef.current?.focus();
-    }, []);
+     useEffect(() => {
+        if (!isExecuting) {
+          inputRef.current?.focus();
+        }
+    }, [isExecuting]);
 
-    const handleCommand = (cmd: string) => {
-        let output: string | React.ReactNode;
+    const getOutputForCommand = (cmd: string): string => {
         const command = cmd.toLowerCase().trim();
-
         switch (command) {
             case 'help':
-                output = helpText;
-                break;
+                return helpText;
             case 'about':
-                output = aboutMeText;
-                break;
+                return aboutMeText;
+            case 'projects':
+                 return 'Fetching projects...\n\n' + projects.map(p => `- ${p.title}: ${p.description.substring(0, 60)}...`).join('\n');
+            case 'skills':
+                return skillsText;
+            case 'experience':
+                return experienceText;
+            case 'education':
+                return educationText;
             case 'certifications':
-                output = 'Fetching certifications...\n\n' + certifications.map(c => `- ${c.title} (${c.issuingBody})`).join('\n');
-                break;
+                return 'Fetching certifications...\n\n' + certifications.map(c => `- ${c.title} (${c.issuingBody})`).join('\n');
+            case 'leadership':
+                return leadershipText;
             case 'contact':
-                output = contactInfo;
-                break;
-            case 'clear':
-                setHistory([]);
-                setIsExecuting(false);
-                return;
+                return contactInfo;
+            case '':
+                return '';
             default:
-                output = `Command not found: ${cmd}. Type 'help' for a list of commands.`;
-                break;
+                return `Command not found: ${cmd}. Type 'help' for a list of commands.`;
         }
-
-        const newHistoryItem = { command: `${PROMPT_PREFIX} ${cmd}`, output };
-        setHistory(prev => [...prev, newHistoryItem]);
     };
 
-    const onKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
         if (e.key === 'Enter' && !isExecuting) {
             e.preventDefault();
-            if (inputValue.trim() === 'clear') {
+            const cmd = inputValue.trim();
+
+            if (cmd === 'clear') {
                 setHistory([]);
                 setInputValue('');
                 return;
             }
+            
+            setCurrentCommand(cmd);
             setIsExecuting(true);
-            setCurrentOutput(getOutputForCommand(inputValue));
             setInputValue('');
         }
     };
     
-    const getOutputForCommand = (cmd: string): string => {
-        const command = cmd.toLowerCase().trim();
-        switch (command) {
-            case 'help': return helpText;
-            case 'about': return aboutMeText;
-            case 'certifications': return 'Fetching certifications...\n\n' + certifications.map(c => `- ${c.title} (${c.issuingBody})`).join('\n');
-            case 'contact': return contactInfo;
-            default: return `Command not found: ${cmd}. Type 'help' for a list of commands.`;
-        }
-    };
-
     const handleTypewriterComplete = useCallback(() => {
-        if(currentOutput) {
-            setHistory(prev => [...prev, { command: `${PROMPT_PREFIX} ${prev[prev.length]?.command?.replace(PROMPT_PREFIX, '').trim() || ''}`, output: currentOutput }]);
-            const lastCommand = history.length > 0 ? history[history.length -1].command.replace(PROMPT_PREFIX, '').trim() : '';
-            if (lastCommand !== 'clear') {
-               const cmd = currentOutput;
-                const newHistoryItem = { command: `${PROMPT_PREFIX} ${lastCommand}`, output: cmd };
-                
-                const lastHistoryCommand = history[history.length - 1]?.command;
-                if(lastHistoryCommand) {
-                    const commandText = lastHistoryCommand.replace(PROMPT_PREFIX, "").trim();
-                    const newOutput = getOutputForCommand(commandText);
-                     setHistory(prev => [...prev.slice(0, prev.length), { command: lastHistoryCommand, output: newOutput }]);
-                }
-            }
-        }
-        setHistory(prev => {
-            const lastCmdText = prev.length > 0 ? prev[prev.length-1].command : '';
-            if (lastCmdText.includes('clear')) return [];
-            
-            const newHistory = [...prev];
-            if(newHistory.length > 0 && currentOutput) {
-                newHistory[newHistory.length-1].output = currentOutput;
-            }
-             return newHistory;
-        });
-
+        setHistory(prev => [...prev, { command: currentCommand, output: getOutputForCommand(currentCommand) }]);
         setIsExecuting(false);
-        setCurrentOutput(null);
-        inputRef.current?.focus();
-    }, [currentOutput, history]);
-    
-     useEffect(() => {
-        if (!isExecuting && !currentOutput) {
-            inputRef.current?.focus();
-        }
-    }, [isExecuting, currentOutput]);
+        setCurrentCommand('');
+    }, [currentCommand]);
 
     return (
         <Card className="w-full max-w-4xl mx-auto shadow-2xl border-primary/60 bg-black/80 backdrop-blur-sm overflow-hidden" onClick={() => inputRef.current?.focus()}>
             <CardContent className="p-4 md:p-6 font-code text-sm text-primary h-[60vh] overflow-y-auto">
+                <div className="text-foreground whitespace-pre-wrap">
+                    Welcome to UmerFarooq.Cyber. Type 'help' to see available commands.
+                </div>
+                <br />
                 {history.map((item, index) => (
                     <div key={index}>
-                        <div>{item.command}</div>
+                        <div>{PROMPT_PREFIX} {item.command}</div>
                         <div className="text-foreground whitespace-pre-wrap">{item.output}</div>
                     </div>
                 ))}
 
-                {isExecuting && currentOutput && (
-                    <div>
-                        <div>{`${PROMPT_PREFIX} ${history.length > 0 ? history[history.length -1].command.replace(PROMPT_PREFIX, '') : ''}`}</div>
-                         <TypewriterOutput text={currentOutput} onComplete={handleTypewriterComplete} />
+                {isExecuting && (
+                     <div>
+                        <div>{PROMPT_PREFIX} {currentCommand}</div>
+                        <TypewriterOutput text={getOutputForCommand(currentCommand)} onComplete={handleTypewriterComplete} />
                     </div>
                 )}
 
@@ -197,7 +213,7 @@ export function HackerTerminal() {
                             type="text"
                             value={inputValue}
                             onChange={(e) => setInputValue(e.target.value)}
-                            onKeyDown={onKeyDown}
+                            onKeyDown={handleKeyDown}
                             className="bg-transparent border-none text-primary focus:ring-0 outline-none w-full pl-2"
                             autoComplete="off"
                             disabled={isExecuting}
@@ -210,4 +226,3 @@ export function HackerTerminal() {
         </Card>
     );
 }
-
