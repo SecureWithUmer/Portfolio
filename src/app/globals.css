@@ -44,7 +44,7 @@ body {
     --chart-1: 120 39% 60%; 
     --chart-2: 81 46% 60%;
     --chart-3: 200 50% 60%; 
-    --chart-4: 30 70% 60%;
+    --chart-4: 30 70% 60%; 
     --chart-5: 280 60% 65%;
 
     /* Sidebar variables to match new dark theme */
@@ -142,13 +142,13 @@ body {
 @keyframes neon-glow-primary {
   0%, 100% {
     text-shadow:
-      0 0 5px hsla(var(--primary) / 0.5),
-      0 0 10px hsla(var(--primary) / 0.3);
+      0 0 5px hsla(var(--primary), 0.5),
+      0 0 10px hsla(var(--primary), 0.3);
   }
   50% {
     text-shadow:
-      0 0 7px hsla(var(--primary) / 0.55),
-      0 0 12px hsla(var(--primary) / 0.35);
+      0 0 7px hsla(var(--primary), 0.55),
+      0 0 12px hsla(var(--primary), 0.35);
   }
 }
 
@@ -191,3 +191,5 @@ body {
 .prose pre code, .prose code {
   @apply font-code;
 }
+
+    
