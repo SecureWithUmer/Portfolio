@@ -26,18 +26,21 @@ const StatusBar = () => {
 
 export default function HomePage() {
   return (
-    <div className="flex w-full min-h-screen p-4 pb-8 md:gap-x-6 lg:gap-x-8">
-      <aside className="hidden md:block md:w-1/3 lg:w-1/4 xl:w-1/5 pt-8 pl-8">
-        <div className="sticky top-8">
-          <h1 className="text-2xl font-bold font-cyberName text-primary">Umer Farooq</h1>
-          <p className="text-base text-muted-foreground mb-8">Cybersecurity Professional</p>
+    <div className="flex flex-col md:flex-row w-full min-h-screen p-2 sm:p-4 pb-8 md:gap-x-4 lg:gap-x-6">
+      {/* On mobile, card is in the main flow. On desktop, it's a separate column. */}
+      <aside className="w-full md:w-1/3 lg:w-1/4 xl:w-1/5 md:pt-8 md:pl-4 lg:pl-8 flex-shrink-0">
+        <div className="md:sticky md:top-8 text-center md:text-left">
+           <div className="p-4 md:p-0">
+                <h1 className="text-2xl font-bold font-cyberName text-primary">Umer Farooq</h1>
+                <p className="text-base text-muted-foreground mb-4 md:mb-8">Cybersecurity Professional</p>
+           </div>
           <IdCard />
         </div>
       </aside>
 
       <div className="hidden md:block animated-border-ray" />
 
-      <main className="w-full md:flex-1">
+      <main className="w-full md:flex-1 mt-4 md:mt-0">
         <HackerTerminal />
       </main>
       

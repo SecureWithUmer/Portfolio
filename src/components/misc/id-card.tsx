@@ -35,7 +35,7 @@ export function IdCard() {
     return (
         <motion.div
             ref={cardRef}
-            className="relative w-56 mx-auto mt-12"
+            className="relative w-56 sm:w-64 mx-auto md:w-56" // Responsive width
             style={{ perspective: '1200px' }}
             initial={{ opacity: 0, y: -100 }}
             animate={{ opacity: 1, y: 0, transition: { duration: 0.5, delay: 0.5 } }}

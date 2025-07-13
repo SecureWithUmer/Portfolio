@@ -246,7 +246,7 @@ export function HackerTerminal() {
     );
 
     return (
-        <div className="h-full w-full flex flex-col">
+        <div className="h-full w-full flex flex-col p-1 sm:p-2">
             <CommandNav onCommandClick={handleNavCommand} />
             <div ref={containerRef} className="flex-grow w-full font-code text-sm text-primary overflow-y-auto p-2" onClick={() => inputRef.current?.focus()}>
                 {!isInitialOutputDone ? (
