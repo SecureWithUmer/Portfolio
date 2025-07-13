@@ -35,14 +35,13 @@ export function IdCard() {
     return (
         <motion.div
             ref={cardRef}
-            className="relative w-56 sm:w-64 mx-auto md:w-56" // Responsive width
+            className="relative w-56 sm:w-64 mx-auto md:w-full"
             style={{ perspective: '1200px' }}
             initial={{ opacity: 0, y: -100 }}
             animate={{ opacity: 1, y: 0, transition: { duration: 0.5, delay: 0.5 } }}
             onMouseMove={handleMouseMove}
             onMouseLeave={handleMouseLeave}
         >
-            {/* ID Card */}
             <motion.div 
                 className="bg-card/80 border-2 border-border rounded-xl overflow-hidden shadow-2xl shadow-primary/20 backdrop-blur-sm"
                 style={{

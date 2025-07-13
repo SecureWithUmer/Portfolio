@@ -226,7 +226,7 @@ export function HackerTerminal() {
             setIsExecuting(false);
             setCurrentCommand('');
         }
-    }, [currentCommand, isInitialOutputDone]);
+    }, [currentCommand, isInitialOutputDone, getOutputForCommand]);
 
     const handleNavCommand = (cmd: string) => {
         if (isExecuting) return;
