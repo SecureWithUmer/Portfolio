@@ -1,5 +1,4 @@
 @tailwind base;
-@tailwind components;
 @tailwind utilities;
 
 body {
@@ -8,45 +7,45 @@ body {
 
 @layer base {
   :root {
-    /* Hacker Terminal Theme */
-    --background: 0 0% 0%; /* Black */
-    --foreground: 120 100% 50%; /* Bright Green */
+    /* Kali Linux Inspired Theme */
+    --background: 220 20% 4%; /* Very dark blue */
+    --foreground: 120 80% 60%; /* Bright Green */
 
-    --card: 0 0% 5%; /* Very dark grey for cards if needed */
-    --card-foreground: 120 100% 50%;
+    --card: 220 20% 8%;
+    --card-foreground: 120 80% 60%;
 
-    --popover: 0 0% 5%;
-    --popover-foreground: 120 100% 50%;
+    --popover: 220 20% 8%;
+    --popover-foreground: 120 80% 60%;
 
-    --primary: 120 100% 50%; /* Bright Green */
-    --primary-foreground: 0 0% 0%; /* Black text for on-primary elements */
+    --primary: 120 80% 60%; /* Bright Green */
+    --primary-foreground: 0 0% 0%;
 
-    --secondary: 0 0% 12%;
-    --secondary-foreground: 120 100% 60%;
+    --secondary: 220 20% 12%;
+    --secondary-foreground: 120 80% 70%;
 
-    --muted: 0 0% 15%;
-    --muted-foreground: 120 100% 35%; /* Dimmer Green */
+    --muted: 220 20% 15%;
+    --muted-foreground: 120 80% 40%; /* Dimmer Green */
 
-    --accent: 120 100% 65%; /* Lighter Green Accent */
-    --accent-foreground: 0 0% 0%;
+    --accent: 210 100% 60%; /* Vibrant Blue */
+    --accent-foreground: 0 0% 100%; /* White text on blue */
 
-    --destructive: 0 60% 50%; /* Red for destructive actions. */
-    --destructive-foreground: 0 0% 98%;
+    --destructive: 0 70% 55%; /* Red for destructive actions */
+    --destructive-foreground: 0 0% 100%;
 
-    --border: 120 100% 25%; /* Dark Green for borders */
-    --input: 0 0% 10%;
-    --ring: 120 100% 60%;
+    --border: 120 80% 30%; /* Dark Green for borders */
+    --input: 220 20% 10%;
+    --ring: 210 100% 70%;
 
     --radius: 0.5rem;
+  }
 
-    /* Chart colors - not used in terminal theme but good to have */
+  /* Fallback for components not using new variables */
+  :root {
     --chart-1: 120 39% 60%;
     --chart-2: 81 46% 60%;
     --chart-3: 200 50% 60%;
     --chart-4: 30 70% 60%;
     --chart-5: 280 60% 65%;
-
-    /* Sidebar variables to match new dark theme */
     --sidebar-background: 0 0% 8%;
     --sidebar-foreground: 120 39% 50%;
     --sidebar-primary: 120 39% 50%;
@@ -56,8 +55,6 @@ body {
     --sidebar-border: 120 39% 25%;
     --sidebar-ring: 81 46% 50%;
   }
-
-  /* No light theme needed for this design */
 }
 
 @layer base {
@@ -65,7 +62,7 @@ body {
     @apply border-border;
   }
   body {
-    @apply bg-background text-foreground font-code; /* Default to font-code (Source Code Pro) */
+    @apply bg-background text-foreground font-code;
   }
   h1,
   h2,
@@ -73,7 +70,7 @@ body {
   h4,
   h5,
   h6 {
-    @apply font-headline; /* Orbitron for headlines */
+    @apply font-headline;
   }
   pre,
   code {

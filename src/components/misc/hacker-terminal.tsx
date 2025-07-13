@@ -15,7 +15,7 @@ Initializing Umer Farooq's portfolio v2.3...
 - Expertise in Threat Intelligence, Network Security, and Ethical Hacking.
 - Committed to architecting robust digital defenses.
 
-Feel free to explore more using the available commands.
+Type 'help' for a list of available commands.
 `;
 
 const helpText = `
@@ -203,6 +203,15 @@ export function HackerTerminal() {
         }
     }, [currentCommand, isInitialOutputDone]);
 
+    const TerminalPrompt = () => (
+        <label htmlFor="terminal-input" className="shrink-0">
+            <span className="text-accent">umer@portfolio</span>
+            <span className="text-muted-foreground">:</span>
+            <span className="text-primary">~</span>
+            <span className="text-muted-foreground">$</span>
+        </label>
+    );
+
     return (
         <div ref={containerRef} className="h-full w-full font-code text-sm text-primary overflow-y-auto p-2" onClick={() => inputRef.current?.focus()}>
             {!isInitialOutputDone ? (
@@ -212,23 +221,25 @@ export function HackerTerminal() {
                     <div className="text-foreground whitespace-pre-wrap">{initialOutput}</div>
                     {history.map((item, index) => (
                         <div key={index}>
-                            <div><span className="text-accent">umer@portfolio</span>:<span className="text-muted-foreground">~</span>$ {item.command}</div>
+                            <div className="flex items-center gap-2">
+                                <TerminalPrompt /> {item.command}
+                            </div>
                             <div className="text-foreground whitespace-pre-wrap">{item.output}</div>
                         </div>
                     ))}
 
                     {isExecuting && currentCommand && (
                          <div>
-                            <div><span className="text-accent">umer@portfolio</span>:<span className="text-muted-foreground">~</span>$ {currentCommand}</div>
+                            <div className="flex items-center gap-2">
+                                <TerminalPrompt /> {currentCommand}
+                            </div>
                             <TypewriterOutput text={getOutputForCommand(currentCommand)} speed={COMMAND_TYPING_SPEED} onComplete={handleTypewriterComplete} />
                         </div>
                     )}
 
                     {!isExecuting && (
-                        <div className="flex items-center">
-                            <label htmlFor="terminal-input" className="shrink-0">
-                                <span className="text-accent">umer@portfolio</span>:<span className="text-muted-foreground">~</span>$
-                            </label>
+                        <div className="flex items-center gap-2">
+                            <TerminalPrompt />
                             <input
                                 ref={inputRef}
                                 id="terminal-input"
@@ -236,7 +247,7 @@ export function HackerTerminal() {
                                 value={inputValue}
                                 onChange={(e) => setInputValue(e.target.value)}
                                 onKeyDown={handleKeyDown}
-                                className="bg-transparent border-none text-primary focus:ring-0 outline-none w-full pl-2"
+                                className="bg-transparent border-none text-primary focus:ring-0 outline-none w-full"
                                 autoComplete="off"
                                 disabled={isExecuting}
                             />
