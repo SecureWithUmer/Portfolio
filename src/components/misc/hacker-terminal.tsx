@@ -157,7 +157,7 @@ const CommandNav = ({ onCommandClick }: { onCommandClick: (cmd: string) => void 
                     <button onClick={() => onCommandClick(cmd)} className="hover:underline focus:underline outline-none">
                         {cmd}
                     </button>
-                    {i < commands.length - 1 && <span className="text-muted-foreground">|</span>}
+                    {i < commands.length && <span className="text-muted-foreground">|</span>}
                 </React.Fragment>
             ))}
              <button onClick={() => onCommandClick('clear')} className="hover:underline focus:underline outline-none">
