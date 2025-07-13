@@ -1,8 +1,10 @@
+
 import type { Metadata } from 'next';
 import { PageTitle } from '@/components/ui/page-title';
 import { CodeBlock } from '@/components/ui/code-block';
 import { Badge } from '@/components/ui/badge';
 import { CalendarDays, Tag } from 'lucide-react';
+import React from 'react';
 
 // This is mock data. In a real app, you'd fetch this based on the slug.
 const MOCK_BLOG_POSTS = {
