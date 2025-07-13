@@ -2,8 +2,6 @@
 "use client";
 
 import './globals.css';
-import { Header } from '@/components/layout/header';
-import { Footer } from '@/components/layout/footer';
 import { Toaster } from "@/components/ui/toaster";
 import { AnimatedBackground } from '@/components/animated-background';
 import FullScreenTerminalLoader from '@/components/loader/full-screen-terminal-loader';
@@ -71,18 +69,18 @@ export default function RootLayout({
             </motion.div>
           )}
         </AnimatePresence>
-
+        
         {isMainContentVisible && (
             <motion.div
               key="main-app-content"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1, transition: { duration: 0.7, delay: 0.1 } }}
-              className="flex flex-col min-h-screen" 
+              className="flex flex-col flex-grow"
             >
-              <AnimatedBackground />
-              <main className="flex-grow container mx-auto px-4 py-6 sm:py-8 relative z-10">
-                {children}
-              </main>
+                <AnimatedBackground />
+                <main className="flex-grow flex relative z-10">
+                    {children}
+                </main>
             </motion.div>
         )}
         <Toaster />

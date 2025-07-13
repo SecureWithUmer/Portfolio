@@ -2,14 +2,36 @@
 "use client";
 
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { Card, CardContent } from '@/components/ui/card';
 import { certifications } from '@/data/certifications';
-import { projects } from '@/data/projects'; // Import project data
+import { projects } from '@/data/projects'; 
 
 const PROMPT_PREFIX = "umer@portfolio:~$";
-const TYPING_SPEED = 20;
+const TYPING_SPEED = 10;
+const COMMAND_TYPING_SPEED = 25;
 
-// --- Command Outputs ---
+const initialOutput = `
+Initializing Umer Farooq's portfolio v2.3...
+- Passionate cybersecurity enthusiast from Faisalabad, Pakistan.
+- Expertise in Threat Intelligence, Network Security, and Ethical Hacking.
+- Committed to architecting robust digital defenses.
+
+Feel free to explore more using the available commands.
+`;
+
+const helpText = `
+Available commands:
+  about          - Learn about me
+  projects       - View my projects
+  skills         - See my technical skills
+  experience     - My work experience
+  contact        - How to reach me
+  education      - My educational background
+  certifications - View my certifications
+  leadership     - Leadership and community involvement
+  sudo           - Request elevated privileges
+  clear          - Clear the terminal
+`;
+
 const aboutMeText = `As a passionate cybersecurity enthusiast hailing from Faisalabad, Pakistan, I am deeply committed to the art and science of digital defense. My journey in cybersecurity is driven by a relentless curiosity to understand and mitigate evolving threats. I possess a diverse skill set encompassing threat intelligence, network security, ethical hacking, and security audits.`;
 
 const skillsText = `
@@ -59,22 +81,10 @@ You can reach me through the following channels:
 - Email:    hackwithumer@outlook.com
 `;
 
-const helpText = `
-Available commands:
-  about          - Learn about me
-  projects       - View my projects
-  skills         - See my technical skills
-  experience     - My work experience
-  contact        - How to reach me
-  education      - My educational background
-  certifications - View my certifications
-  leadership     - Leadership and community involvement
-  clear          - Clear the terminal
-`;
 
 // --- Component Logic ---
 
-const useTypewriter = (text: string, onComplete: () => void) => {
+const useTypewriter = (text: string, onComplete: () => void, speed: number) => {
     const [typedText, setTypedText] = useState('');
 
     useEffect(() => {
@@ -91,10 +101,10 @@ const useTypewriter = (text: string, onComplete: () => void) => {
                 clearInterval(intervalId);
                 onComplete();
             }
-        }, TYPING_SPEED);
+        }, speed);
 
         return () => clearInterval(intervalId);
-    }, [text, onComplete]);
+    }, [text, onComplete, speed]);
 
     return typedText;
 };
@@ -104,22 +114,25 @@ interface CommandHistory {
     output: string;
 }
 
-const TypewriterOutput: React.FC<{ text: string; onComplete: () => void }> = ({ text, onComplete }) => {
-    const typedText = useTypewriter(text, onComplete);
+const TypewriterOutput: React.FC<{ text: string; speed: number; onComplete: () => void }> = ({ text, speed, onComplete }) => {
+    const typedText = useTypewriter(text, onComplete, speed);
     return <div className="whitespace-pre-wrap">{typedText}</div>;
 };
 
 export function HackerTerminal() {
     const [history, setHistory] = useState<CommandHistory[]>([]);
     const [inputValue, setInputValue] = useState('');
-    const [isExecuting, setIsExecuting] = useState(false);
+    const [isExecuting, setIsExecuting] = useState(true); // Start as true for initial output
     const [currentCommand, setCurrentCommand] = useState('');
-
+    const [isInitialOutputDone, setIsInitialOutputDone] = useState(false);
+    
+    const containerRef = useRef<HTMLDivElement>(null);
     const inputRef = useRef<HTMLInputElement>(null);
-    const endOfTerminalRef = useRef<HTMLDivElement>(null);
 
     const scrollToBottom = useCallback(() => {
-        endOfTerminalRef.current?.scrollIntoView({ behavior: 'smooth' });
+        if(containerRef.current) {
+            containerRef.current.scrollTop = containerRef.current.scrollHeight;
+        }
     }, []);
 
     useEffect(() => {
@@ -153,6 +166,8 @@ export function HackerTerminal() {
                 return leadershipText;
             case 'contact':
                 return contactInfo;
+            case 'sudo':
+                return 'User is not in the sudoers file. This incident will be reported.';
             case '':
                 return '';
             default:
@@ -178,51 +193,58 @@ export function HackerTerminal() {
     };
     
     const handleTypewriterComplete = useCallback(() => {
-        setHistory(prev => [...prev, { command: currentCommand, output: getOutputForCommand(currentCommand) }]);
-        setIsExecuting(false);
-        setCurrentCommand('');
-    }, [currentCommand]);
+        if (!isInitialOutputDone) {
+            setIsInitialOutputDone(true);
+            setIsExecuting(false);
+        } else {
+            setHistory(prev => [...prev, { command: currentCommand, output: getOutputForCommand(currentCommand) }]);
+            setIsExecuting(false);
+            setCurrentCommand('');
+        }
+    }, [currentCommand, isInitialOutputDone]);
 
     return (
-        <Card className="w-full max-w-4xl mx-auto shadow-2xl border-primary/60 bg-black/80 backdrop-blur-sm overflow-hidden" onClick={() => inputRef.current?.focus()}>
-            <CardContent className="p-4 md:p-6 font-code text-sm text-primary h-[60vh] overflow-y-auto">
-                <div className="text-foreground whitespace-pre-wrap">
-                    Welcome to UmerFarooq.Cyber. Type 'help' to see available commands.
-                </div>
-                <br />
-                {history.map((item, index) => (
-                    <div key={index}>
-                        <div>{PROMPT_PREFIX} {item.command}</div>
-                        <div className="text-foreground whitespace-pre-wrap">{item.output}</div>
-                    </div>
-                ))}
+        <div ref={containerRef} className="h-full w-full font-code text-sm text-primary overflow-y-auto p-2" onClick={() => inputRef.current?.focus()}>
+            {!isInitialOutputDone ? (
+                 <TypewriterOutput text={initialOutput} speed={TYPING_SPEED} onComplete={handleTypewriterComplete} />
+            ) : (
+                <>
+                    <div className="text-foreground whitespace-pre-wrap">{initialOutput}</div>
+                    {history.map((item, index) => (
+                        <div key={index}>
+                            <div><span className="text-accent">umer@portfolio</span>:<span className="text-muted-foreground">~</span>$ {item.command}</div>
+                            <div className="text-foreground whitespace-pre-wrap">{item.output}</div>
+                        </div>
+                    ))}
 
-                {isExecuting && (
-                     <div>
-                        <div>{PROMPT_PREFIX} {currentCommand}</div>
-                        <TypewriterOutput text={getOutputForCommand(currentCommand)} onComplete={handleTypewriterComplete} />
-                    </div>
-                )}
+                    {isExecuting && currentCommand && (
+                         <div>
+                            <div><span className="text-accent">umer@portfolio</span>:<span className="text-muted-foreground">~</span>$ {currentCommand}</div>
+                            <TypewriterOutput text={getOutputForCommand(currentCommand)} speed={COMMAND_TYPING_SPEED} onComplete={handleTypewriterComplete} />
+                        </div>
+                    )}
 
-                {!isExecuting && (
-                    <div className="flex items-center">
-                        <label htmlFor="terminal-input" className="shrink-0">{PROMPT_PREFIX}</label>
-                        <input
-                            ref={inputRef}
-                            id="terminal-input"
-                            type="text"
-                            value={inputValue}
-                            onChange={(e) => setInputValue(e.target.value)}
-                            onKeyDown={handleKeyDown}
-                            className="bg-transparent border-none text-primary focus:ring-0 outline-none w-full pl-2"
-                            autoComplete="off"
-                            disabled={isExecuting}
-                        />
-                         {!isExecuting && <span className="terminal-cursor"></span>}
-                    </div>
-                )}
-                 <div ref={endOfTerminalRef} />
-            </CardContent>
-        </Card>
+                    {!isExecuting && (
+                        <div className="flex items-center">
+                            <label htmlFor="terminal-input" className="shrink-0">
+                                <span className="text-accent">umer@portfolio</span>:<span className="text-muted-foreground">~</span>$
+                            </label>
+                            <input
+                                ref={inputRef}
+                                id="terminal-input"
+                                type="text"
+                                value={inputValue}
+                                onChange={(e) => setInputValue(e.target.value)}
+                                onKeyDown={handleKeyDown}
+                                className="bg-transparent border-none text-primary focus:ring-0 outline-none w-full pl-2"
+                                autoComplete="off"
+                                disabled={isExecuting}
+                            />
+                             {!isExecuting && <span className="terminal-cursor"></span>}
+                        </div>
+                    )}
+                </>
+            )}
+        </div>
     );
 }
