@@ -1,7 +1,7 @@
 
 "use client";
 
-import React, { useState, useEffect, useRef, useCallback, memo } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { certifications } from '@/data/certifications';
 import { projects } from '@/data/projects'; 
 
@@ -126,41 +126,39 @@ const commandMap = {
 
 // --- Component Logic ---
 
-const useTypewriter = (text: string, onComplete: () => void, speed: number) => {
-    const [typedText, setTypedText] = useState('');
-
-    useEffect(() => {
-        setTypedText('');
-        if (!text) {
-            onComplete();
-            return;
-        }
-
-        let i = 0;
-        const intervalId = setInterval(() => {
-            setTypedText(currentText => currentText + text.charAt(i));
-            i++;
-            if (i >= text.length) {
-                clearInterval(intervalId);
-                onComplete();
-            }
-        }, speed);
-
-        return () => clearInterval(intervalId);
-    }, [text, onComplete, speed]);
-
-    return typedText;
-};
-
 interface CommandHistory {
     command: string;
     output: string;
 }
 
-const TypewriterOutput: React.FC<{ text: string; speed: number; onComplete: () => void }> = memo(({ text, speed, onComplete }) => {
-    const typedText = useTypewriter(text, onComplete, speed);
+const TypewriterOutput: React.FC<{ text: string; speed: number; onComplete: () => void }> = ({ text, speed, onComplete }) => {
+    const [typedText, setTypedText] = useState('');
+
+    useEffect(() => {
+        setTypedText(''); // Reset on new text
+        const timeout = setTimeout(() => {
+             if (text && text.length > 0) {
+                let i = 0;
+                const intervalId = setInterval(() => {
+                    setTypedText(prev => prev + text[i]);
+                    i++;
+                    if (i === text.length) {
+                        clearInterval(intervalId);
+                        onComplete();
+                    }
+                }, speed);
+
+                return () => clearInterval(intervalId);
+            } else {
+                 onComplete();
+            }
+        }, 0);
+       
+        return () => clearTimeout(timeout);
+    }, [text, speed, onComplete]);
+
     return <div className="whitespace-pre-wrap">{typedText}</div>;
-});
+};
 TypewriterOutput.displayName = 'TypewriterOutput';
 
 const CommandNav = ({ onCommandClick }: { onCommandClick: (cmd: string) => void }) => {
