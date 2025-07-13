@@ -67,11 +67,7 @@ const experienceText = `
 ${NEXT_STEPS_PROMPT}`;
 
 const educationText = `
-// Note: This is placeholder data.
-
-[2016-2020] Bachelor of Science in Computer Science
-  - University of Agriculture, Faisalabad, Pakistan
-  - Specialization in Network Security.
+Currently pursuing BS Cyber Security from The University of Lahore - UOL (2025 - 2029).
 ${NEXT_STEPS_PROMPT}`;
 
 const leadershipText = `
