@@ -9,6 +9,19 @@ import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useToast } from "@/hooks/use-toast";
 
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "Person",
+  "name": "Umer Farooq",
+  "alternateName": "SecureWithUmer",
+  "url": "https://securewithumer.vercel.app",
+  "sameAs": [
+    "https://www.linkedin.com/in/hackandsecurewithumer",
+    "https://github.com/SecureWithUmer",
+    "https://tryhackme.com/p/SecureWithUmer"
+  ]
+};
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -55,6 +68,10 @@ export default function RootLayout({
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700&family=Source+Code+Pro:wght@400;700&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet" />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
       </head>
       <body className="font-code antialiased min-h-screen flex flex-col bg-background text-foreground">
         <AnimatePresence mode="wait">
