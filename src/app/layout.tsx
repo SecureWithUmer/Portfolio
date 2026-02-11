@@ -33,7 +33,7 @@ export default function RootLayout({
 
    useEffect(() => {
     if (typeof document !== 'undefined') {
-        document.title = 'Umer Farooq | Cybersecurity Professional';
+        document.title = 'Umer Farooq (SecureWithUmer) | Cybersecurity Portfolio';
     }
   }, []);
 
@@ -65,6 +65,7 @@ export default function RootLayout({
     <html lang="en" className="dark">
       <head>
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta name="description" content="Welcome to the portfolio of Umer Farooq (SecureWithUmer), a cybersecurity professional specializing in threat intelligence, network security, and ethical hacking." />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700&family=Source+Code+Pro:wght@400;700&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet" />

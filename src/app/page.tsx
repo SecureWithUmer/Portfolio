@@ -59,11 +59,11 @@ export default function HomePage() {
         <div className="md:sticky md:top-8 text-center md:text-left">
            <div className="p-4 md:p-0">
                 <h1 className="text-2xl sm:text-3xl font-bold font-cyberName text-primary">Umer Farooq</h1>
-                <p className="text-base sm:text-lg text-muted-foreground mb-4 md:mb-6">Cybersecurity Professional</p>
+                <p className="text-base sm:text-lg text-muted-foreground mb-4 md:mb-6">SecureWithUmer | Cybersecurity Professional</p>
            </div>
           <IdCard />
 
-          <div className="mt-4 flex justify-center items-center gap-4">
+          <div className="mt-6 flex justify-center items-center gap-4">
             {socialLinks.map(({ name, href, icon: Icon }) => (
                 <Link
                     key={name}
