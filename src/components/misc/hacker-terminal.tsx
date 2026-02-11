@@ -5,7 +5,7 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { certifications } from '@/data/certifications';
 import { projects } from '@/data/projects'; 
 
-const PROMPT_PREFIX = "umer@portfolio:~$";
+const PROMPT_PREFIX = "@securewithumer:~$";
 const TYPING_SPEED = 10;
 const COMMAND_TYPING_SPEED = 20; // Slightly faster for commands
 
@@ -248,7 +248,7 @@ export function HackerTerminal() {
 
     const TerminalPrompt = () => (
         <label htmlFor="terminal-input" className="shrink-0">
-            <span className="text-accent">umer@portfolio</span>
+            <span className="text-accent">@securewithumer</span>
             <span className="text-muted-foreground">:</span>
             <span className="text-primary">~</span>
             <span className="text-muted-foreground">$</span>
@@ -293,7 +293,7 @@ export function HackerTerminal() {
                                       value={inputValue}
                                       onChange={(e) => setInputValue(e.target.value)}
                                       onKeyDown={handleKeyDown}
-                                      className="bg-transparent border-none text-primary focus:ring-0 outline-none w-auto"
+                                      className="bg-transparent border-none text-primary focus:ring-0 outline-none w-auto caret-transparent"
                                       autoComplete="off"
                                       autoCapitalize="off"
                                       autoCorrect="off"

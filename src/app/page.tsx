@@ -65,7 +65,7 @@ const StatusBar = () => {
 
     return (
         <div className="fixed bottom-0 left-0 right-0 bg-black text-primary px-4 py-1 flex justify-between items-center text-xs z-20 border-t border-primary/20">
-            <span>umer@portfolio:~$</span>
+            <span>@securewithumer:</span>
             <span>{time}</span>
         </div>
     );
@@ -79,7 +79,7 @@ export default function HomePage() {
         <div className="md:sticky md:top-8 text-center md:text-left">
            <div className="p-4 md:p-0">
                 <h1 className="text-2xl sm:text-3xl font-bold font-cyberName text-primary">Umer Farooq</h1>
-                <p className="text-base sm:text-lg text-muted-foreground mb-4 md:mb-6">SecureWithUmer | Cybersecurity Professional</p>
+                <p className="text-base sm:text-lg text-muted-foreground mb-4 md:mb-6">Cybersecurity Professional</p>
            </div>
           <IdCard />
 
