@@ -62,6 +62,16 @@ export default function HomePage() {
                 <p className="text-base sm:text-lg text-muted-foreground mb-4 md:mb-6">Cybersecurity Professional</p>
            </div>
           <IdCard />
+
+          <div className="my-4 flex justify-center md:justify-start">
+             <iframe 
+                src="https://tryhackme.com/api/v2/badges/public-profile?userPublicId=6401825" 
+                style={{border:'none', width: '100%', maxWidth: '350px', height: '120px'}}
+                title="TryHackMe Profile Badge"
+                className="rounded-lg mx-auto md:mx-0"
+             ></iframe>
+          </div>
+
           <div className="mt-4 flex justify-center items-center gap-4">
             {socialLinks.map(({ name, href, icon: Icon }) => (
                 <Link
