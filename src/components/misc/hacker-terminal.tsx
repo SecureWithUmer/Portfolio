@@ -286,19 +286,21 @@ export function HackerTerminal() {
                         {!isExecuting && (
                             <div className="flex items-center gap-2 mt-2">
                                 <TerminalPrompt />
-                                  <input
-                                      ref={inputRef}
-                                      id="terminal-input"
-                                      type="text"
-                                      value={inputValue}
-                                      onChange={(e) => setInputValue(e.target.value)}
-                                      onKeyDown={handleKeyDown}
-                                      className="bg-transparent border-none text-primary focus:ring-0 outline-none w-auto caret-transparent"
-                                      autoComplete="off"
-                                      autoCapitalize="off"
-                                      autoCorrect="off"
-                                      disabled={isExecuting}
-                                  />
+                                <span>{inputValue}</span>
+                                <span className="terminal-cursor"></span>
+                                <input
+                                    ref={inputRef}
+                                    id="terminal-input"
+                                    type="text"
+                                    value={inputValue}
+                                    onChange={(e) => setInputValue(e.target.value)}
+                                    onKeyDown={handleKeyDown}
+                                    className="absolute -left-[9999px]" // Visually hide the input but keep it focusable
+                                    autoComplete="off"
+                                    autoCapitalize="off"
+                                    autoCorrect="off"
+                                    disabled={isExecuting}
+                                />
                             </div>
                         )}
                     </>
