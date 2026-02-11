@@ -1,17 +1,16 @@
 
-"use client";
-
 import type { Metadata } from 'next'; 
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import { PageTitle } from '@/components/ui/page-title';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Download, ShieldCheck, Network, ClipboardCheck, Target, MessagesSquare, ServerCog, Loader2 } from 'lucide-react';
-import { useState, useEffect } from 'react';
-import { Progress } from "@/components/ui/progress";
-import { useToast } from "@/hooks/use-toast";
+import { ShieldCheck, Network, ClipboardCheck, Target, MessagesSquare, ServerCog } from 'lucide-react';
 
+export const metadata: Metadata = {
+  title: 'About Umer Farooq | Cybersecurity Professional',
+  description: 'Get to know Umer Farooq, a cybersecurity enthusiast from Faisalabad, Pakistan, specializing in threat intelligence, network security, and ethical hacking.',
+};
 
 const expertiseItems = [
   { id: 'threat-intel', icon: ShieldCheck, title: 'Threat Intelligence', description: 'Proactive identification and analysis of cyber threats to preempt attacks.', skillsAndTools: ['MITRE ATT&CK', 'OSINT Tools', 'Maltego', 'VirusTotal API', 'Threat Feeds Integration', 'YARA Rules'] },

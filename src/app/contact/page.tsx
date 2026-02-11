@@ -1,11 +1,15 @@
 
-"use client";
-
 import { Button } from "@/components/ui/button";
 import { PageTitle } from "@/components/ui/page-title";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import Link from "next/link";
 import { Linkedin, Github, Mail } from "lucide-react";
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Contact Umer Farooq | Get In Touch',
+  description: 'Connect with Umer Farooq (SecureWithUmer) on LinkedIn, GitHub, or via email for collaborations, projects, or cybersecurity discussions.',
+};
 
 const contactMethods = [
   {

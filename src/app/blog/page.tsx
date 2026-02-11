@@ -54,9 +54,6 @@ export default function BlogPage() {
           <BlogPostPreview key={post.id} post={post} />
         ))}
       </div>
-       <p className="text-center text-xs sm:text-sm text-muted-foreground mt-10 sm:mt-12">
-        Note: Individual blog post pages are for demonstration and not fully implemented.
-      </p>
     </div>
   );
 }
