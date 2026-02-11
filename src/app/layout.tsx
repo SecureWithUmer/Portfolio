@@ -15,6 +15,22 @@ const jsonLd = {
   "name": "Umer Farooq",
   "alternateName": "SecureWithUmer",
   "url": "https://securewithumer.vercel.app",
+  "jobTitle": "Cybersecurity Professional",
+  "description": "A passionate cybersecurity enthusiast from Faisalabad, Pakistan, specializing in threat intelligence, network security, ethical hacking, and security audits.",
+  "knowsAbout": [
+    "Threat Intelligence",
+    "Network Security",
+    "Ethical Hacking",
+    "Penetration Testing",
+    "Security Auditing",
+    "Managed Detection and Response (MDR)",
+    "MITRE ATT&CK",
+    "Metasploit",
+    "Burp Suite",
+    "Nmap",
+    "Kali Linux",
+    "OWASP"
+  ],
   "sameAs": [
     "https://www.linkedin.com/in/hackandsecurewithumer",
     "https://github.com/SecureWithUmer",
