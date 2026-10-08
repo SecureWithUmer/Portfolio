@@ -101,7 +101,7 @@ export function IdCard() {
             >
                 <div className="p-3">
                     <Image
-                        src="/assets/profile-picture.png"
+                        src="/assets/profile.jpeg"
                         alt="Umer Farooq"
                         width={150}
                         height={150}

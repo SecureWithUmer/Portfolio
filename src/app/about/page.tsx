@@ -40,7 +40,7 @@ export default function AboutMePage() {
         </div>
         <div className="flex justify-center order-first md:order-last md:justify-start md:pl-8">
           <Image
-            src="/assets/profile-picture.png" 
+            src="/assets/profile.jpeg" 
             alt="Umer Farooq - Penetration Tester & Cybersecurity Professional"
             width={200}
             height={200}
