@@ -15,26 +15,28 @@ const jsonLd = {
   "name": "Umer Farooq",
   "alternateName": "SecureWithUmer",
   "url": "https://securewithumer.vercel.app",
-  "jobTitle": "Cybersecurity Professional",
-  "description": "A passionate cybersecurity enthusiast from Faisalabad, Pakistan, specializing in threat intelligence, network security, ethical hacking, and security audits.",
+  "jobTitle": "Penetration Tester & Cybersecurity Professional",
+  "description": "Penetration Tester from Faisalabad, Pakistan, specializing in web and API penetration testing, network security, and offensive security research.",
   "knowsAbout": [
-    "Threat Intelligence",
-    "Network Security",
-    "Ethical Hacking",
     "Penetration Testing",
-    "Security Auditing",
-    "Managed Detection and Response (MDR)",
-    "MITRE ATT&CK",
-    "Metasploit",
-    "Burp Suite",
-    "Nmap",
+    "Network Security",
+    "API Pen Testing",
+    "Bug Bounty Hunting",
+    "Cloud Security",
+    "Linux",
+    "BurpSuite",
+    "Wazuh",
     "Kali Linux",
-    "OWASP"
+    "Frida",
+    "Postman",
+    "ISO/IEC 27001"
   ],
   "sameAs": [
-    "https://www.linkedin.com/in/hackandsecurewithumer",
+    "https://www.linkedin.com/in/securewithumer",
     "https://github.com/SecureWithUmer",
-    "https://tryhackme.com/p/SecureWithUmer"
+    "https://tryhackme.com/p/SecureWithUmer",
+    "https://bugcrowd.com/securewithumer",
+    "https://hackerone.com/securewithumer"
   ]
 };
 
@@ -81,7 +83,7 @@ export default function RootLayout({
     <html lang="en" className="dark">
       <head>
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <meta name="description" content="Welcome to the portfolio of Umer Farooq (SecureWithUmer), a cybersecurity professional specializing in threat intelligence, network security, and ethical hacking." />
+        <meta name="description" content="Welcome to the portfolio of Umer Farooq (SecureWithUmer), a Penetration Tester and cybersecurity specialist with verified rankings on Bugcrowd and HackerOne." />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700&family=Source+Code+Pro:wght@400;700&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet" />

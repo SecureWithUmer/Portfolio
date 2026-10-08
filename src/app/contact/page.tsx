@@ -14,9 +14,9 @@ export const metadata: Metadata = {
 const contactMethods = [
   {
     name: "LinkedIn",
-    href: "https://www.linkedin.com/in/hackandsecurewithumer",
+    href: "https://www.linkedin.com/in/securewithumer",
     icon: Linkedin,
-    username: "@hackandsecurewithumer",
+    username: "@securewithumer",
     external: true,
   },
   {

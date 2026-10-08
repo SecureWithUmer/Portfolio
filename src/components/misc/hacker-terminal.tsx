@@ -34,54 +34,53 @@ Available commands:
 `;
 
 const aboutMeText = `
-Hello! I'm Umer Farooq, a cybersecurity enthusiast from Faisalabad, Pakistan.
+Hello! I'm Umer Farooq, a Penetration Tester and cybersecurity specialist from Faisalabad, Pakistan.
 
-My journey in this field is driven by a deep-seated curiosity to understand and mitigate the complex, evolving threats in our digital world.
+My journey in offensive security is driven by a deep curiosity to uncover, dissect, and remediate complex vulnerabilities across web applications, networks, and cloud infrastructure.
 
-I specialize in architecting robust security solutions and thrive on dissecting complex challenges to protect digital assets and ensure operational resilience.
+I specialize in penetration testing, threat modeling, and bug bounty research to harden defenses and safeguard critical digital assets.
 ${NEXT_STEPS_PROMPT}`;
 
 const skillsText = `
 Here are my core skills and areas of expertise:
 
-- Threat Intelligence: Proactive identification and analysis of cyber threats.
-- Network Security: Designing and implementing secure network architectures.
-- Ethical Hacking: Simulating attacks to identify vulnerabilities.
-- Security Audits: Ensuring compliance and identifying system vulnerabilities.
-- Penetration Testing: Simulating real-world attacks to test defenses.
-- Security Consulting: Providing guidance for robust cybersecurity strategies.
-- MDR: Offering 24/7 threat detection and response.
+- Offensive Security: Penetration Testing, API Pen Testing, Vulnerability Research.
+- Defense & Infrastructure: Network Security, Cloud Security, Linux system hardening.
+- Security Operations: Wazuh SIEM monitoring, threat detection, and incident remediation.
+- Tooling & Platforms: BurpSuite, Kali Linux, Frida, Postman, and custom exploitation scripts.
 ${NEXT_STEPS_PROMPT}`;
 
 const experienceText = `
-// Note: This is a summary. For full details, please contact me.
+Professional Experience:
 
-[2022-Present] Senior Security Analyst at CyberCorp Inc.
-  - Lead threat intelligence and incident response teams.
-  - Develop and implement MDR solutions for enterprise clients.
+[03/2023 - Present] Penetration Tester at Bugcrowd
+  - Conduct offensive security assessments on enterprise targets.
+  - Identify and responsibly disclose critical vulnerabilities across web, API, and cloud assets.
 
-[2020-2022] Penetration Tester at SecureNet Solutions
-  - Conducted network and application penetration tests.
-  - Provided detailed reports and remediation guidance.
+[03/2023 - Present] Penetration Tester at HackerOne
+  - Perform in-depth penetration testing, exploit development, and security research.
+  - Collaborate with security engineering teams globally to validate and remediate high-severity flaws.
 ${NEXT_STEPS_PROMPT}`;
 
 const educationText = `
-Currently pursuing BS Cyber Security from The University of Lahore - UOL (2025 - 2029).
+Education:
+
+[08/2020 - 08/2022] FSC-Pre Medical at Aspire Group of Colleges
 ${NEXT_STEPS_PROMPT}`;
 
 const leadershipText = `
-// Note: This is placeholder data.
+Achievements & Recognition:
 
-- Founder of the "FSD Cyber-Wing", a local community for cybersecurity enthusiasts.
-- Mentor for the "Code for Pakistan" initiative, guiding aspiring developers.
-- Regular speaker at local tech meetups on topics of cybersecurity awareness.
+- Inducted into Bugcrowd & HackerOne Hall of Fame for identifying critical security vulnerabilities.
+- Received formal security acknowledgments and responsible disclosure honors from LAAM Technologies and Switch Payment Gateway.
+- Active contributor to the ethical hacking and bug bounty communities, advocating for proactive defense and responsible disclosure.
 ${NEXT_STEPS_PROMPT}`;
 
 
 const contactInfo = `
 You can reach me through the following channels:
 
-- LinkedIn: https://www.linkedin.com/in/hackandsecurewithumer
+- LinkedIn: https://www.linkedin.com/in/securewithumer
 - GitHub:   https://github.com/SecureWithUmer
 - Email:    hackwithumer@outlook.com
 ${NEXT_STEPS_PROMPT}`;
@@ -106,8 +105,15 @@ const getProjectsText = () => {
 };
 
 const getCertificationsText = () => {
-    const certList = certifications.map(c => `- ${c.title} (${c.issuingBody})`).join('\n');
-    return `Fetching certifications...\n\n${certList}\n${NEXT_STEPS_PROMPT}`;
+    const technical = certifications.filter(c => c.category === 'technical' || !c.category);
+    const nonTechnical = certifications.filter(c => c.category === 'non-technical');
+
+    let text = "Fetching certifications...\n\n";
+    text += "=== Technical Certifications ===\n";
+    text += technical.map(c => `- ${c.title} (${c.issuingBody})`).join('\n');
+    text += "\n\n=== Non-Technical Certifications ===\n";
+    text += nonTechnical.map(c => `- ${c.title} (${c.issuingBody})`).join('\n');
+    return `${text}\n${NEXT_STEPS_PROMPT}`;
 };
 
 

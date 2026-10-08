@@ -46,7 +46,7 @@ const TryHackMeIcon = (props: React.SVGProps<SVGSVGElement>) => (
 
 
 const socialLinks = [
-  { name: 'LinkedIn', href: 'https://www.linkedin.com/in/hackandsecurewithumer', icon: Linkedin },
+  { name: 'LinkedIn', href: 'https://www.linkedin.com/in/securewithumer', icon: Linkedin },
   { name: 'GitHub', href: 'https://github.com/SecureWithUmer', icon: Github },
   { name: 'Email', href: 'mailto:hackwithumer@outlook.com', icon: Mail },
   { name: 'WhatsApp', href: 'https://wa.me/923261149625', icon: WhatsAppIcon },
@@ -79,7 +79,7 @@ export default function HomePage() {
         <div className="md:sticky md:top-8 text-center md:text-left">
            <div className="p-4 md:p-0">
                 <h1 className="text-2xl sm:text-3xl font-bold font-cyberName text-primary">Umer Farooq</h1>
-                <p className="text-base sm:text-lg text-muted-foreground mb-4 md:mb-6">Cybersecurity Professional</p>
+                <p className="text-base sm:text-lg text-muted-foreground mb-4 md:mb-6">Penetration Tester & Cybersecurity Professional</p>
            </div>
           <IdCard />
 

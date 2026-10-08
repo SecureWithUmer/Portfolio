@@ -10,7 +10,9 @@
     "postbuild": "next-sitemap",
     "start": "next start",
     "lint": "next lint",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "verify": "node scripts/verify-portfolio.mjs",
+    "verify:fast": "node scripts/verify-portfolio.mjs --skip-build"
   },
   "dependencies": {
     "@genkit-ai/googleai": "^1.8.0",

@@ -8,23 +8,22 @@ import { Badge } from '@/components/ui/badge';
 import { ShieldCheck, Network, ClipboardCheck, Target, MessagesSquare, ServerCog } from 'lucide-react';
 
 export const metadata: Metadata = {
-  title: 'About Umer Farooq | Cybersecurity Professional',
-  description: 'Get to know Umer Farooq, a cybersecurity enthusiast from Faisalabad, Pakistan, specializing in threat intelligence, network security, and ethical hacking.',
+  title: 'About Umer Farooq | Penetration Tester & Cybersecurity Professional',
+  description: 'Get to know Umer Farooq, a Penetration Tester and cybersecurity specialist from Faisalabad, Pakistan, with verified rankings on Bugcrowd and HackerOne.',
 };
 
 const expertiseItems = [
-  { id: 'threat-intel', icon: ShieldCheck, title: 'Threat Intelligence', description: 'Proactive identification and analysis of cyber threats to preempt attacks.', skillsAndTools: ['MITRE ATT&CK', 'OSINT Tools', 'Maltego', 'VirusTotal API', 'Threat Feeds Integration', 'YARA Rules'] },
-  { id: 'network-sec', icon: Network, title: 'Network Security', description: 'Designing and implementing secure network architectures and protocols.', skillsAndTools: ['Firewalls (NGFW)', 'IDS/IPS', 'VPN Setup', 'Microsegmentation', 'Zscaler', 'Palo Alto Networks'] },
-  { id: 'ethical-hack', icon: ShieldCheck, title: 'Ethical Hacking', description: 'Simulating attacks to identify vulnerabilities and strengthen defenses.', skillsAndTools: ['Metasploit', 'Burp Suite', 'Nmap', 'Kali Linux', 'Penetration Testing methodologies'] },
-  { id: 'sec-audits', icon: ClipboardCheck, title: 'Security Audits', description: 'Identify vulnerabilities and ensure compliance.', skillsAndTools: ['ISO 27001', 'NIST CSF', 'Compliance Scanning', 'Vulnerability Assessment Tools', 'CIS Benchmarks'] },
-  { id: 'pen-testing', icon: Target, title: 'Penetration Testing', description: 'Simulate real-world attacks to test defenses.', skillsAndTools: ['OWASP ZAP', 'SQLMap', 'Nessus', 'Manual Exploit Development', 'Report Writing'] },
-  { id: 'sec-consult', icon: MessagesSquare, title: 'Security Consulting', description: 'Guidance for robust cybersecurity strategies.', skillsAndTools: ['Risk Assessment', 'Security Policy Development', 'Incident Response Planning', 'Tabletop Exercises'] },
-  { id: 'mdr', icon: ServerCog, title: 'MDR', description: '24/7 threat detection and response.', skillsAndTools: ['SIEM (Splunk, ELK)', 'EDR Solutions (CrowdStrike, SentinelOne)', 'SOAR Playbooks', 'Threat Hunting'] },
+  { id: 'pen-testing', icon: Target, title: 'Penetration Testing', description: 'Simulating real-world cyberattacks across web, API, and cloud assets.', skillsAndTools: ['Burp Suite', 'Kali Linux', 'API Pen Testing', 'Frida', 'Postman', 'OWASP Top 10'] },
+  { id: 'threat-intel', icon: ShieldCheck, title: 'Threat Intelligence', description: 'Proactive identification and analysis of cyber threats to preempt attacks.', skillsAndTools: ['MITRE ATT&CK', 'OSINT Tools', 'VirusTotal API', 'Wazuh', 'Threat Feeds'] },
+  { id: 'network-sec', icon: Network, title: 'Network Security', description: 'Designing and implementing secure network architectures and perimeter defense.', skillsAndTools: ['Firewalls', 'IDS/IPS', 'Network Hardening', 'Packet Analysis', 'VPN Setup'] },
+  { id: 'cloud-sec', icon: ServerCog, title: 'Cloud & Systems Security', description: 'Hardening enterprise Linux environments and auditing cloud infrastructure.', skillsAndTools: ['Linux', 'Cloud Security', 'Container Hardening', 'Access Control'] },
+  { id: 'sec-audits', icon: ClipboardCheck, title: 'Security Audits', description: 'Identifying system vulnerabilities and verifying standards compliance.', skillsAndTools: ['ISO/IEC 27001', 'Vulnerability Assessment', 'Security Benchmarks', 'Report Writing'] },
+  { id: 'sec-consult', icon: MessagesSquare, title: 'Security Consulting', description: 'Providing expert guidance for robust cybersecurity defense strategies.', skillsAndTools: ['Risk Assessment', 'Bug Bounty Guidance', 'Remediation Roadmaps', 'Security Policies'] },
 ];
 
 
 export default function AboutMePage() {
-  const aboutMeText = "As a passionate cybersecurity enthusiast hailing from Faisalabad, Pakistan, I am deeply committed to the art and science of digital defense. My journey in cybersecurity is driven by a relentless curiosity to understand and mitigate evolving threats. I possess a diverse skill set encompassing threat intelligence, network security, ethical hacking, and security audits. I thrive on dissecting complex security challenges and architecting robust solutions to protect digital assets and ensure operational resilience. My goal is to contribute meaningfully to creating a safer digital environment for individuals and organizations alike.";
+  const aboutMeText = "As a passionate Penetration Tester and cybersecurity specialist hailing from Faisalabad, Pakistan, I am deeply committed to offensive security and digital defense. My journey is backed by active contributions on Bugcrowd and HackerOne, where I have earned Hall of Fame recognitions and helped secure enterprise systems globally. I possess expertise in web and API penetration testing, network security, and security auditing. My mission is to identify critical weaknesses before malicious actors can exploit them, ensuring digital resilience for modern organizations.";
 
   return (
     <div className="space-y-12 sm:space-y-16">
@@ -42,7 +41,7 @@ export default function AboutMePage() {
         <div className="flex justify-center order-first md:order-last md:justify-start md:pl-8">
           <Image
             src="/assets/profile-picture.png" 
-            alt="Umer Farooq - Cybersecurity Professional"
+            alt="Umer Farooq - Penetration Tester & Cybersecurity Professional"
             width={200}
             height={200}
             className="rounded-full border-4 border-primary shadow-lg w-40 h-40 sm:w-48 sm:h-48 md:w-60 md:h-60"
