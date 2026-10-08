@@ -130,7 +130,7 @@ export const certifications: Certification[] = [
   {
     id: '9',
     slug: 'critical-thinking-imperial-college-london',
-    title: 'Critical thinking - Imperial College London',
+    title: 'Critical Thinking',
     issuingBody: 'Imperial College London',
     issueDate: '2023-06-12',
     expiryDate: 'Lifetime',
@@ -144,7 +144,7 @@ export const certifications: Certification[] = [
   {
     id: '10',
     slug: 'innovation-through-design-university-of-sydney',
-    title: 'Innovation Through Design: Think, Make, Break, Repeat - University of Sydney',
+    title: 'Innovation Through Design: Think, Make, Break, Repeat',
     issuingBody: 'University of Sydney',
     issueDate: '2023-07-20',
     expiryDate: 'Lifetime',
@@ -158,7 +158,7 @@ export const certifications: Certification[] = [
   {
     id: '11',
     slug: 'ai-justice-and-rule-of-law-university-of-oxford',
-    title: 'AI justice and rule of law - University of Oxford',
+    title: 'AI Justice and Rule of Law',
     issuingBody: 'University of Oxford',
     issueDate: '2023-11-05',
     expiryDate: 'Lifetime',
@@ -172,7 +172,7 @@ export const certifications: Certification[] = [
   {
     id: '12',
     slug: 'internet-history-technology-and-security-university-of-michigan',
-    title: 'Internet History, Technology, and Security - University of Michigan',
+    title: 'Internet History, Technology, and Security',
     issuingBody: 'University of Michigan',
     issueDate: '2024-02-14',
     expiryDate: 'Lifetime',
