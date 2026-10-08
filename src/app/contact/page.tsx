@@ -28,9 +28,9 @@ const contactMethods = [
   },
   {
     name: "Email",
-    href: "mailto:hackwithumer@outlook.com",
+    href: "mailto:securewithumer@gmail.com",
     icon: Mail,
-    username: "hackwithumer@outlook.com",
+    username: "securewithumer@gmail.com",
     external: false,
   },
 ];

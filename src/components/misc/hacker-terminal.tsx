@@ -82,7 +82,7 @@ You can reach me through the following channels:
 
 - LinkedIn: https://www.linkedin.com/in/securewithumer
 - GitHub:   https://github.com/SecureWithUmer
-- Email:    hackwithumer@outlook.com
+- Email:    securewithumer@gmail.com
 ${NEXT_STEPS_PROMPT}`;
 
 const projectIntros = {

@@ -48,7 +48,7 @@ const TryHackMeIcon = (props: React.SVGProps<SVGSVGElement>) => (
 const socialLinks = [
   { name: 'LinkedIn', href: 'https://www.linkedin.com/in/securewithumer', icon: Linkedin },
   { name: 'GitHub', href: 'https://github.com/SecureWithUmer', icon: Github },
-  { name: 'Email', href: 'mailto:hackwithumer@outlook.com', icon: Mail },
+  { name: 'Email', href: 'mailto:securewithumer@gmail.com', icon: Mail },
   { name: 'WhatsApp', href: 'https://wa.me/923261149625', icon: WhatsAppIcon },
   { name: 'TryHackMe', href: 'https://tryhackme.com/p/securewithumer', icon: TryHackMeIcon },
 ];

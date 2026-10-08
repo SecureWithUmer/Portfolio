@@ -62,5 +62,14 @@ export const projects: Project[] = [
     technologies: ['Android Internals', 'Mobile Security', 'Static Analysis', 'Dynamic Analysis'],
     tags: ['Malware Analysis', 'Mobile Security', 'Android'],
     toolsUsed: ['JADX', 'Frida', 'Drozer', 'Wireshark'],
+  },
+  {
+    id: '8',
+    title: 'exploit-index',
+    description: 'A comprehensive, organized index of public vulnerabilities and proof-of-concept (PoC) exploits. Designed to assist security researchers and penetration testers in referencing, analyzing, and mitigating known CVEs quickly.',
+    technologies: ['Markdown', 'Git', 'Vulnerability Research'],
+    tags: ['Exploits', 'CVE', 'Pentesting'],
+    toolsUsed: ['GitHub', 'NVD API'],
+    repoLink: 'https://github.com/SecureWithUmer/exploit-index',
   }
 ];
